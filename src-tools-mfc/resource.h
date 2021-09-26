@@ -14,6 +14,8 @@
 #define IDC_EDITBROWSE                  1007
 #define IDC_BUTTON1                     1008
 #define IDC_TOOLTIPSMAX_BTN             1008
+#define IDC_TOOLTIPSMAX_BTN2            1009
+#define IDC_REGRESETDLG_BTN             1009
 
 // Next default values for new objects
 // 

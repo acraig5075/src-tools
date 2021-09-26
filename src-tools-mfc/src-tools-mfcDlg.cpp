@@ -49,6 +49,7 @@ BEGIN_MESSAGE_MAP(CsrctoolsmfcDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_MISSINGMACRO_BTN, &CsrctoolsmfcDlg::OnBnClickedMissingmacroBtn)
 	ON_BN_CLICKED(IDC_CONFORMINGRCFILE_BTN, &CsrctoolsmfcDlg::OnBnClickedConformingrcfileBtn)
 	ON_BN_CLICKED(IDC_TOOLTIPSMAX_BTN, &CsrctoolsmfcDlg::OnBnClickedTooltipsmaxBtn)
+	ON_BN_CLICKED(IDC_REGRESETDLG_BTN, &CsrctoolsmfcDlg::OnBnClickedRegresetdlgBtn)
 END_MESSAGE_MAP()
 
 
@@ -238,6 +239,29 @@ void CsrctoolsmfcDlg::OnBnClickedTooltipsmaxBtn()
 
 	BeginWaitCursor();
 	search_tooltips_exceeding_max_length(rootPath, ss, 80);
+	EndWaitCursor();
+
+	CString output(ss.str().c_str());
+	output.Replace(_T("\n"), _T("\r\n"));
+	m_outputEdit.SetWindowTextW(output);
+}
+
+
+void CsrctoolsmfcDlg::OnBnClickedRegresetdlgBtn()
+{
+	CString strRoot;
+	m_editBrowseCtrl.GetWindowTextW(strRoot);
+	if (strRoot.IsEmpty())
+		return;
+
+	fs::path rootPath(strRoot.GetString());
+	if (rootPath.empty() || !rootPath.is_absolute())
+		return;
+
+	std::stringstream ss;
+
+	BeginWaitCursor();
+	search_resizable_not_in_reg_reset(rootPath, ss);
 	EndWaitCursor();
 
 	CString output(ss.str().c_str());
