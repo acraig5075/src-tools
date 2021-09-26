@@ -56,5 +56,8 @@
     <ClCompile Include="search-tooltips-exceeding-max-length.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="search-resizable-not-in-reg-reset.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
