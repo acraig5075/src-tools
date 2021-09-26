@@ -117,8 +117,13 @@ void CsrctoolsmfcDlg::OnBnClickedImagesandcommandsBtn()
 		return;
 
 	fs::path rootPath(strRoot.GetString());
-	if (rootPath.empty() || !rootPath.is_absolute())
+	if (rootPath.empty() || !fs::exists(rootPath))
+	{
+		CString msg;
+		msg.Format(_T("%ws does not exist"), strRoot.GetString());
+		MessageBox(msg, _T("Error"), MB_OK | MB_ICONSTOP);
 		return;
+	}
 
 	std::stringstream ss;
 
@@ -140,8 +145,13 @@ void CsrctoolsmfcDlg::OnBnClickedDuplicatestringsBtn()
 		return;
 
 	fs::path rootPath(strRoot.GetString());
-	if (rootPath.empty() || !rootPath.is_absolute())
+	if (rootPath.empty() || !fs::exists(rootPath))
+	{
+		CString msg;
+		msg.Format(_T("%ws does not exist"), strRoot.GetString());
+		MessageBox(msg, _T("Error"), MB_OK | MB_ICONSTOP);
 		return;
+	}
 
 	std::stringstream ss;
 
@@ -163,8 +173,13 @@ void CsrctoolsmfcDlg::OnBnClickedUnusedstringsBtn()
 		return;
 
 	fs::path rootPath(strRoot.GetString());
-	if (rootPath.empty() || !rootPath.is_absolute())
+	if (rootPath.empty() || !fs::exists(rootPath))
+	{
+		CString msg;
+		msg.Format(_T("%ws does not exist"), strRoot.GetString());
+		MessageBox(msg, _T("Error"), MB_OK | MB_ICONSTOP);
 		return;
+	}
 
 	std::stringstream ss;
 
@@ -186,8 +201,13 @@ void CsrctoolsmfcDlg::OnBnClickedMissingmacroBtn()
 		return;
 
 	fs::path rootPath(strRoot.GetString());
-	if (rootPath.empty() || !rootPath.is_absolute())
+	if (rootPath.empty() || !fs::exists(rootPath))
+	{
+		CString msg;
+		msg.Format(_T("%ws does not exist"), strRoot.GetString());
+		MessageBox(msg, _T("Error"), MB_OK | MB_ICONSTOP);
 		return;
+	}
 
 	std::stringstream ss;
 
@@ -209,8 +229,13 @@ void CsrctoolsmfcDlg::OnBnClickedConformingrcfileBtn()
 		return;
 
 	fs::path rootPath(strRoot.GetString());
-	if (rootPath.empty() || !rootPath.is_absolute())
+	if (rootPath.empty() || !fs::exists(rootPath))
+	{
+		CString msg;
+		msg.Format(_T("%ws does not exist"), strRoot.GetString());
+		MessageBox(msg, _T("Error"), MB_OK | MB_ICONSTOP);
 		return;
+	}
 
 	std::stringstream ss;
 
@@ -232,8 +257,13 @@ void CsrctoolsmfcDlg::OnBnClickedTooltipsmaxBtn()
 		return;
 
 	fs::path rootPath(strRoot.GetString());
-	if (rootPath.empty() || !rootPath.is_absolute())
+	if (rootPath.empty() || !fs::exists(rootPath))
+	{
+		CString msg;
+		msg.Format(_T("%ws does not exist"), strRoot.GetString());
+		MessageBox(msg, _T("Error"), MB_OK | MB_ICONSTOP);
 		return;
+	}
 
 	std::stringstream ss;
 
@@ -255,8 +285,13 @@ void CsrctoolsmfcDlg::OnBnClickedRegresetdlgBtn()
 		return;
 
 	fs::path rootPath(strRoot.GetString());
-	if (rootPath.empty() || !rootPath.is_absolute())
+	if (rootPath.empty() || !fs::exists(rootPath))
+	{
+		CString msg;
+		msg.Format(_T("%ws does not exist"), strRoot.GetString());
+		MessageBox(msg, _T("Error"), MB_OK | MB_ICONSTOP);
 		return;
+	}
 
 	std::stringstream ss;
 
