@@ -192,48 +192,6 @@ int my_main(const fs::path &root, std::ostream &output)
 }
 
 
-struct Query
-{
-	std::string number;
-	std::string name;
-	std::string literal;
-};
-
-void UpdateQuery(Query &query, std::string &line, std::string Query::* field)
-{
-	std::string name = query.name;
-
-	size_t found = line.find(name, 0);
-
-	if (found != std::string::npos)
-		{
-		if (line[found + name.length()] == ' ')
-			{
-			size_t off = found + name.length();
-			size_t start = line.find_first_not_of(' ', off);
-
-			if (start != std::string::npos)
-				{
-				std::string value = line.substr(start);
-				query.*field = value;
-				}
-			}
-		}
-}
-
-void UpdateAllQueries(std::vector<Query> &queries, const std::string &filename, std::string Query::* field)
-{
-	std::ifstream fin(filename);
-	std::string line;
-	while (std::getline(fin, line))
-		{
-		for (auto &q : queries)
-			{
-			UpdateQuery(q, line, field);
-			}
-		}
-}
-
 int search_unused_string_resources(const fs::path &root, std::ostream &output)
 {
 	my_main(root, output);
