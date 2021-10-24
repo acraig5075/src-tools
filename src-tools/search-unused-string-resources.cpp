@@ -9,6 +9,14 @@ using PathResourcePair = std::pair<fs::path, std::vector<std::string>>;
 
 
 
+struct Unused
+{
+	fs::path m_filename;
+	size_t m_count = 0;
+};
+
+
+
 static std::vector<PathResourcePair> get_file_list(const fs::path &root, const std::string &extension)
 {
 	std::vector<PathResourcePair> files;
@@ -91,9 +99,9 @@ static std::vector<fs::path> get_directory_list(const fs::path &root)
 }
 
 
-void exclusions(std::vector<fs::path> &directories, const std::vector<std::string> &exclusions)
+void filter_directory_list(std::vector<fs::path> &directories, const std::vector<std::string> &filter_directory_list)
 {
-	for (auto name : exclusions)
+	for (auto name : filter_directory_list)
 		{
 		auto itr = std::find_if(directories.begin(), directories.end(), [name](const fs::path & dir)
 			{
@@ -106,31 +114,67 @@ void exclusions(std::vector<fs::path> &directories, const std::vector<std::strin
 }
 
 
-/// Lookup resource ID names defined in .rc files but not referenced in any .cpp files
-int my_main1(const fs::path &root, std::ostream &output)
+void OutputReport(std::vector<Unused>& reports, std::ostream& output)
 {
+	std::sort(begin(reports), end(reports), [](const Unused& lhs, const Unused& rhs)
+		{
+			return lhs.m_count > rhs.m_count;
+		});
+
+	std::string heading("Report");
+	std::string underline(heading.length(), '-');
+	output
+		<< heading << "\n"
+		<< underline << "\n";
+
+	size_t col_width = 0;
+	for (const auto& r : reports)
+	{
+		if (r.m_filename.string().length() > col_width)
+			col_width = r.m_filename.string().length();
+	}
+
+	for (const auto& r : reports)
+	{
+		output
+			<< std::left
+			<< std::setw(col_width)
+			<< r.m_filename.string()
+			<< " "
+			<< r.m_count
+			<< "\n";
+	}
+}
+
+/// Lookup resource ID names defined in .rc files but not referenced in any .cpp files
+int my_main(const fs::path &root, std::ostream &output)
+{
+	std::vector<Unused> reports;
+
 	std::vector<fs::path> directories = get_directory_list(root);
 
-	exclusions(directories, 
-		{
-		"CommonDialogs",
-		"Sewer",
-		"Storm",
-		}
-	);
+	std::vector<std::string> exclusions = { "CommonDialogs", "Sewer", "Storm", };
+	filter_directory_list(directories, exclusions);
+
+	output << "Excluding directories: ";
+	std::copy(begin(exclusions), end(exclusions), std::ostream_iterator<std::string>(output, ", "));
+	output << "\n\n";
 
 	for (const auto &dir : directories)
 		{
-		fs::path root(dir);
-
-		std::vector<std::string> used = get_resource_list(root, ".cpp");
-		std::vector<std::string> avail = get_resource_list(root, ".rc");
+		std::vector<std::string> used = get_resource_list(dir, ".cpp");
+		std::vector<std::string> avail = get_resource_list(dir, ".rc");
 
 		std::vector<std::string> difference;
 		std::set_difference(begin(avail), end(avail), begin(used), end(used), std::back_inserter(difference));
 
 		if (difference.empty())
 			continue;
+
+		Unused r;
+		r.m_filename = dir;
+		r.m_count = difference.size();
+		reports.push_back(r);
 
 		std::string heading(dir.filename().string());
 		std::string underline(heading.length(), '-');
@@ -141,6 +185,8 @@ int my_main1(const fs::path &root, std::ostream &output)
 		std::copy(begin(difference), end(difference), std::ostream_iterator<std::string>(output, "\n"));
 		output << "\n";
 		}
+
+	OutputReport(reports, output);
 
 	return 0;
 }
@@ -188,150 +234,9 @@ void UpdateAllQueries(std::vector<Query> &queries, const std::string &filename, 
 		}
 }
 
-/// Lookup string resource number and literal for a list of resource ID names
-int my_main2(std::ostream &output)
+int search_unused_string_resources(const fs::path &root, std::ostream &output)
 {
-	std::vector<std::string> problems =
-		{
-		"IDS_3D_POLYFACE_MESH",
-		"IDS_3D_POLYGON_MESH",
-		"IDS_ALLAYERS",
-		"IDS_ALLUSEDLAYERS",
-		"IDS_AMP_SET_CURRENT",
-		"IDS_ARROW",
-		"IDS_BELOW",
-		"IDS_BR",
-		"IDS_CIVILENGINEERING",
-		"IDS_CLICK_SELECT_THIS",
-		"IDS_DWG_PROXY",
-		"IDS_ENTERVALUE",
-		"IDS_GENERICLISTDLG_TT1",
-		"IDS_GENERICLISTDLG_TT2",
-		"IDS_GENERICLISTDLG_TT3",
-		"IDS_GENERICLISTDLG_TT4",
-		"IDS_GETDETAILS_GROUP_NAME_F",
-		"IDS_GETDETAILS_GROUP_SIZE_F",
-		"IDS_GFX_ALLOCATE_FAILED",
-		"IDS_HAVE_PURCHASE_SALES",
-		"IDS_INTENSITY_SELECTED_LIGHT",
-		"IDS_LENGTH1",
-		"IDS_LIGHT",
-		"IDS_MAPPING_POLYGON",
-		"IDS_MECHENGINEERING",
-		"IDS_METRICCUSTOM",
-		"IDS_MULTILINE_TEXT",
-		"IDS_MULTIPLE_SURVEY_XREF_EXIT",
-		"IDS_OLE_CONTAINER",
-		"IDS_PENMAPDLG_NOCHANGE",
-		"IDS_POLYLINE",
-		"IDS_PROPDESC_DECIMALS",
-		"IDS_REACTIVE_TEXT",
-		"IDS_RENDERGUI_DIFFUSE",
-		"IDS_RENDER_ALTITUDE_LABEL",
-		"IDS_SURVEY",
-		"IDS_SURVEY_DIMENSION",
-		"IDS_TABLEGRID_CM_ALIGNLEFT",
-		"IDS_TRACK_NO_PATH_FOUND",
-		"IDS_USEDRIVERLIMITS",
-		"IDS_USERDEFINED",
-		"IDS_USERDEFINEDSIZE",
-		"IDS_VALUE",
-		};
-
-	std::string h_file = R"(D:\Src\Trunk_VS2013\CivilDesigner\CAD\Resource.h)";
-	std::string rc_file = R"(D:\Src\Trunk_VS2013\CivilDesigner\CAD\CAD.rc)";
-
-	std::vector<Query> queries;
-
-	for (const auto &p : problems)
-		{
-		Query q;
-		q.name = p;
-		queries.push_back(q);
-		}
-
-	UpdateAllQueries(queries, h_file, &Query::number);
-	UpdateAllQueries(queries, rc_file, &Query::literal);
-
-	size_t max1 = std::numeric_limits<size_t>::lowest();
-	size_t max2 = std::numeric_limits<size_t>::lowest();
-	size_t max3 = std::numeric_limits<size_t>::lowest();
-
-	for (const auto &q : queries)
-		{
-		if (q.name.length() > max1)
-			max1 = q.name.length();
-		if (q.number.length() > max2)
-			max2 = q.number.length();
-		if (q.literal.length() > max3)
-			max3 = q.literal.length();
-		}
-
-	max1++;
-	max2++;
-	max3++;
-
-	for (const auto &q : queries)
-		{
-		output
-				<< std::left
-				<< std::setw(max1) << q.name
-				<< std::setw(max2) << q.number
-				<< std::setw(max3) << q.literal
-				<< "\n";
-		}
-
-	return 0;
-}
-
-/// Search all .cpp files for a search term
-int my_main3(std::ostream &output)
-{
-	fs::path root = R"(D:\Src\Trunk_VS2013\CivilDesigner)";
-
-	size_t files = 0;
-
-	for (auto &itr : fs::recursive_directory_iterator(root))
-		{
-		fs::path path = itr.path();
-
-		if (path.extension() == ".cpp")
-			{
-			++files;
-
-			std::ifstream file(path);
-			std::string line;
-
-			while (std::getline(file, line))
-				{
-				if (line.find("\"IDS_") != std::string::npos)
-					{
-					output << path.string() << "\n";
-					}
-				}
-			}
-		}
-
-	output << std::to_string(files) << " .cpp files\n";
-	return 0;
-}
-
-int search_unused_string_resources(const fs::path &root, int mode, std::ostream &output)
-{
-	switch (mode)
-		{
-		case 1:
-			my_main1(root, output);
-			break;
-		case 2:
-			my_main2(output);
-			break;
-		case 3:
-			my_main3(output);
-			break;
-		default:
-			break;
-		}
+	my_main(root, output);
 
 	output << "Done\n";
 

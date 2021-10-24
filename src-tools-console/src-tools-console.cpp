@@ -57,7 +57,7 @@ int main(int argc, char* argv[])
 			search_duplicate_string_resources(rootPath, std::cout, format);
 			break;
 		case 3:
-			search_unused_string_resources(rootPath, 1, std::cout);
+			search_unused_string_resources(rootPath, std::cout);
 			break;
 		case 4:
 			search_cpp_files_missing_debug_new_macro(rootPath, std::cout);

@@ -184,7 +184,7 @@ void CsrctoolsmfcDlg::OnBnClickedUnusedstringsBtn()
 	std::stringstream ss;
 
 	BeginWaitCursor();
-	search_unused_string_resources(rootPath, 1, ss);
+	search_unused_string_resources(rootPath, ss);
 	EndWaitCursor();
 
 	CString output(ss.str().c_str());

@@ -247,7 +247,7 @@ int search_tooltips_exceeding_max_length(const fs::path &root, std::ostream &out
 			}
 
 		std::string heading = dir.filename().string();
-		std::string underline(heading.length(), '=');
+		std::string underline(heading.length(), '-');
 		output 
 			<< heading << "\n"
 			<< underline << "\n";

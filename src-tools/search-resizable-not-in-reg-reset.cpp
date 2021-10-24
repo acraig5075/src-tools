@@ -93,7 +93,7 @@ void iterate_resizable_dialogs(const fs::path& root, const std::unordered_map<st
 
 			while (std::getline(file, line))
 			{
-				if (!found && line.find("public CCADResizableDialog") != std::string::npos)
+				if (!found && (line.find("public CCADResizableDialog") != std::string::npos))
 				{
 					found = true;
 				}
