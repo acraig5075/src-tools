@@ -2,37 +2,127 @@
 
 namespace fs = std::filesystem;
 
+struct Missing
+{
+	fs::path m_dir;
+	unsigned int m_count = 0;
+};
+
+static std::vector<fs::path> get_directory_list(const fs::path& root)
+{
+	std::vector<fs::path> paths;
+
+	for (const auto& itr : fs::directory_iterator(root))
+		{
+		if (fs::is_directory(itr))
+			{
+			paths.push_back(itr.path());
+			}
+		}
+
+	return paths;
+}
+
+static void OutputReport(std::vector<Missing>& reports, std::ostream& output)
+{
+	std::sort(begin(reports), end(reports), [](const Missing& lhs, const Missing& rhs)
+		{
+		return lhs.m_count > rhs.m_count;
+		});
+
+	std::string heading("Report");
+	std::string underline(heading.length(), '-');
+	output
+		<< heading << "\n"
+		<< underline << "\n";
+
+	size_t col_width = 0;
+	for (const auto& r : reports)
+		{
+		if (r.m_count > 0)
+			{
+			if (r.m_dir.string().length() > col_width)
+				col_width = r.m_dir.string().length();
+			}
+		}
+
+	for (const auto& r : reports)
+		{
+		if (r.m_count > 0)
+			{
+			output
+				<< std::left
+				<< std::setw(col_width)
+				<< r.m_dir.string()
+				<< " "
+				<< r.m_count
+				<< "\n";
+			}
+		}
+
+	output << "\n";
+}
 
 /// Search all .cpp files for a search term
 int search_cpp_files_missing_debug_new_macro(const fs::path &root, std::ostream &output)
 {
+	std::vector<fs::path> directories = get_directory_list(root);
+
+	std::vector<Missing> summary;
+
 	size_t files = 0;
 
-	for (auto &itr : fs::recursive_directory_iterator(root))
+	for (const auto& dir : directories)
 		{
-		fs::path path = itr.path();
+		bool first = true;
+		Missing missing;
+		missing.m_dir = dir;
+		summary.push_back(missing);
 
-		if (path.extension() == ".cpp" && path.filename() != "stdafx.cpp")
+		for (const auto& file : fs::recursive_directory_iterator(dir))
 			{
-			std::ifstream file(path);
-			std::string line;
-			bool found = false;
+			fs::path path = file.path();
 
-			while (std::getline(file, line))
+			if (path.extension() == ".cpp" && path.filename() != "stdafx.cpp")
 				{
-				if (line.find("#define new DEBUG_NEW") != std::string::npos)
+				std::ifstream file(path);
+				std::string line;
+				bool found = false;
+
+				while (std::getline(file, line))
 					{
-					found = true;
-					break;
+					if (line.find("#define new DEBUG_NEW") != std::string::npos)
+						{
+						found = true;
+						break;
+						}
+					}
+
+				if (!found)
+					{
+					if (first)
+						{
+						std::string heading = dir.filename().string();
+						std::string underline(heading.length(), '-');
+						output
+							<< heading << "\n"
+							<< underline << "\n";
+						first = false;
+						}
+
+					output << path.string() << "\n";
+
+					summary.back().m_count++;
 					}
 				}
-
-			if (!found)
-				{
-				output << path.string() << "\n";
-				}
 			}
+
+		if (summary.back().m_count > 0)
+			output << "\n";
 		}
+
+	if (!summary.empty())
+		OutputReport(summary, output);
 
 	output << "Done\n";
 	return 0;
