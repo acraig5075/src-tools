@@ -10,6 +10,12 @@ struct IDSResource
 	std::string m_description;
 };
 
+struct LongTooltips
+{
+	fs::path m_dir;
+	size_t m_count = 0;
+};
+
 std::ostream &operator<<(std::ostream &out, const IDSResource &r)
 {
 	out << r.m_name << " - " << r.m_description;
@@ -181,9 +187,51 @@ void parse_resource_h(const fs::path& file, std::unordered_map<unsigned int, std
 }
 
 
+static void output_report(std::vector<LongTooltips>& reports, std::ostream& output)
+{
+	std::sort(begin(reports), end(reports), [](const LongTooltips& lhs, const LongTooltips& rhs)
+		{
+		return lhs.m_count > rhs.m_count;
+		});
+
+	std::string heading("Report");
+	std::string underline(heading.length(), '-');
+	output
+		<< heading << "\n"
+		<< underline << "\n";
+
+	size_t col_width = 0;
+	for (const auto& r : reports)
+		{
+		if (r.m_count > 0)
+			{
+			if (r.m_dir.string().length() > col_width)
+				col_width = r.m_dir.string().length();
+			}
+		}
+
+	for (const auto& r : reports)
+		{
+		if (r.m_count > 0)
+			{
+			output
+				<< std::left
+				<< std::setw(col_width)
+				<< r.m_dir.string()
+				<< " "
+				<< r.m_count
+				<< "\n";
+			}
+		}
+
+	output << "\n";
+}
+
 int search_tooltips_exceeding_max_length(const fs::path &root, std::ostream &output, size_t maximum)
 {
 	std::vector<fs::path> directories = get_directory_list(root);
+
+	std::vector<LongTooltips> summary;
 
 	for (const auto &dir : directories)
 		{
@@ -246,6 +294,14 @@ int search_tooltips_exceeding_max_length(const fs::path &root, std::ostream &out
 			r.m_description.insert(maximum, "|");
 			}
 
+		LongTooltips report;
+		report.m_dir = dir;
+		report.m_count = suspects.size();
+		summary.push_back(report);
+
+		if (summary.back().m_count == 0)
+			continue;
+
 		std::string heading = dir.filename().string();
 		std::string underline(heading.length(), '-');
 		output 
@@ -268,6 +324,8 @@ int search_tooltips_exceeding_max_length(const fs::path &root, std::ostream &out
 			}
 		output << "\n";
 		}
+
+	output_report(summary, output);
 
 	output << "Done\n";
 

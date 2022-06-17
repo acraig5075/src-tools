@@ -67,7 +67,7 @@ static std::vector<fs::path> get_file_list(const fs::path& root, const std::stri
 	return files;
 }
 
-fs::path get_reg_reset(const fs::path& root)
+fs::path find_reg_reset(const fs::path& root)
 {
 	for (const auto& itr : fs::recursive_directory_iterator(root))
 	{
@@ -109,6 +109,8 @@ void iterate_resizable_dialogs(const fs::path& root, const std::unordered_map<st
 						dlg.resourceID = itr->second;
 						dlg.resourceName = name;
 						dialogs.push_back(dlg);
+
+						found = false; // don't break because there may be another resizable dialog in this header
 					}
 				}
 			}
@@ -151,7 +153,7 @@ void map_dialog_resources(const fs::path& root, std::unordered_map<std::string, 
 
 void get_registered_dialogs(const fs::path& root, std::vector<std::string> &registered)
 {
-	auto path = get_reg_reset(root);
+	auto path = find_reg_reset(root);
 	if (!fs::is_regular_file(path))
 		return;
 
@@ -186,6 +188,7 @@ int search_resizable_not_in_reg_reset(const fs::path& root, std::ostream& output
 	std::sort(dialogs.begin(), dialogs.end(), SortByID);
 	std::sort(registered.begin(), registered.end());
 
+	// ignore the dialogs that do have the required registry entry
 	dialogs.erase(std::remove_if(dialogs.begin(), dialogs.end(), [&](const auto& dlg) 
 		{
 			return std::binary_search(registered.begin(), registered.end(), dlg.resourceID);
