@@ -233,6 +233,37 @@ std::vector<Report> find_duplicates(const std::vector<fs::path> &files)
 	return reports;
 }
 
+void output_report(const std::vector<Report> &reports, std::ostream &output)
+{
+	size_t col_width = 0;
+	for (const auto& r : reports)
+		{
+		if (r.m_filename.string().length() > col_width)
+			col_width = r.m_filename.string().length();
+		}
+
+	std::string heading = "Report";
+	std::string underline(heading.length(), '-');
+	output
+		<< heading << "\n"
+		<< underline << "\n";
+
+	for (const auto& r : reports)
+		{
+		if (r.count() > 0)
+			{
+			output
+				<< std::left
+				<< std::setw(col_width)
+				<< r.m_filename.string()
+				<< " "
+				<< r.count()
+				<< "\n";
+			}
+		}
+
+	std::cout << "\n";
+}
 
 int search_duplicate_string_resources(const fs::path &input, std::ostream &output, int format)
 {
@@ -268,42 +299,14 @@ int search_duplicate_string_resources(const fs::path &input, std::ostream &outpu
 		return lhs.count() > rhs.count();
 		});
 
-	size_t col_width = 0;
-	for (const auto &r : reports)
-		{
-		if (r.m_filename.string().length() > col_width)
-			col_width = r.m_filename.string().length();
-		}
-
-	std::string heading = "Report";
-	std::string underline(heading.length(), '-');
-	output
-			<< heading << "\n"
-			<< underline << "\n";
-
-	for (const auto &r : reports)
-		{
-		if (r.count() > 0)
-			{
-			output
-					<< std::left
-					<< std::setw(col_width)
-					<< r.m_filename.string()
-					<< " "
-					<< r.count()
-					<< "\n";
-			}
-		}
-	std::cout << "\n\n";
-
 	for (const auto &r : reports)
 		{
 		std::string text = make_report_text(r.m_duplicates, order);
 
 		if (!text.empty())
 			{
-			heading = r.m_filename.stem().string();
-			underline = std::string(heading.length(), '-');
+			std::string heading = r.m_filename.stem().string();
+			std::string underline(heading.length(), '-');
 			output
 					<< heading << "\n"
 					<< underline << "\n"
@@ -311,6 +314,10 @@ int search_duplicate_string_resources(const fs::path &input, std::ostream &outpu
 					<< "\n";
 			}
 		}
+	
+	output << "\n";
+
+	output_report(reports, output);
 
 	output << "Done\n";
 

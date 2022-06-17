@@ -374,3 +374,4 @@ MigrationBackup/
 Debug/
 Release/
 x64/
+/CppProperties.json
