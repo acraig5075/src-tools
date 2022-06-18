@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "filesystem-utils.h"
 
 namespace fs = std::filesystem;
 
@@ -8,20 +9,6 @@ struct Missing
 	unsigned int m_count = 0;
 };
 
-static std::vector<fs::path> get_directory_list(const fs::path& root)
-{
-	std::vector<fs::path> paths;
-
-	for (const auto& itr : fs::directory_iterator(root))
-		{
-		if (fs::is_directory(itr))
-			{
-			paths.push_back(itr.path());
-			}
-		}
-
-	return paths;
-}
 
 static void OutputReport(std::vector<Missing>& reports, std::ostream& output)
 {

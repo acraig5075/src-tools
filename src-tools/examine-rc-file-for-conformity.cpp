@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "string-utils.h"
+#include "filesystem-utils.h"
 
 namespace fs = std::filesystem;
 
@@ -147,23 +148,6 @@ struct control_coord
 std::unordered_map<int, unsigned int> inputbox_heights;
 std::unordered_map<int, unsigned int> okCancel_gaps;
 std::unordered_map<int, unsigned int> label_colons;
-
-
-// List of paths beneath a root folder and matching a given extension
-static std::vector<fs::path> get_file_list(const fs::path &root, const std::string &suffix)
-{
-	std::vector<fs::path> files;
-
-	for (const auto &itr : fs::recursive_directory_iterator(root))
-		{
-		if (ends_with(itr.path().string(), suffix))
-			{
-			files.push_back(itr.path());
-			}
-		}
-
-	return files;
-}
 
 
 // Build up dialog definitions from an .rc file

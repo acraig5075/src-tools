@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "string-utils.h"
+#include "filesystem-utils.h"
 
 namespace fs = std::filesystem;
 
@@ -15,21 +16,6 @@ bool is_valid_command_name(const std::string &value)
 	return true;
 }
 
-// This will return a list of files ending with the specified suffix
-static std::vector<fs::path> get_file_list(const fs::path &root, const std::string &suffix)
-{
-	std::vector<fs::path> files;
-
-	for (const auto &itr : fs::recursive_directory_iterator(root))
-		{
-		if (ends_with(itr.path().string(), suffix))
-			{
-			files.push_back(itr.path());
-			}
-		}
-
-	return files;
-}
 
 void process_line(const std::string &line, std::vector<std::string> &commands)
 {
@@ -147,22 +133,9 @@ std::vector<std::string> get_api_commands(const fs::path &path)
 	return commands;
 }
 
-fs::path images_and_commands_path(const fs::path &root)
-{
-	for (const auto &itr : fs::recursive_directory_iterator(root))
-		{
-		if (itr.is_regular_file() && itr.path().filename().string() == "ImagesAndCommands.h")
-			{
-			return itr.path();
-			}
-		}
-
-	return {};
-}
-
 int search_commands_not_in_imageandcommands(const fs::path &rootPath, std::ostream &output)
 {
-	fs::path imagesAndCommands = images_and_commands_path(rootPath);
+	fs::path imagesAndCommands = search_for_filename(rootPath, "ImagesAndCommands.h");
 	if (imagesAndCommands.empty())
 		return 1;
 

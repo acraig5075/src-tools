@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "string-utils.h"
+#include "filesystem-utils.h"
 
 namespace fs = std::filesystem;
 
@@ -33,22 +34,6 @@ std::ostream &operator<<(std::ostream &out, const Resource &r)
 	return out;
 }
 
-
-// List of paths beneath a root folder and matching a given extension
-static std::vector<fs::path> get_file_list(const fs::path &root, const std::string &suffix)
-{
-	std::vector<fs::path> files;
-
-	for (const auto &itr : fs::recursive_directory_iterator(root))
-		{
-		if (ends_with(itr.path().string(), suffix))
-			{
-			files.push_back(itr.path());
-			}
-		}
-
-	return files;
-}
 
 std::vector<Resource> ParseStringTable(size_t fileID, const fs::path &path)
 {

@@ -2,6 +2,7 @@
 //
 
 #include "pch.h"
+#include "filesystem-utils.h"
 
 namespace fs = std::filesystem;
 
@@ -17,7 +18,7 @@ struct Unused
 
 
 
-static std::vector<PathResourcePair> get_file_list(const fs::path &root, const std::string &extension)
+static std::vector<PathResourcePair> get_file_list_custom(const fs::path &root, const std::string &extension)
 {
 	std::vector<PathResourcePair> files;
 
@@ -63,7 +64,7 @@ void find_resource_strings(const fs::path &filename, std::vector<std::string> &r
 
 std::vector<std::string> get_resource_list(const fs::path &root, const std::string &extension)
 {
-	auto files = get_file_list(root, extension);
+	auto files = get_file_list_custom(root, extension);
 
 	std::for_each(begin(files), end(files), [](PathResourcePair & p)
 		{
@@ -82,36 +83,6 @@ std::vector<std::string> get_resource_list(const fs::path &root, const std::stri
 	return resources;
 }
 
-
-static std::vector<fs::path> get_directory_list(const fs::path &root)
-{
-	std::vector<fs::path> paths;
-
-	for (const auto &itr : fs::directory_iterator(root))
-		{
-		if (fs::is_directory(itr))
-			{
-			paths.push_back(itr.path());
-			}
-		}
-
-	return paths;
-}
-
-
-void filter_directory_list(std::vector<fs::path> &directories, const std::vector<std::string> &filter_directory_list)
-{
-	for (auto name : filter_directory_list)
-		{
-		auto itr = std::find_if(directories.begin(), directories.end(), [name](const fs::path & dir)
-			{
-			return dir.string().find(name, 0) != std::string::npos;
-			});
-
-		if (itr != directories.end())
-			directories.erase(itr);
-		}
-}
 
 
 void OutputReport(std::vector<Unused>& reports, std::ostream& output)

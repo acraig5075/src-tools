@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "string-utils.h"
+#include "filesystem-utils.h"
 
 namespace fs = std::filesystem;
 
@@ -49,35 +50,6 @@ std::string ExtractBCGP(const std::string& line)
 	return line.substr(begin, end - begin);
 }
 
-// This will return a list of files ending with the specified suffix
-static std::vector<fs::path> get_file_list(const fs::path& root, const std::string& suffix)
-{
-	std::vector<fs::path> files;
-
-	auto suffix_ = lowercase(suffix);
-
-	for (const auto& itr : fs::recursive_directory_iterator(root))
-	{
-		if (ends_with(lowercase(itr.path().string()), suffix_))
-		{
-			files.push_back(itr.path());
-		}
-	}
-
-	return files;
-}
-
-fs::path find_reg_reset(const fs::path& root)
-{
-	for (const auto& itr : fs::recursive_directory_iterator(root))
-	{
-		if (itr.path().filename() == "RegResetDlg.cpp")
-			return itr.path();
-	}
-
-	return {};
-}
-
 
 void iterate_resizable_dialogs(const fs::path& root, const std::unordered_map<std::string, std::string> &ids, std::vector<ResizableDialog> &dialogs)
 {
@@ -120,7 +92,7 @@ void iterate_resizable_dialogs(const fs::path& root, const std::unordered_map<st
 
 void map_dialog_resources(const fs::path& root, std::unordered_map<std::string, std::string> &ids)
 {
-	auto resources = get_file_list(root, "resource.h");
+	auto resources = get_file_list_case_sensitive(root, "resource.h");
 
 	for (const auto filename : resources)
 	{
@@ -153,8 +125,8 @@ void map_dialog_resources(const fs::path& root, std::unordered_map<std::string, 
 
 void get_registered_dialogs(const fs::path& root, std::vector<std::string> &registered)
 {
-	auto path = find_reg_reset(root);
-	if (!fs::is_regular_file(path))
+	auto path = search_for_filename(root, "RegResetDlg.cpp");
+	if (path.empty())
 		return;
 
 	std::ifstream file(path.string());

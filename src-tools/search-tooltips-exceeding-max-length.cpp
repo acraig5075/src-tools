@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "string-utils.h"
+#include "filesystem-utils.h"
 #include <stack>
 
 namespace fs = std::filesystem;
@@ -80,25 +81,6 @@ std::vector<IDSResource> parse_string_table(const fs::path &path)
 		}
 
 	return ids;
-}
-
-
-static std::vector<fs::path> get_directory_list(const fs::path &root)
-{
-	std::vector<fs::path> paths;
-
-	if (fs::is_directory(root))
-		paths.push_back(root);
-
-	for (const auto &itr : fs::directory_iterator(root))
-		{
-		if (fs::is_directory(itr))
-			{
-			paths.push_back(itr.path());
-			}
-		}
-
-	return paths;
 }
 
 

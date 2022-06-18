@@ -1,7 +1,5 @@
 #pragma once
 
-#include "pch.h"
-
 // String utilities
 std::string trim(const std::string& value, const std::string& chars);
 bool starts_with(const std::string& value, const std::string& test);

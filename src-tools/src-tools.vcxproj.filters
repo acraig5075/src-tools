@@ -27,6 +27,9 @@
     <ClInclude Include="string-utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="filesystem-utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src-tools.cpp">
@@ -57,6 +60,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="search-resizable-not-in-reg-reset.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem-utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
