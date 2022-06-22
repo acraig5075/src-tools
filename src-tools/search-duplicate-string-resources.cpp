@@ -16,10 +16,9 @@ struct Duplicate
 	std::vector<std::string> m_names;
 };
 
-struct Report
+struct ReportEx
 {
 	fs::path m_filename;
-	std::vector<Resource> m_resources;
 	std::vector<Duplicate> m_duplicates;
 
 	size_t count() const
@@ -161,9 +160,9 @@ void sort_in_replacement_order(std::vector<std::string>& names)
 	std::sort(part, names.end());
 }
 
-std::vector<Report> find_duplicates(const std::vector<fs::path> &files)
+std::vector<ReportEx> find_duplicates(const std::vector<fs::path> &files)
 {
-	std::vector<Report> reports;
+	std::vector<ReportEx> reports;
 
 	for (size_t i = 0; i < files.size(); ++i)
 		{
@@ -208,9 +207,8 @@ std::vector<Report> find_duplicates(const std::vector<fs::path> &files)
 			itr = next;
 			}
 
-		Report rep;
+		ReportEx rep;
 		rep.m_filename = files[i].string();
-		rep.m_resources = ids;
 		rep.m_duplicates = duplicates;
 		reports.push_back(rep);
 		}
@@ -218,7 +216,7 @@ std::vector<Report> find_duplicates(const std::vector<fs::path> &files)
 	return reports;
 }
 
-void output_report(const std::vector<Report> &reports, std::ostream &output)
+void output_report(const std::vector<ReportEx> &reports, std::ostream &output)
 {
 	size_t col_width = 0;
 	for (const auto& r : reports)
@@ -277,9 +275,9 @@ int search_duplicate_string_resources(const fs::path &input, std::ostream &outpu
 		return 1;
 		}
 
-	std::vector<Report> reports = find_duplicates(files);
+	std::vector<ReportEx> reports = find_duplicates(files);
 
-	std::sort(reports.begin(), reports.end(), [](const Report & lhs, const Report & rhs)
+	std::sort(reports.begin(), reports.end(), [](const ReportEx& lhs, const ReportEx& rhs)
 		{
 		return lhs.count() > rhs.count();
 		});

@@ -30,6 +30,9 @@
     <ClInclude Include="filesystem-utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="reports.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src-tools.cpp">
@@ -63,6 +66,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="filesystem-utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="reports.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

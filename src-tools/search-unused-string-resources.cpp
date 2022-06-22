@@ -3,19 +3,11 @@
 
 #include "pch.h"
 #include "filesystem-utils.h"
+#include "reports.h"
 
 namespace fs = std::filesystem;
 
 using PathResourcePair = std::pair<fs::path, std::vector<std::string>>;
-
-
-
-struct Unused
-{
-	fs::path m_filename;
-	size_t m_count = 0;
-};
-
 
 
 static std::vector<PathResourcePair> get_file_list_custom(const fs::path &root, const std::string &extension)
@@ -84,43 +76,10 @@ std::vector<std::string> get_resource_list(const fs::path &root, const std::stri
 }
 
 
-
-void OutputReport(std::vector<Unused>& reports, std::ostream& output)
-{
-	std::sort(begin(reports), end(reports), [](const Unused& lhs, const Unused& rhs)
-		{
-			return lhs.m_count > rhs.m_count;
-		});
-
-	std::string heading("Report");
-	std::string underline(heading.length(), '-');
-	output
-		<< heading << "\n"
-		<< underline << "\n";
-
-	size_t col_width = 0;
-	for (const auto& r : reports)
-	{
-		if (r.m_filename.string().length() > col_width)
-			col_width = r.m_filename.string().length();
-	}
-
-	for (const auto& r : reports)
-	{
-		output
-			<< std::left
-			<< std::setw(col_width)
-			<< r.m_filename.string()
-			<< " "
-			<< r.m_count
-			<< "\n";
-	}
-}
-
 /// Lookup resource ID names defined in .rc files but not referenced in any .cpp files
 int my_main(const fs::path &root, std::ostream &output)
 {
-	std::vector<Unused> reports;
+	std::vector<Report> reports;
 
 	std::vector<fs::path> directories = get_directory_list(root);
 
@@ -142,8 +101,8 @@ int my_main(const fs::path &root, std::ostream &output)
 		if (difference.empty())
 			continue;
 
-		Unused r;
-		r.m_filename = dir;
+		Report r;
+		r.m_dir = dir;
 		r.m_count = difference.size();
 		reports.push_back(r);
 
@@ -157,7 +116,7 @@ int my_main(const fs::path &root, std::ostream &output)
 		output << "\n";
 		}
 
-	OutputReport(reports, output);
+	output_report(reports, output);
 
 	return 0;
 }

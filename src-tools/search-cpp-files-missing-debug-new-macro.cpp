@@ -1,68 +1,23 @@
 #include "pch.h"
 #include "filesystem-utils.h"
+#include "reports.h"
 
 namespace fs = std::filesystem;
 
-struct Missing
-{
-	fs::path m_dir;
-	unsigned int m_count = 0;
-};
-
-
-static void OutputReport(std::vector<Missing>& reports, std::ostream& output)
-{
-	std::sort(begin(reports), end(reports), [](const Missing& lhs, const Missing& rhs)
-		{
-		return lhs.m_count > rhs.m_count;
-		});
-
-	std::string heading("Report");
-	std::string underline(heading.length(), '-');
-	output
-		<< heading << "\n"
-		<< underline << "\n";
-
-	size_t col_width = 0;
-	for (const auto& r : reports)
-		{
-		if (r.m_count > 0)
-			{
-			if (r.m_dir.string().length() > col_width)
-				col_width = r.m_dir.string().length();
-			}
-		}
-
-	for (const auto& r : reports)
-		{
-		if (r.m_count > 0)
-			{
-			output
-				<< std::left
-				<< std::setw(col_width)
-				<< r.m_dir.string()
-				<< " "
-				<< r.m_count
-				<< "\n";
-			}
-		}
-
-	output << "\n";
-}
 
 /// Search all .cpp files for a search term
 int search_cpp_files_missing_debug_new_macro(const fs::path &root, std::ostream &output)
 {
 	std::vector<fs::path> directories = get_directory_list(root);
 
-	std::vector<Missing> summary;
+	std::vector<Report> summary;
 
 	size_t files = 0;
 
 	for (const auto& dir : directories)
 		{
 		bool first = true;
-		Missing missing;
+		Report missing;
 		missing.m_dir = dir;
 		summary.push_back(missing);
 
@@ -109,7 +64,7 @@ int search_cpp_files_missing_debug_new_macro(const fs::path &root, std::ostream 
 		}
 
 	if (!summary.empty())
-		OutputReport(summary, output);
+		output_report(summary, output);
 
 	output << "Done\n";
 	return 0;
