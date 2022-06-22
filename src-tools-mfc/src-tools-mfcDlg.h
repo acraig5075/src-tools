@@ -1,18 +1,6 @@
-
-// src-tools-mfcDlg.h : header file
-//
-
 #pragma once
 
-struct DuplicateStringsOptions
-	{
-	int m_outputFormat = 0;
-	};
-
-struct RcFileRulesOptions
-	{
-	int m_outputFormat = 0;
-	};
+#include "..\src-tools\options.h"
 
 // CsrctoolsmfcDlg dialog
 class CsrctoolsmfcDlg : public CDialogEx

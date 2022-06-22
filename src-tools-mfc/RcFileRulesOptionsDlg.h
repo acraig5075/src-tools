@@ -8,7 +8,7 @@ class CRcFileRulesOptionsDlg : public CDialogEx
 	DECLARE_DYNAMIC(CRcFileRulesOptionsDlg)
 
 public:
-	CRcFileRulesOptionsDlg(int& outputFormatCWnd, CWnd *pParent = nullptr);   // standard constructor
+	CRcFileRulesOptionsDlg(RcFileRulesOptions &options, CWnd *pParent = nullptr);   // standard constructor
 	virtual ~CRcFileRulesOptionsDlg();
 
 // Dialog Data
@@ -22,7 +22,7 @@ protected:
 	virtual void OnOK();
 
 private:
-	int& m_outputFormat;
+	RcFileRulesOptions& m_options;
 
 	DECLARE_MESSAGE_MAP()
 	};

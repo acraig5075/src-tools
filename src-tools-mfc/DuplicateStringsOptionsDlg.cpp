@@ -3,6 +3,7 @@
 
 #include "pch.h"
 #include "src-tools-mfc.h"
+#include "..\src-tools\options.h"
 #include "DuplicateStringsOptionsDlg.h"
 #include "afxdialogex.h"
 
@@ -11,14 +12,14 @@
 
 IMPLEMENT_DYNAMIC(CDuplicateStringsOptionsDlg, CDialog)
 
-CDuplicateStringsOptionsDlg::CDuplicateStringsOptionsDlg(int& outputFormat, CWnd* pParent /*=nullptr*/)
+CDuplicateStringsOptionsDlg::CDuplicateStringsOptionsDlg(DuplicateStringsOptions& options, CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_DUPLICATESTRINGS_OPTSDLG, pParent)
-	, m_outputFormat(outputFormat)
+	, m_options(options)
 {
-	if (m_outputFormat < 0)
-		m_outputFormat = 0;
-	if (m_outputFormat > 1)
-		m_outputFormat = 1;
+	if (options.m_outputFormat < 0)
+		options.m_outputFormat = 0;
+	if (options.m_outputFormat > 1)
+		options.m_outputFormat = 1;
 }
 
 CDuplicateStringsOptionsDlg::~CDuplicateStringsOptionsDlg()
@@ -42,7 +43,7 @@ BOOL CDuplicateStringsOptionsDlg::OnInitDialog()
 	{
 	CDialog::OnInitDialog();
 
-	CheckRadioButton(IDC_FORMATRADIO1, IDC_FORMATRADIO2, IDC_FORMATRADIO1 + m_outputFormat);
+	CheckRadioButton(IDC_FORMATRADIO1, IDC_FORMATRADIO2, IDC_FORMATRADIO1 + m_options.m_outputFormat);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 								// EXCEPTION: OCX Property Pages should return FALSE
@@ -51,7 +52,7 @@ BOOL CDuplicateStringsOptionsDlg::OnInitDialog()
 
 void CDuplicateStringsOptionsDlg::OnOK()
 	{
-	m_outputFormat = GetCheckedRadioButton(IDC_FORMATRADIO1, IDC_FORMATRADIO2) - IDC_FORMATRADIO1;
+	m_options.m_outputFormat = GetCheckedRadioButton(IDC_FORMATRADIO1, IDC_FORMATRADIO2) - IDC_FORMATRADIO1;
 
 	CDialog::OnOK();
 	}

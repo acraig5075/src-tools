@@ -157,6 +157,7 @@
   <ItemGroup>
     <ClInclude Include="filesystem-utils.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="options.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="reports.h" />
     <ClInclude Include="src-tools.h" />

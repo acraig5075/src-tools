@@ -8,7 +8,7 @@ class CDuplicateStringsOptionsDlg : public CDialog
 	DECLARE_DYNAMIC(CDuplicateStringsOptionsDlg)
 
 public:
-	CDuplicateStringsOptionsDlg(int &outputFormat, CWnd* pParent = nullptr);   // standard constructor
+	CDuplicateStringsOptionsDlg(DuplicateStringsOptions &options, CWnd* pParent = nullptr);   // standard constructor
 	virtual ~CDuplicateStringsOptionsDlg();
 
 // Dialog Data
@@ -22,7 +22,7 @@ protected:
 	virtual void OnOK();
 
 private:
-	int &m_outputFormat;
+	DuplicateStringsOptions& m_options;
 
 	DECLARE_MESSAGE_MAP()
 };

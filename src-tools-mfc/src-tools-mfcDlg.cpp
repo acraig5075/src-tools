@@ -322,7 +322,7 @@ void CsrctoolsmfcDlg::OnBnClickedImagesandcommandsOpts()
 
 void CsrctoolsmfcDlg::OnBnClickedDuplicatestringsOpts()
 	{
-	CDuplicateStringsOptionsDlg dlg(m_duplicateStringsOpts.m_outputFormat, this);
+	CDuplicateStringsOptionsDlg dlg(m_duplicateStringsOpts, this);
 	dlg.DoModal();
 	}
 
@@ -341,7 +341,7 @@ void CsrctoolsmfcDlg::OnBnClickedMissingmacroOpts()
 
 void CsrctoolsmfcDlg::OnBnClickedConformingrcfileOpts()
 	{
-	CRcFileRulesOptionsDlg dlg(m_rcFileRulesOpts.m_outputFormat, this);
+	CRcFileRulesOptionsDlg dlg(m_rcFileRulesOpts, this);
 	dlg.DoModal();
 	}
 
