@@ -187,20 +187,24 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="DuplicateStringsOptionsDlg.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="RcFileRulesOptionsDlg.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="src-tools-mfc.h" />
     <ClInclude Include="src-tools-mfcDlg.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DuplicateStringsOptionsDlg.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="RcFileRulesOptionsDlg.cpp" />
     <ClCompile Include="src-tools-mfc.cpp" />
     <ClCompile Include="src-tools-mfcDlg.cpp" />
   </ItemGroup>

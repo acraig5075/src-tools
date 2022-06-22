@@ -8,6 +8,8 @@
 #include "src-tools-mfcDlg.h"
 #include "afxdialogex.h"
 #include "..\src-tools\src-tools.h"
+#include "DuplicateStringsOptionsDlg.h"
+#include "RcFileRulesOptionsDlg.h"
 
 
 #ifdef _DEBUG
@@ -50,6 +52,13 @@ BEGIN_MESSAGE_MAP(CsrctoolsmfcDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_CONFORMINGRCFILE_BTN, &CsrctoolsmfcDlg::OnBnClickedConformingrcfileBtn)
 	ON_BN_CLICKED(IDC_TOOLTIPSMAX_BTN, &CsrctoolsmfcDlg::OnBnClickedTooltipsmaxBtn)
 	ON_BN_CLICKED(IDC_REGRESETDLG_BTN, &CsrctoolsmfcDlg::OnBnClickedRegresetdlgBtn)
+	ON_BN_CLICKED(IDC_IMAGESANDCOMMANDS_OPTS, &CsrctoolsmfcDlg::OnBnClickedImagesandcommandsOpts)
+	ON_BN_CLICKED(IDC_DUPLICATESTRINGS_OPTS, &CsrctoolsmfcDlg::OnBnClickedDuplicatestringsOpts)
+	ON_BN_CLICKED(IDC_UNUSEDSTRINGS_OPTS, &CsrctoolsmfcDlg::OnBnClickedUnusedstringsOpts)
+	ON_BN_CLICKED(IDC_MISSINGMACRO_OPTS, &CsrctoolsmfcDlg::OnBnClickedMissingmacroOpts)
+	ON_BN_CLICKED(IDC_CONFORMINGRCFILE_OPTS, &CsrctoolsmfcDlg::OnBnClickedConformingrcfileOpts)
+	ON_BN_CLICKED(IDC_TOOLTIPSMAX_OPTS, &CsrctoolsmfcDlg::OnBnClickedTooltipsmaxOpts)
+	ON_BN_CLICKED(IDC_REGRESETDLG_OPTS, &CsrctoolsmfcDlg::OnBnClickedRegresetdlgOpts)
 END_MESSAGE_MAP()
 
 
@@ -156,7 +165,7 @@ void CsrctoolsmfcDlg::OnBnClickedDuplicatestringsBtn()
 	std::stringstream ss;
 
 	BeginWaitCursor();
-	search_duplicate_string_resources(rootPath, ss, 1);
+	search_duplicate_string_resources(rootPath, ss, m_duplicateStringsOpts.m_outputFormat);
 	EndWaitCursor();
 
 	CString output(ss.str().c_str());
@@ -240,7 +249,7 @@ void CsrctoolsmfcDlg::OnBnClickedConformingrcfileBtn()
 	std::stringstream ss;
 
 	BeginWaitCursor();
-	examine_rc_file_for_conformity(rootPath, ss, 0);
+	examine_rc_file_for_conformity(rootPath, ss, m_rcFileRulesOpts.m_outputFormat);
 	EndWaitCursor();
 
 	CString output(ss.str().c_str());
@@ -303,3 +312,47 @@ void CsrctoolsmfcDlg::OnBnClickedRegresetdlgBtn()
 	output.Replace(_T("\n"), _T("\r\n"));
 	m_outputEdit.SetWindowTextW(output);
 }
+
+
+void CsrctoolsmfcDlg::OnBnClickedImagesandcommandsOpts()
+	{
+		MessageBox(_T("Not yet implemented"), _T("Info"), MB_OK | MB_ICONINFORMATION);
+	}
+
+
+void CsrctoolsmfcDlg::OnBnClickedDuplicatestringsOpts()
+	{
+	CDuplicateStringsOptionsDlg dlg(m_duplicateStringsOpts.m_outputFormat, this);
+	dlg.DoModal();
+	}
+
+
+void CsrctoolsmfcDlg::OnBnClickedUnusedstringsOpts()
+	{
+	MessageBox(_T("Not yet implemented"), _T("Info"), MB_OK | MB_ICONINFORMATION);
+	}
+
+
+void CsrctoolsmfcDlg::OnBnClickedMissingmacroOpts()
+	{
+	MessageBox(_T("Not yet implemented"), _T("Info"), MB_OK | MB_ICONINFORMATION);
+	}
+
+
+void CsrctoolsmfcDlg::OnBnClickedConformingrcfileOpts()
+	{
+	CRcFileRulesOptionsDlg dlg(m_rcFileRulesOpts.m_outputFormat, this);
+	dlg.DoModal();
+	}
+
+
+void CsrctoolsmfcDlg::OnBnClickedTooltipsmaxOpts()
+	{
+	MessageBox(_T("Not yet implemented"), _T("Info"), MB_OK | MB_ICONINFORMATION);
+	}
+
+
+void CsrctoolsmfcDlg::OnBnClickedRegresetdlgOpts()
+	{
+	MessageBox(_T("Not yet implemented"), _T("Info"), MB_OK | MB_ICONINFORMATION);
+	}

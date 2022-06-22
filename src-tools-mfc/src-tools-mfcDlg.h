@@ -4,6 +4,15 @@
 
 #pragma once
 
+struct DuplicateStringsOptions
+	{
+	int m_outputFormat = 0;
+	};
+
+struct RcFileRulesOptions
+	{
+	int m_outputFormat = 0;
+	};
 
 // CsrctoolsmfcDlg dialog
 class CsrctoolsmfcDlg : public CDialogEx
@@ -36,14 +45,22 @@ protected:
 	afx_msg void OnBnClickedUnusedstringsBtn();
 	afx_msg void OnBnClickedMissingmacroBtn();
 	afx_msg void OnBnClickedConformingrcfileBtn();
+	afx_msg void OnBnClickedTooltipsmaxBtn();
+	afx_msg void OnBnClickedRegresetdlgBtn();
+	afx_msg void OnBnClickedImagesandcommandsOpts();
+	afx_msg void OnBnClickedDuplicatestringsOpts();
+	afx_msg void OnBnClickedUnusedstringsOpts();
+	afx_msg void OnBnClickedMissingmacroOpts();
+	afx_msg void OnBnClickedConformingrcfileOpts();
+	afx_msg void OnBnClickedTooltipsmaxOpts();
+	afx_msg void OnBnClickedRegresetdlgOpts();
 
 private:
 	CEdit m_outputEdit;
 	CMFCEditBrowseCtrl m_editBrowseCtrl;
 	CFont* m_pFont = nullptr;
+	DuplicateStringsOptions m_duplicateStringsOpts;
+	RcFileRulesOptions m_rcFileRulesOpts;
 
 	DECLARE_MESSAGE_MAP()
-public:
-	afx_msg void OnBnClickedTooltipsmaxBtn();
-	afx_msg void OnBnClickedRegresetdlgBtn();
-};
+	};
