@@ -48,28 +48,39 @@ int main(int argc, char* argv[])
 	else
 		format = 0;
 
+	ImagesAndCommandsOptions imagesAndCommandsOpts;
+	DuplicateStringsOptions duplicateStringsOpts;
+	UnusedStringsOptions unusedStringsOpts;
+	MissingMacroOptions missingMacroOpts;
+	RcFileRulesOptions rcFileRulesOpts;
+	TooltipLengthOptions tooltipLengthOpts;
+	RegResetOptions regResetOpts;
+
+	duplicateStringsOpts.m_outputFormat = format;
+	rcFileRulesOpts.m_outputFormat = format;
+
 	switch (tool)
 		{
 		case 1:
-			search_commands_not_in_imageandcommands(rootPath, std::cout);
+			search_commands_not_in_imageandcommands(rootPath, std::cout, imagesAndCommandsOpts);
 			break;
 		case 2:
-			search_duplicate_string_resources(rootPath, std::cout, format);
+			search_duplicate_string_resources(rootPath, std::cout, duplicateStringsOpts);
 			break;
 		case 3:
-			search_unused_string_resources(rootPath, std::cout);
+			search_unused_string_resources(rootPath, std::cout, unusedStringsOpts);
 			break;
 		case 4:
-			search_cpp_files_missing_debug_new_macro(rootPath, std::cout);
+			search_cpp_files_missing_debug_new_macro(rootPath, std::cout, missingMacroOpts);
 			break;
 		case 5:
-			examine_rc_file_for_conformity(rootPath, std::cout, format);
+			examine_rc_file_for_conformity(rootPath, std::cout, rcFileRulesOpts);
 			break;
 		case 6:
-			search_tooltips_exceeding_max_length(rootPath, std::cout, 80);
+			search_tooltips_exceeding_max_length(rootPath, std::cout, tooltipLengthOpts);
 			break;
 		case 7:
-			search_resizable_not_in_reg_reset(rootPath, std::cout);
+			search_resizable_not_in_reg_reset(rootPath, std::cout, regResetOpts);
 			break;
 		default:
 			usage();

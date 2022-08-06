@@ -2,6 +2,7 @@
 #include "string-utils.h"
 #include "filesystem-utils.h"
 #include "reports.h"
+#include "options.h"
 #include <stack>
 
 namespace fs = std::filesystem;
@@ -164,20 +165,20 @@ void parse_resource_h(const fs::path& file, std::unordered_map<unsigned int, std
 }
 
 
-int search_tooltips_exceeding_max_length(const fs::path &root, std::ostream &output, size_t maximum)
+int search_tooltips_exceeding_max_length(const fs::path &root, std::ostream &output, TooltipLengthOptions &options)
 {
 	std::vector<fs::path> directories = get_directory_list(root);
 
 	std::vector<Report> summary;
 
-	for (const auto &dir : directories)
+	for (const auto& dir : directories)
 		{
 		std::vector<IDSResource> rcStrings; // resource strings (name and descriptions) in the .rc file
 		std::vector<IDSResource> cppStrings; // resource strings (name only) used by tooltips in the .cpp files
 		std::vector<unsigned int> cppValues; // resource string numbers used by tooltips in the .cpp files
 		std::unordered_map<unsigned int, std::string> valueMap; // map of resource.h number to resource name
 
-		for (const auto &file : fs::directory_iterator(dir))
+		for (const auto& file : fs::directory_iterator(dir))
 			{
 			if (fs::is_regular_file(file))
 				{
@@ -197,7 +198,7 @@ int search_tooltips_exceeding_max_length(const fs::path &root, std::ostream &out
 			}
 
 		// Include resource strings that are referenced by resource.h numbers rather than defines. (e.g. as with Sewer & Storm)
-		for (auto v : cppValues) 
+		for (auto v : cppValues)
 			{
 			auto itr = valueMap.find(v);
 			if (itr != valueMap.end())
@@ -215,9 +216,9 @@ int search_tooltips_exceeding_max_length(const fs::path &root, std::ostream &out
 		std::sort(cppStrings.begin(), cppStrings.end());
 
 		// Remove resource strings that are of permissable length. We don't care about them.
-		rcStrings.erase(std::remove_if(rcStrings.begin(), rcStrings.end(), [&](const IDSResource & r)
+		rcStrings.erase(std::remove_if(rcStrings.begin(), rcStrings.end(), [&](const IDSResource& r)
 			{
-			return r.m_description.length() <= maximum;
+			return r.m_description.length() <= options.m_maximum;
 			}), rcStrings.end());
 
 		cppStrings.erase(std::unique(cppStrings.begin(), cppStrings.end()), cppStrings.end());
@@ -228,7 +229,7 @@ int search_tooltips_exceeding_max_length(const fs::path &root, std::ostream &out
 
 		for (auto& r : suspects)
 			{
-			r.m_description.insert(maximum, "|");
+			r.m_description.insert(options.m_maximum, "|");
 			}
 
 		Report report;
@@ -239,27 +240,30 @@ int search_tooltips_exceeding_max_length(const fs::path &root, std::ostream &out
 		if (summary.back().m_count == 0)
 			continue;
 
-		std::string heading = dir.filename().string();
-		std::string underline(heading.length(), '-');
-		output 
-			<< heading << "\n"
-			<< underline << "\n";
-
-		size_t col_width = 0;
-		for (const auto& s : suspects)
+		if (!options.m_onlySummary)
 			{
-			if (s.m_name.length() > col_width)
-				col_width = s.m_name.length();
-			}
-
-		for (const auto& s : suspects)
-			{
+			std::string heading = dir.filename().string();
+			std::string underline(heading.length(), '-');
 			output
-				<< std::left << std::setw(col_width)
-				<< s.m_name << " - "
-				<< s.m_description << "\n";
+				<< heading << "\n"
+				<< underline << "\n";
+
+			size_t col_width = 0;
+			for (const auto& s : suspects)
+				{
+				if (s.m_name.length() > col_width)
+					col_width = s.m_name.length();
+				}
+
+			for (const auto& s : suspects)
+				{
+				output
+					<< std::left << std::setw(col_width)
+					<< s.m_name << " - "
+					<< s.m_description << "\n";
+				}
+			output << "\n";
 			}
-		output << "\n";
 		}
 
 	output_report(summary, output);

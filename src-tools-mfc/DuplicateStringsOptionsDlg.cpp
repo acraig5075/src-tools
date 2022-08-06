@@ -40,19 +40,23 @@ END_MESSAGE_MAP()
 
 
 BOOL CDuplicateStringsOptionsDlg::OnInitDialog()
-	{
+{
 	CDialog::OnInitDialog();
 
 	CheckRadioButton(IDC_FORMATRADIO1, IDC_FORMATRADIO2, IDC_FORMATRADIO1 + m_options.m_outputFormat);
 
+	CheckDlgButton(IDC_ONLYSUMMARYCHECK, m_options.m_onlySummary ? BST_CHECKED : BST_UNCHECKED);
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 								// EXCEPTION: OCX Property Pages should return FALSE
-	}
+}
 
 
 void CDuplicateStringsOptionsDlg::OnOK()
-	{
+{
 	m_options.m_outputFormat = GetCheckedRadioButton(IDC_FORMATRADIO1, IDC_FORMATRADIO2) - IDC_FORMATRADIO1;
 
+	m_options.m_onlySummary = IsDlgButtonChecked(IDC_ONLYSUMMARYCHECK) == BST_CHECKED;
+
 	CDialog::OnOK();
-	}
+}

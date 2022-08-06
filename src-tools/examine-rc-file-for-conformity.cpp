@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "string-utils.h"
 #include "filesystem-utils.h"
+#include "options.h"
 
 namespace fs = std::filesystem;
 
@@ -709,7 +710,7 @@ void OutputSummary(const std::vector<std::pair<rule_code, unsigned int>> &summar
 //}
 //
 
-int examine_rc_file_for_conformity(const fs::path &input, std::ostream &output, int format = 0)
+int examine_rc_file_for_conformity(const fs::path &input, std::ostream &output, RcFileRulesOptions &options)
 {
 	std::vector<fs::path> files;
 
@@ -739,7 +740,7 @@ int examine_rc_file_for_conformity(const fs::path &input, std::ostream &output, 
 
 	output_format order = FAULT_ORDER;
 
-	if (format == 1)
+	if (options.m_outputFormat == 1)
 		{
 		order = DIALOG_ORDER;
 		}

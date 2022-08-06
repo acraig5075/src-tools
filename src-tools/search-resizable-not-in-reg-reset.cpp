@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "string-utils.h"
 #include "filesystem-utils.h"
+#include "options.h"
 
 namespace fs = std::filesystem;
 
@@ -146,7 +147,7 @@ void get_registered_dialogs(const fs::path& root, std::vector<std::string> &regi
 }
 
 /// Search all resizable headers not referenced in RegReset project
-int search_resizable_not_in_reg_reset(const fs::path& root, std::ostream& output)
+int search_resizable_not_in_reg_reset(const fs::path& root, std::ostream& output, RegResetOptions &)
 {
 	std::unordered_map<std::string, std::string> ids;
 	map_dialog_resources(root, ids);

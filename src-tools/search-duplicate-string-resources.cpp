@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "string-utils.h"
 #include "filesystem-utils.h"
+#include "options.h"
 
 namespace fs = std::filesystem;
 
@@ -248,13 +249,13 @@ void output_report(const std::vector<ReportEx> &reports, std::ostream &output)
 	std::cout << "\n";
 }
 
-int search_duplicate_string_resources(const fs::path &input, std::ostream &output, int format)
+int search_duplicate_string_resources(const fs::path &input, std::ostream &output, DuplicateStringsOptions &options)
 {
 	output_format order;
 
-	if (0 == format)
+	if (0 == options.m_outputFormat)
 		order = BY_DESCRIPTION;
-	else if (1 == format)
+	else if (1 == options.m_outputFormat)
 		order = BY_NAME;
 	else
 		return 1;
@@ -282,23 +283,25 @@ int search_duplicate_string_resources(const fs::path &input, std::ostream &outpu
 		return lhs.count() > rhs.count();
 		});
 
-	for (const auto &r : reports)
+	if (!options.m_onlySummary)
 		{
-		std::string text = make_report_text(r.m_duplicates, order);
-
-		if (!text.empty())
+		for (const auto& r : reports)
 			{
-			std::string heading = r.m_filename.stem().string();
-			std::string underline(heading.length(), '-');
-			output
+			std::string text = make_report_text(r.m_duplicates, order);
+
+			if (!text.empty())
+				{
+				std::string heading = r.m_filename.stem().string();
+				std::string underline(heading.length(), '-');
+				output
 					<< heading << "\n"
 					<< underline << "\n"
 					<< text << "\n"
 					<< "\n";
+				}
 			}
+		output << "\n";
 		}
-	
-	output << "\n";
 
 	output_report(reports, output);
 

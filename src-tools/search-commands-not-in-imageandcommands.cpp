@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "string-utils.h"
 #include "filesystem-utils.h"
+#include "options.h"
 
 namespace fs = std::filesystem;
 
@@ -133,7 +134,7 @@ std::vector<std::string> get_api_commands(const fs::path &path)
 	return commands;
 }
 
-int search_commands_not_in_imageandcommands(const fs::path &rootPath, std::ostream &output)
+int search_commands_not_in_imageandcommands(const fs::path &rootPath, std::ostream &output, ImagesAndCommandsOptions &)
 {
 	fs::path imagesAndCommands = search_for_filename(rootPath, "ImagesAndCommands.h");
 	if (imagesAndCommands.empty())

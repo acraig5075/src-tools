@@ -4,6 +4,7 @@
 #include "pch.h"
 #include "filesystem-utils.h"
 #include "reports.h"
+#include "options.h"
 
 namespace fs = std::filesystem;
 
@@ -77,8 +78,8 @@ std::vector<std::string> get_resource_list(const fs::path &root, const std::stri
 
 
 /// Lookup resource ID names defined in .rc files but not referenced in any .cpp files
-int my_main(const fs::path &root, std::ostream &output)
-{
+int search_unused_string_resources(const fs::path& root, std::ostream& output, UnusedStringsOptions& options)
+	{
 	std::vector<Report> reports;
 
 	std::vector<fs::path> directories = get_directory_list(root);
@@ -106,25 +107,20 @@ int my_main(const fs::path &root, std::ostream &output)
 		r.m_count = difference.size();
 		reports.push_back(r);
 
-		std::string heading(dir.filename().string());
-		std::string underline(heading.length(), '-');
-		output
+		if (!options.m_onlySummary)
+			{
+			std::string heading(dir.filename().string());
+			std::string underline(heading.length(), '-');
+			output
 				<< heading << "\n"
 				<< underline << "\n";
 
-		std::copy(begin(difference), end(difference), std::ostream_iterator<std::string>(output, "\n"));
-		output << "\n";
+			std::copy(begin(difference), end(difference), std::ostream_iterator<std::string>(output, "\n"));
+			output << "\n";
+			}
 		}
 
 	output_report(reports, output);
-
-	return 0;
-}
-
-
-int search_unused_string_resources(const fs::path &root, std::ostream &output)
-{
-	my_main(root, output);
 
 	output << "Done\n";
 

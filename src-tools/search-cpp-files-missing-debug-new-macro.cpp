@@ -1,12 +1,13 @@
 #include "pch.h"
 #include "filesystem-utils.h"
 #include "reports.h"
+#include "options.h"
 
 namespace fs = std::filesystem;
 
 
 /// Search all .cpp files for a search term
-int search_cpp_files_missing_debug_new_macro(const fs::path &root, std::ostream &output)
+int search_cpp_files_missing_debug_new_macro(const fs::path &root, std::ostream &output, MissingMacroOptions &options)
 {
 	std::vector<fs::path> directories = get_directory_list(root);
 
@@ -42,24 +43,31 @@ int search_cpp_files_missing_debug_new_macro(const fs::path &root, std::ostream 
 
 				if (!found)
 					{
-					if (first)
+					if (options.m_onlySummary)
 						{
-						std::string heading = dir.filename().string();
-						std::string underline(heading.length(), '-');
-						output
-							<< heading << "\n"
-							<< underline << "\n";
-						first = false;
+						summary.back().m_count++;
 						}
+					else
+						{
+						if (first)
+							{
+							std::string heading = dir.filename().string();
+							std::string underline(heading.length(), '-');
+							output
+								<< heading << "\n"
+								<< underline << "\n";
+							first = false;
+							}
 
-					output << path.string() << "\n";
+						output << path.string() << "\n";
 
-					summary.back().m_count++;
+						summary.back().m_count++;
+						}
 					}
 				}
 			}
 
-		if (summary.back().m_count > 0)
+		if (summary.back().m_count > 0 && !options.m_onlySummary)
 			output << "\n";
 		}
 

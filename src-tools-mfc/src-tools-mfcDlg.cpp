@@ -10,6 +10,9 @@
 #include "..\src-tools\src-tools.h"
 #include "DuplicateStringsOptionsDlg.h"
 #include "RcFileRulesOptionsDlg.h"
+#include "UnusedStringsOptionsDlg.h"
+#include "MissingMacroOptionsDlg.h"
+#include "TooltipLengthOptionsDlg.h"
 
 
 #ifdef _DEBUG
@@ -137,7 +140,7 @@ void CsrctoolsmfcDlg::OnBnClickedImagesandcommandsBtn()
 	std::stringstream ss;
 
 	BeginWaitCursor();
-	search_commands_not_in_imageandcommands(rootPath, ss);
+	search_commands_not_in_imageandcommands(rootPath, ss, m_imageAndCommandsOpts);
 	EndWaitCursor();
 
 	CString output(ss.str().c_str());
@@ -165,7 +168,7 @@ void CsrctoolsmfcDlg::OnBnClickedDuplicatestringsBtn()
 	std::stringstream ss;
 
 	BeginWaitCursor();
-	search_duplicate_string_resources(rootPath, ss, m_duplicateStringsOpts.m_outputFormat);
+	search_duplicate_string_resources(rootPath, ss, m_duplicateStringsOpts);
 	EndWaitCursor();
 
 	CString output(ss.str().c_str());
@@ -193,7 +196,7 @@ void CsrctoolsmfcDlg::OnBnClickedUnusedstringsBtn()
 	std::stringstream ss;
 
 	BeginWaitCursor();
-	search_unused_string_resources(rootPath, ss);
+	search_unused_string_resources(rootPath, ss, m_unusedStringsOpts);
 	EndWaitCursor();
 
 	CString output(ss.str().c_str());
@@ -221,7 +224,7 @@ void CsrctoolsmfcDlg::OnBnClickedMissingmacroBtn()
 	std::stringstream ss;
 
 	BeginWaitCursor();
-	search_cpp_files_missing_debug_new_macro(rootPath, ss);
+	search_cpp_files_missing_debug_new_macro(rootPath, ss, m_missingMacroOpts);
 	EndWaitCursor();
 
 	CString output(ss.str().c_str());
@@ -249,7 +252,7 @@ void CsrctoolsmfcDlg::OnBnClickedConformingrcfileBtn()
 	std::stringstream ss;
 
 	BeginWaitCursor();
-	examine_rc_file_for_conformity(rootPath, ss, m_rcFileRulesOpts.m_outputFormat);
+	examine_rc_file_for_conformity(rootPath, ss, m_rcFileRulesOpts);
 	EndWaitCursor();
 
 	CString output(ss.str().c_str());
@@ -277,7 +280,7 @@ void CsrctoolsmfcDlg::OnBnClickedTooltipsmaxBtn()
 	std::stringstream ss;
 
 	BeginWaitCursor();
-	search_tooltips_exceeding_max_length(rootPath, ss, 80);
+	search_tooltips_exceeding_max_length(rootPath, ss, m_tooltipLengthOpts);
 	EndWaitCursor();
 
 	CString output(ss.str().c_str());
@@ -305,7 +308,7 @@ void CsrctoolsmfcDlg::OnBnClickedRegresetdlgBtn()
 	std::stringstream ss;
 
 	BeginWaitCursor();
-	search_resizable_not_in_reg_reset(rootPath, ss);
+	search_resizable_not_in_reg_reset(rootPath, ss, m_regResetOpts);
 	EndWaitCursor();
 
 	CString output(ss.str().c_str());
@@ -329,13 +332,15 @@ void CsrctoolsmfcDlg::OnBnClickedDuplicatestringsOpts()
 
 void CsrctoolsmfcDlg::OnBnClickedUnusedstringsOpts()
 	{
-	MessageBox(_T("Not yet implemented"), _T("Info"), MB_OK | MB_ICONINFORMATION);
+	CUnusedStringsOptionsDlg dlg(m_unusedStringsOpts, this);
+	dlg.DoModal();
 	}
 
 
 void CsrctoolsmfcDlg::OnBnClickedMissingmacroOpts()
 	{
-	MessageBox(_T("Not yet implemented"), _T("Info"), MB_OK | MB_ICONINFORMATION);
+	CMissingMacroOptionsDlg dlg(m_missingMacroOpts, this);
+	dlg.DoModal();
 	}
 
 
@@ -348,7 +353,8 @@ void CsrctoolsmfcDlg::OnBnClickedConformingrcfileOpts()
 
 void CsrctoolsmfcDlg::OnBnClickedTooltipsmaxOpts()
 	{
-	MessageBox(_T("Not yet implemented"), _T("Info"), MB_OK | MB_ICONINFORMATION);
+	CTooltipLengthOptionsDlg dlg(m_tooltipLengthOpts, this);
+	dlg.DoModal();
 	}
 
 
