@@ -2,12 +2,14 @@
 //
 
 #include <iostream>
+#include <windows.h>
+#include <shlwapi.h>
 #include "..\src-tools\src-tools.h"
 
 void usage()
 {
 	std::cout << "Various source tree tools by Alasdair Craig.\n";
-	std::cout << "Usage: program.exe tool-number [path|file] [output-format]\n";
+	std::cout << "Usage: program.exe tool-number [path|file] [optionsfile]\n";
 	std::cout << "tool-number  : Tool number as follows:\n";
 	std::cout << "           1 : search_commands_not_in_imageandcommands_h\n";
 	std::cout << "           2 : search_duplicate_string_resources\n";
@@ -18,7 +20,7 @@ void usage()
 	std::cout << "           7 : search_resizable_not_in_reg_reset\n";
 	std::cout << "path         : Root folder path of source tree for multiple .rc files to be parsed.\n";
 	std::cout << "file         : File path for a single .rc file to be parsed.\n";
-	std::cout << "output-format: 0= Group by rule convention (default); 1= Group by dialog\n";
+	std::cout << "optionsfile  : .options file [Default looks in .exe folder]\n";
 }
 
 int main(int argc, char* argv[])
@@ -42,12 +44,6 @@ int main(int argc, char* argv[])
 	else
 		rootPath = R"(D:\Src\Trunk_VS2013\CivilDesigner)";
 
-	int format;
-	if (argc > 3)
-		format = atoi(argv[3]);
-	else
-		format = 0;
-
 	ImagesAndCommandsOptions imagesAndCommandsOpts;
 	DuplicateStringsOptions duplicateStringsOpts;
 	UnusedStringsOptions unusedStringsOpts;
@@ -56,8 +52,26 @@ int main(int argc, char* argv[])
 	TooltipLengthOptions tooltipLengthOpts;
 	RegResetOptions regResetOpts;
 
-	duplicateStringsOpts.m_outputFormat = format;
-	rcFileRulesOpts.m_outputFormat = format;
+	char dfltOptions[MAX_PATH];
+	GetModuleFileNameA(0, dfltOptions, MAX_PATH);
+	PathRemoveFileSpecA(dfltOptions);
+	PathAppendA(dfltOptions, "src-tools.options");
+
+	std::filesystem::path optionsFile;
+	if (argc > 3)
+		optionsFile = argv[3];
+	else
+		optionsFile = dfltOptions;
+
+	ReadOptions(optionsFile.string(),
+		imagesAndCommandsOpts,
+		duplicateStringsOpts,
+		unusedStringsOpts,
+		missingMacroOpts,
+		rcFileRulesOpts,
+		tooltipLengthOpts,
+		regResetOpts
+	);
 
 	switch (tool)
 		{

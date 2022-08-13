@@ -11,6 +11,7 @@
 #include <string>
 #include <filesystem>
 #include <sstream>
+#include <fstream>
 #include "framework.h"
 
 #endif //PCH_H

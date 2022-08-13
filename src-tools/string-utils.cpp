@@ -155,3 +155,27 @@ std::string erase_substr(const std::string &str, const std::string &substr)
 }
 
 
+// Replace every occurence of a substring with another
+void replace_substr(std::string& str, const std::string& substr, const std::string& replacement)
+{
+	size_t off = 0;
+	size_t fnd = 0;;
+	while ((fnd = str.find(substr, off)) != std::string::npos)
+		{
+		str = str.replace(fnd, substr.size(), replacement);
+		off = fnd + replacement.size();
+		}
+}
+
+
+// json11 doesn't newline or indent it's output, so this is a naive effort at doing so
+std::string pretty_print_json11(const std::string& text)
+{
+	std::string ret = text;
+
+	replace_substr(ret, "{", "{\n");
+	replace_substr(ret, "}", "\n}");
+	replace_substr(ret, ", ", ",\n");
+
+	return ret;
+}

@@ -25,12 +25,23 @@ namespace fs = std::filesystem;
 
 
 
-CsrctoolsmfcDlg::CsrctoolsmfcDlg(CWnd* pParent /*=nullptr*/)
+CsrctoolsmfcDlg::CsrctoolsmfcDlg(const CStringA& optionsFilename, CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_SRCTOOLSMFC_DIALOG, pParent)
+	, m_optionsFilename(optionsFilename)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_pFont = new CFont;
 	m_pFont->CreateFont(14, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_TT_PRECIS, CLIP_TT_ALWAYS, DEFAULT_QUALITY, 0x04 | FF_MODERN, _T("Courier New"));
+
+	ReadOptions(m_optionsFilename.GetString(),
+		m_imageAndCommandsOpts,
+		m_duplicateStringsOpts,
+		m_unusedStringsOpts,
+		m_missingMacroOpts,
+		m_rcFileRulesOpts,
+		m_tooltipLengthOpts,
+		m_regResetOpts
+	);
 }
 
 CsrctoolsmfcDlg::~CsrctoolsmfcDlg()
@@ -362,3 +373,19 @@ void CsrctoolsmfcDlg::OnBnClickedRegresetdlgOpts()
 	{
 	MessageBox(_T("Not yet implemented"), _T("Info"), MB_OK | MB_ICONINFORMATION);
 	}
+
+
+void CsrctoolsmfcDlg::OnOK()
+{
+	WriteOptions(m_optionsFilename.GetString(), 
+		m_imageAndCommandsOpts,
+		m_duplicateStringsOpts,
+		m_unusedStringsOpts,
+		m_missingMacroOpts,
+		m_rcFileRulesOpts,
+		m_tooltipLengthOpts,
+		m_regResetOpts
+	);
+
+	CDialogEx::OnOK();
+}

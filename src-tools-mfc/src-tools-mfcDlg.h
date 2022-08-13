@@ -7,7 +7,7 @@ class CsrctoolsmfcDlg : public CDialogEx
 {
 // Construction
 public:
-	CsrctoolsmfcDlg(CWnd* pParent = nullptr);	// standard constructor
+	CsrctoolsmfcDlg(const CStringA &optionsFilename, CWnd* pParent = nullptr);	// standard constructor
 	~CsrctoolsmfcDlg();
 
 // Dialog Data
@@ -25,6 +25,7 @@ protected:
 
 	// Generated message map functions
 	virtual BOOL OnInitDialog();
+	virtual void OnOK();
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 
@@ -47,6 +48,7 @@ private:
 	CEdit m_outputEdit;
 	CMFCEditBrowseCtrl m_editBrowseCtrl;
 	CFont* m_pFont = nullptr;
+	CStringA m_optionsFilename;
 
 	ImagesAndCommandsOptions m_imageAndCommandsOpts;
 	DuplicateStringsOptions m_duplicateStringsOpts;

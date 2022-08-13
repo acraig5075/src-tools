@@ -52,6 +52,10 @@ BOOL CsrctoolsmfcApp::InitInstance()
 
 	CWinApp::InitInstance();
 
+	char filename[MAX_PATH];
+	GetModuleFileNameA(0, filename, MAX_PATH);
+	PathRemoveFileSpecA(filename);
+	PathAppendA(filename, "src-tools.options");
 
 	AfxEnableControlContainer();
 
@@ -71,7 +75,7 @@ BOOL CsrctoolsmfcApp::InitInstance()
 	// such as the name of your company or organization
 	SetRegistryKey(_T("Local AppWizard-Generated Applications"));
 
-	CsrctoolsmfcDlg dlg;
+	CsrctoolsmfcDlg dlg(filename);
 	m_pMainWnd = &dlg;
 	INT_PTR nResponse = dlg.DoModal();
 	if (nResponse == IDOK)

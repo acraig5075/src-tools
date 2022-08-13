@@ -9,3 +9,4 @@ std::string lowercase(const std::string& str);
 bool is_title_case(const std::string& str);
 bool is_sentence_case(const std::string& str);
 std::string erase_substr(const std::string& str, const std::string& substr);
+std::string pretty_print_json11(const std::string& text);
