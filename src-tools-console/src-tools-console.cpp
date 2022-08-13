@@ -44,14 +44,6 @@ int main(int argc, char* argv[])
 	else
 		rootPath = R"(D:\Src\Trunk_VS2013\CivilDesigner)";
 
-	ImagesAndCommandsOptions imagesAndCommandsOpts;
-	DuplicateStringsOptions duplicateStringsOpts;
-	UnusedStringsOptions unusedStringsOpts;
-	MissingMacroOptions missingMacroOpts;
-	RcFileRulesOptions rcFileRulesOpts;
-	TooltipLengthOptions tooltipLengthOpts;
-	RegResetOptions regResetOpts;
-
 	char dfltOptions[MAX_PATH];
 	GetModuleFileNameA(0, dfltOptions, MAX_PATH);
 	PathRemoveFileSpecA(dfltOptions);
@@ -63,38 +55,31 @@ int main(int argc, char* argv[])
 	else
 		optionsFile = dfltOptions;
 
-	ReadOptions(optionsFile.string(),
-		imagesAndCommandsOpts,
-		duplicateStringsOpts,
-		unusedStringsOpts,
-		missingMacroOpts,
-		rcFileRulesOpts,
-		tooltipLengthOpts,
-		regResetOpts
-	);
+	Options options;
+	ReadOptions(optionsFile.string(), options);
 
 	switch (tool)
 		{
 		case 1:
-			search_commands_not_in_imageandcommands(rootPath, std::cout, imagesAndCommandsOpts);
+			search_commands_not_in_imageandcommands(rootPath, std::cout, options.m_imagesAndCommandsOpts);
 			break;
 		case 2:
-			search_duplicate_string_resources(rootPath, std::cout, duplicateStringsOpts);
+			search_duplicate_string_resources(rootPath, std::cout, options.m_duplicateStringsOpts);
 			break;
 		case 3:
-			search_unused_string_resources(rootPath, std::cout, unusedStringsOpts);
+			search_unused_string_resources(rootPath, std::cout, options.m_unusedStringsOpts);
 			break;
 		case 4:
-			search_cpp_files_missing_debug_new_macro(rootPath, std::cout, missingMacroOpts);
+			search_cpp_files_missing_debug_new_macro(rootPath, std::cout, options.m_missingMacroOpts);
 			break;
 		case 5:
-			examine_rc_file_for_conformity(rootPath, std::cout, rcFileRulesOpts);
+			examine_rc_file_for_conformity(rootPath, std::cout, options.m_rcFileRulesOpts);
 			break;
 		case 6:
-			search_tooltips_exceeding_max_length(rootPath, std::cout, tooltipLengthOpts);
+			search_tooltips_exceeding_max_length(rootPath, std::cout, options.m_tooltipLengthOpts);
 			break;
 		case 7:
-			search_resizable_not_in_reg_reset(rootPath, std::cout, regResetOpts);
+			search_resizable_not_in_reg_reset(rootPath, std::cout, options.m_regResetOpts);
 			break;
 		default:
 			usage();

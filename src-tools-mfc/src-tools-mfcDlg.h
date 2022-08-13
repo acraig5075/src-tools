@@ -49,14 +49,7 @@ private:
 	CMFCEditBrowseCtrl m_editBrowseCtrl;
 	CFont* m_pFont = nullptr;
 	CStringA m_optionsFilename;
-
-	ImagesAndCommandsOptions m_imageAndCommandsOpts;
-	DuplicateStringsOptions m_duplicateStringsOpts;
-	UnusedStringsOptions m_unusedStringsOpts;
-	MissingMacroOptions m_missingMacroOpts;
-	RcFileRulesOptions m_rcFileRulesOpts;
-	TooltipLengthOptions m_tooltipLengthOpts;
-	RegResetOptions m_regResetOpts;
+	Options m_options;
 
 	DECLARE_MESSAGE_MAP()
 	};

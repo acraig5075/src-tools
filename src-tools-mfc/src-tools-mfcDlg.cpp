@@ -33,15 +33,7 @@ CsrctoolsmfcDlg::CsrctoolsmfcDlg(const CStringA& optionsFilename, CWnd* pParent 
 	m_pFont = new CFont;
 	m_pFont->CreateFont(14, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_TT_PRECIS, CLIP_TT_ALWAYS, DEFAULT_QUALITY, 0x04 | FF_MODERN, _T("Courier New"));
 
-	ReadOptions(m_optionsFilename.GetString(),
-		m_imageAndCommandsOpts,
-		m_duplicateStringsOpts,
-		m_unusedStringsOpts,
-		m_missingMacroOpts,
-		m_rcFileRulesOpts,
-		m_tooltipLengthOpts,
-		m_regResetOpts
-	);
+	ReadOptions(m_optionsFilename.GetString(), m_options);
 }
 
 CsrctoolsmfcDlg::~CsrctoolsmfcDlg()
@@ -151,7 +143,7 @@ void CsrctoolsmfcDlg::OnBnClickedImagesandcommandsBtn()
 	std::stringstream ss;
 
 	BeginWaitCursor();
-	search_commands_not_in_imageandcommands(rootPath, ss, m_imageAndCommandsOpts);
+	search_commands_not_in_imageandcommands(rootPath, ss, m_options.m_imagesAndCommandsOpts);
 	EndWaitCursor();
 
 	CString output(ss.str().c_str());
@@ -179,7 +171,7 @@ void CsrctoolsmfcDlg::OnBnClickedDuplicatestringsBtn()
 	std::stringstream ss;
 
 	BeginWaitCursor();
-	search_duplicate_string_resources(rootPath, ss, m_duplicateStringsOpts);
+	search_duplicate_string_resources(rootPath, ss, m_options.m_duplicateStringsOpts);
 	EndWaitCursor();
 
 	CString output(ss.str().c_str());
@@ -207,7 +199,7 @@ void CsrctoolsmfcDlg::OnBnClickedUnusedstringsBtn()
 	std::stringstream ss;
 
 	BeginWaitCursor();
-	search_unused_string_resources(rootPath, ss, m_unusedStringsOpts);
+	search_unused_string_resources(rootPath, ss, m_options.m_unusedStringsOpts);
 	EndWaitCursor();
 
 	CString output(ss.str().c_str());
@@ -235,7 +227,7 @@ void CsrctoolsmfcDlg::OnBnClickedMissingmacroBtn()
 	std::stringstream ss;
 
 	BeginWaitCursor();
-	search_cpp_files_missing_debug_new_macro(rootPath, ss, m_missingMacroOpts);
+	search_cpp_files_missing_debug_new_macro(rootPath, ss, m_options.m_missingMacroOpts);
 	EndWaitCursor();
 
 	CString output(ss.str().c_str());
@@ -263,7 +255,7 @@ void CsrctoolsmfcDlg::OnBnClickedConformingrcfileBtn()
 	std::stringstream ss;
 
 	BeginWaitCursor();
-	examine_rc_file_for_conformity(rootPath, ss, m_rcFileRulesOpts);
+	examine_rc_file_for_conformity(rootPath, ss, m_options.m_rcFileRulesOpts);
 	EndWaitCursor();
 
 	CString output(ss.str().c_str());
@@ -291,7 +283,7 @@ void CsrctoolsmfcDlg::OnBnClickedTooltipsmaxBtn()
 	std::stringstream ss;
 
 	BeginWaitCursor();
-	search_tooltips_exceeding_max_length(rootPath, ss, m_tooltipLengthOpts);
+	search_tooltips_exceeding_max_length(rootPath, ss, m_options.m_tooltipLengthOpts);
 	EndWaitCursor();
 
 	CString output(ss.str().c_str());
@@ -319,7 +311,7 @@ void CsrctoolsmfcDlg::OnBnClickedRegresetdlgBtn()
 	std::stringstream ss;
 
 	BeginWaitCursor();
-	search_resizable_not_in_reg_reset(rootPath, ss, m_regResetOpts);
+	search_resizable_not_in_reg_reset(rootPath, ss, m_options.m_regResetOpts);
 	EndWaitCursor();
 
 	CString output(ss.str().c_str());
@@ -336,35 +328,35 @@ void CsrctoolsmfcDlg::OnBnClickedImagesandcommandsOpts()
 
 void CsrctoolsmfcDlg::OnBnClickedDuplicatestringsOpts()
 	{
-	CDuplicateStringsOptionsDlg dlg(m_duplicateStringsOpts, this);
+	CDuplicateStringsOptionsDlg dlg(m_options.m_duplicateStringsOpts, this);
 	dlg.DoModal();
 	}
 
 
 void CsrctoolsmfcDlg::OnBnClickedUnusedstringsOpts()
 	{
-	CUnusedStringsOptionsDlg dlg(m_unusedStringsOpts, this);
+	CUnusedStringsOptionsDlg dlg(m_options.m_unusedStringsOpts, this);
 	dlg.DoModal();
 	}
 
 
 void CsrctoolsmfcDlg::OnBnClickedMissingmacroOpts()
 	{
-	CMissingMacroOptionsDlg dlg(m_missingMacroOpts, this);
+	CMissingMacroOptionsDlg dlg(m_options.m_missingMacroOpts, this);
 	dlg.DoModal();
 	}
 
 
 void CsrctoolsmfcDlg::OnBnClickedConformingrcfileOpts()
 	{
-	CRcFileRulesOptionsDlg dlg(m_rcFileRulesOpts, this);
+	CRcFileRulesOptionsDlg dlg(m_options.m_rcFileRulesOpts, this);
 	dlg.DoModal();
 	}
 
 
 void CsrctoolsmfcDlg::OnBnClickedTooltipsmaxOpts()
 	{
-	CTooltipLengthOptionsDlg dlg(m_tooltipLengthOpts, this);
+	CTooltipLengthOptionsDlg dlg(m_options.m_tooltipLengthOpts, this);
 	dlg.DoModal();
 	}
 
@@ -377,15 +369,7 @@ void CsrctoolsmfcDlg::OnBnClickedRegresetdlgOpts()
 
 void CsrctoolsmfcDlg::OnOK()
 {
-	WriteOptions(m_optionsFilename.GetString(), 
-		m_imageAndCommandsOpts,
-		m_duplicateStringsOpts,
-		m_unusedStringsOpts,
-		m_missingMacroOpts,
-		m_rcFileRulesOpts,
-		m_tooltipLengthOpts,
-		m_regResetOpts
-	);
+	WriteOptions(m_optionsFilename.GetString(), m_options);
 
 	CDialogEx::OnOK();
 }
