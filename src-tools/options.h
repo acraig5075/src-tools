@@ -12,6 +12,7 @@ struct DuplicateStringsOptions
 
 struct UnusedStringsOptions
 	{
+	std::vector<std::string> m_excludeFolders;
 	bool m_onlySummary = false;
 	};
 

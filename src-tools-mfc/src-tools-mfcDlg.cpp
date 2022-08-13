@@ -335,7 +335,12 @@ void CsrctoolsmfcDlg::OnBnClickedDuplicatestringsOpts()
 
 void CsrctoolsmfcDlg::OnBnClickedUnusedstringsOpts()
 	{
-	CUnusedStringsOptionsDlg dlg(m_options.m_unusedStringsOpts, this);
+	CString strRoot;
+	m_editBrowseCtrl.GetWindowTextW(strRoot);
+	if (strRoot.IsEmpty())
+		return;
+
+	CUnusedStringsOptionsDlg dlg(m_options.m_unusedStringsOpts, strRoot, this);
 	dlg.DoModal();
 	}
 

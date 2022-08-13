@@ -84,7 +84,7 @@ int search_unused_string_resources(const fs::path& root, std::ostream& output, U
 
 	std::vector<fs::path> directories = get_directory_list(root);
 
-	std::vector<std::string> exclusions = { "CommonDialogs", "Sewer", "Storm", };
+	const std::vector<std::string>& exclusions = options.m_excludeFolders;
 	filter_directory_list(directories, exclusions);
 
 	output << "Excluding directories: ";

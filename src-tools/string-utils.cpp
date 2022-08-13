@@ -176,6 +176,8 @@ std::string pretty_print_json11(const std::string& text)
 	replace_substr(ret, "{", "{\n");
 	replace_substr(ret, "}", "\n}");
 	replace_substr(ret, ", ", ",\n");
+	replace_substr(ret, "[", "[\n");
+	replace_substr(ret, "]", "\n]");
 
 	return ret;
 }
