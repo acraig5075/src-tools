@@ -24,6 +24,19 @@ struct MissingMacroOptions
 struct RcFileRulesOptions
 	{
 	int m_outputFormat = 0;
+	bool m_redundantCaptionSuffix = true;
+	bool m_captionsNotTitleCase = true;
+	bool m_groupboxCaptionsNotTitleCase = true;
+	bool m_inputboxesWrongHeight = true;
+	bool m_okCancelNotLeftToRight = true;
+	bool m_okCancelWrongGap = true;
+	bool m_labelEndsWithColon = true;
+	bool m_exceedsDialogMargin = true;
+	bool m_rightAlignedCheckbox = true;
+	bool m_verticalAlignmentLeft = true;
+	bool m_verticalAlignmentRight = true;
+	bool m_horizontalAlignmentTop = true;
+	bool m_horizontalAlignmentBottom = true;
 	};
 
 struct TooltipLengthOptions

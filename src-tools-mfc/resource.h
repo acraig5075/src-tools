@@ -22,6 +22,7 @@
 #define IDC_TOOLTIPSMAX_BTN             1008
 #define IDC_FOLDERBUTTON                1008
 #define IDC_MOVETORIGHTBUTTON           1008
+#define IDC_ALLBUTTON                   1008
 #define IDC_TOOLTIPSMAX_BTN2            1009
 #define IDC_REGRESETDLG_BTN             1009
 #define IDC_MOVETOLEFTBUTTON            1009
@@ -40,6 +41,9 @@
 #define IDC_ROOTSTATIC                  1017
 #define IDC_INCLUDELIST                 1018
 #define IDC_EXCLUDELIST                 1019
+#define IDC_RULELIST                    1019
+#define IDC_BUTTON2                     1020
+#define IDC_NONEBUTTON                  1020
 
 // Next default values for new objects
 // 
@@ -47,7 +51,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        143
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1019
+#define _APS_NEXT_CONTROL_VALUE         1021
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

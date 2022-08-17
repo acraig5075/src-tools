@@ -41,19 +41,19 @@ enum output_format
 
 std::unordered_map<rule_code, std::string> rule_descriptions =
 {
-	{ REDUNDANT_CAPTION_SUFFIX,         "Caption ends with the word Dialog or Window" },
-	{ CAPTIONS_NOT_TITLE_CASE,          "Dialog caption is not title case" },
-	{ GROUPBOX_CAPTIONS_NOT_TITLE_CASE, "Group box caption is not title case" },
-	{ INPUTBOXES_WRONG_HEIGHT,          "Input box has the wrong height" },
-	{ OK_CANCEL_NOT_LEFT_TO_RIGHT,      "OK and Cancel buttons are not horizontally aligned" },
-	{ OK_CANCEL_WRONG_GAP,              "OK and Cancel buttons have the wrong gap" },
-	{ LABEL_ENDS_WITH_COLON,            "Label ends with a colon" },
-	{ EXCEEDS_DIALOG_MARGIN,            "Control overlaps margin" },
-	{ RIGHT_ALIGNED_CHECKBOX,           "Checkbox is right-aligned" },
-	{ VERTICAL_ALIGNMENT_LEFT,          "Controls don't align vertically on the left" },
-	{ VERTICAL_ALIGNMENT_RIGHT,         "Controls don't align vertically on the right" },
-	{ HORIZONTAL_ALIGNMENT_TOP,         "Controls don't align horizontally at the top" },
-	{ HORIZONTAL_ALIGNMENT_BOTTOM,      "Controls don't align horizontally at the bottom" },
+	{ REDUNDANT_CAPTION_SUFFIX,         "Caption ends with the word Dialog or Window" },        // captions and labels
+	{ CAPTIONS_NOT_TITLE_CASE,          "Dialog caption is not title case" },                   // captions and labels
+	{ GROUPBOX_CAPTIONS_NOT_TITLE_CASE, "Group box caption is not title case" },                // captions and labels
+	{ INPUTBOXES_WRONG_HEIGHT,          "Input box has the wrong height" },                     // control size
+	{ OK_CANCEL_NOT_LEFT_TO_RIGHT,      "OK and Cancel buttons are not horizontally aligned" }, // dialog buttons
+	{ OK_CANCEL_WRONG_GAP,              "OK and Cancel buttons have the wrong gap" },           // dialog buttons
+	{ LABEL_ENDS_WITH_COLON,            "Label ends with a colon" },                            // captions and label
+	{ EXCEEDS_DIALOG_MARGIN,            "Control overlaps margin" },                            // alignment
+	{ RIGHT_ALIGNED_CHECKBOX,           "Checkbox is right-aligned" },                          // alignment
+	{ VERTICAL_ALIGNMENT_LEFT,          "Controls don't align vertically on the left" },        // alignment
+	{ VERTICAL_ALIGNMENT_RIGHT,         "Controls don't align vertically on the right" },       // alignment
+	{ HORIZONTAL_ALIGNMENT_TOP,         "Controls don't align horizontally at the top" },       // alignment
+	{ HORIZONTAL_ALIGNMENT_BOTTOM,      "Controls don't align horizontally at the bottom" },    // alignment
 };
 
 
@@ -710,6 +710,44 @@ void OutputSummary(const std::vector<std::pair<rule_code, unsigned int>> &summar
 //}
 //
 
+void filter_by_options(std::vector<broken_rule> &faults, RcFileRulesOptions& options)
+{
+	auto FilterOut = [&faults](rule_code code)
+		{
+		faults.erase(std::remove_if(faults.begin(), faults.end(), [&](const broken_rule& fault)
+			{
+			return fault.m_code == code;
+			}), faults.end());
+		};
+
+	if (!options.m_redundantCaptionSuffix)
+		FilterOut(REDUNDANT_CAPTION_SUFFIX);
+	if (!options.m_captionsNotTitleCase)
+		FilterOut(CAPTIONS_NOT_TITLE_CASE);
+	if (!options.m_groupboxCaptionsNotTitleCase)
+		FilterOut(GROUPBOX_CAPTIONS_NOT_TITLE_CASE);
+	if (!options.m_inputboxesWrongHeight)
+		FilterOut(INPUTBOXES_WRONG_HEIGHT);
+	if (!options.m_okCancelNotLeftToRight)
+		FilterOut(OK_CANCEL_NOT_LEFT_TO_RIGHT);
+	if (!options.m_okCancelWrongGap)
+		FilterOut(OK_CANCEL_WRONG_GAP);
+	if (!options.m_labelEndsWithColon)
+		FilterOut(LABEL_ENDS_WITH_COLON);
+	if (!options.m_exceedsDialogMargin)
+		FilterOut(EXCEEDS_DIALOG_MARGIN);
+	if (!options.m_rightAlignedCheckbox)
+		FilterOut(RIGHT_ALIGNED_CHECKBOX);
+	if (!options.m_verticalAlignmentLeft)
+		FilterOut(VERTICAL_ALIGNMENT_LEFT);
+	if (!options.m_verticalAlignmentRight)
+		FilterOut(VERTICAL_ALIGNMENT_RIGHT);
+	if (!options.m_horizontalAlignmentTop)
+		FilterOut(HORIZONTAL_ALIGNMENT_TOP);
+	if (!options.m_horizontalAlignmentBottom)
+		FilterOut(HORIZONTAL_ALIGNMENT_BOTTOM);
+}
+
 int examine_rc_file_for_conformity(const fs::path &input, std::ostream &output, RcFileRulesOptions &options)
 {
 	std::vector<fs::path> files;
@@ -737,6 +775,8 @@ int examine_rc_file_for_conformity(const fs::path &input, std::ostream &output, 
 		}
 
 	std::vector<broken_rule> faults = inspect(dialogs);
+
+	filter_by_options(faults, options);
 
 	output_format order = FAULT_ORDER;
 
