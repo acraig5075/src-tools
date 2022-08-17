@@ -48,6 +48,11 @@ BOOL CRcFileRulesOptionsDlg::OnInitDialog()
 
 	CheckRadioButton(IDC_FORMATRADIO1, IDC_FORMATRADIO2, IDC_FORMATRADIO1 + m_options.m_outputFormat);
 
+	SetDlgItemInt(IDC_MINIMUMEDIT, m_options.m_minInputBoxHeight);
+	SetDlgItemInt(IDC_MAXIMUMEDIT, m_options.m_maxInputBoxHeight);
+	SetDlgItemInt(IDC_MARGINEDIT,  m_options.m_dialogMargin);
+	SetDlgItemInt(IDC_GAPEDIT,     m_options.m_okCancelGap);
+
 	m_ruleList.AddString(_T("Caption ends with the word Dialog or Window"));
 	m_ruleList.AddString(_T("Dialog caption is not title case"));
 	m_ruleList.AddString(_T("Group box caption is not title case"));
@@ -55,7 +60,7 @@ BOOL CRcFileRulesOptionsDlg::OnInitDialog()
 	m_ruleList.AddString(_T("Input box has the wrong height"));
 	m_ruleList.AddString(_T("OK and Cancel buttons are not horizontally aligned"));
 	m_ruleList.AddString(_T("OK and Cancel buttons have the wrong gap"));
-	m_ruleList.AddString(_T("Control overlaps margin"));
+	m_ruleList.AddString(_T("Control overlaps dialog margin"));
 	m_ruleList.AddString(_T("Checkbox is right-aligned"));
 	m_ruleList.AddString(_T("Controls don't align vertically on the left"));
 	m_ruleList.AddString(_T("Controls don't align vertically on the right"));
@@ -84,6 +89,12 @@ BOOL CRcFileRulesOptionsDlg::OnInitDialog()
 void CRcFileRulesOptionsDlg::OnOK()
 	{
 	m_options.m_outputFormat = GetCheckedRadioButton(IDC_FORMATRADIO1, IDC_FORMATRADIO2) - IDC_FORMATRADIO1;
+
+	BOOL ok;
+	m_options.m_minInputBoxHeight = GetDlgItemInt(IDC_MINIMUMEDIT, &ok);
+	m_options.m_maxInputBoxHeight = GetDlgItemInt(IDC_MAXIMUMEDIT, &ok);
+	m_options.m_dialogMargin      = GetDlgItemInt(IDC_MARGINEDIT, &ok);
+	m_options.m_okCancelGap       = GetDlgItemInt(IDC_GAPEDIT, &ok);
 
 	m_options.m_redundantCaptionSuffix       = m_ruleList.GetCheck(0) != BST_UNCHECKED;
 	m_options.m_captionsNotTitleCase         = m_ruleList.GetCheck(1) != BST_UNCHECKED;

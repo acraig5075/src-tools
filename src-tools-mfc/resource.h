@@ -42,8 +42,11 @@
 #define IDC_INCLUDELIST                 1018
 #define IDC_EXCLUDELIST                 1019
 #define IDC_RULELIST                    1019
-#define IDC_BUTTON2                     1020
 #define IDC_NONEBUTTON                  1020
+#define IDC_GAPEDIT                     1021
+#define IDC_MARGINEDIT                  1023
+#define IDC_MINIMUMEDIT                 1024
+#define IDC_MAXIMUMEDIT                 1025
 
 // Next default values for new objects
 // 
@@ -51,7 +54,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        143
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1021
+#define _APS_NEXT_CONTROL_VALUE         1026
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

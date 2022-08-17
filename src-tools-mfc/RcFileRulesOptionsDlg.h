@@ -28,4 +28,4 @@ private:
 	CCheckListBox m_ruleList;
 
 	DECLARE_MESSAGE_MAP()
-};
+	};

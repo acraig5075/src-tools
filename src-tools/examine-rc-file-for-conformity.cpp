@@ -6,13 +6,6 @@
 namespace fs = std::filesystem;
 
 
-// Defines for preferences
-static const int MARGIN = 7;
-static const int MIN_INPUTBOX_HEIGHT = 12;
-static const int MAX_INPUTBOX_HEIGHT = 14;
-static const int OK_CANCEL_GAP = 4;
-
-
 enum rule_code
 {
 	NONE = 0,
@@ -362,8 +355,13 @@ std::vector<std::string> check_alignment(const std::vector<control_defn> &contro
 }
 
 // Inspect dialog definitions for breaking the rules
-std::vector<broken_rule> inspect(const std::vector<dialog_defn> &dialogs)
+std::vector<broken_rule> inspect(const std::vector<dialog_defn> &dialogs, const RcFileRulesOptions& options)
 {
+	const int MARGIN              = options.m_dialogMargin;
+	const int MIN_INPUTBOX_HEIGHT = options.m_minInputBoxHeight;
+	const int MAX_INPUTBOX_HEIGHT = options.m_maxInputBoxHeight;
+	const int OK_CANCEL_GAP       = options.m_okCancelGap;
+
 	std::vector<broken_rule> faults;
 
 	for (auto dlg : dialogs)
@@ -710,7 +708,7 @@ void OutputSummary(const std::vector<std::pair<rule_code, unsigned int>> &summar
 //}
 //
 
-void filter_by_options(std::vector<broken_rule> &faults, RcFileRulesOptions& options)
+void filter_by_options(std::vector<broken_rule> &faults, const RcFileRulesOptions& options)
 {
 	auto FilterOut = [&faults](rule_code code)
 		{
@@ -774,7 +772,7 @@ int examine_rc_file_for_conformity(const fs::path &input, std::ostream &output, 
 		get_dialog_definitions(path, dialogs);
 		}
 
-	std::vector<broken_rule> faults = inspect(dialogs);
+	std::vector<broken_rule> faults = inspect(dialogs, options);
 
 	filter_by_options(faults, options);
 
