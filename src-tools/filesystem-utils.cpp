@@ -93,3 +93,33 @@ fs::path search_for_filename(const fs::path &root, const std::string &name)
 
 	return {};
 }
+
+
+// extract the .rc and resource.h filenames for a folder
+bool get_resource_filenames(const std::filesystem::path& folder, std::filesystem::path& rc, std::filesystem::path& header)
+{
+	bool ok1 = false;
+	bool ok2 = false;
+
+	for (const auto& itr : fs::directory_iterator(folder))
+		{
+		if (itr.is_regular_file())
+			{
+			if (!ok1 && ends_with(itr.path().filename().string(), ".rc"))
+				{
+				rc = itr.path();
+				ok1 = true;
+				}
+			else if (!ok2 && lowercase(itr.path().filename().string()) == "resource.h")
+				{
+				header = itr.path();
+				ok2 = true;
+				}
+
+			if (ok1 && ok2)
+				break;
+			}
+		}
+
+	return ok1 && ok2;
+}

@@ -92,6 +92,10 @@ int search_unused_string_resources(const fs::path& root, std::ostream& output, c
 
 	for (const auto &dir : directories)
 		{
+		fs::path rc, header;
+		if (!get_resource_filenames(dir, rc, header))
+			continue;
+
 		std::vector<std::string> used = get_resource_list(dir, ".cpp");
 		std::vector<std::string> avail = get_resource_list(dir, ".rc");
 
@@ -103,6 +107,8 @@ int search_unused_string_resources(const fs::path& root, std::ostream& output, c
 
 		UnusedResources o;
 		o.m_path = dir;
+		o.m_rc = rc;
+		o.m_header = header;
 		o.m_names = difference;
 		out.m_folders.push_back(o);
 

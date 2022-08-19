@@ -10,6 +10,7 @@
 #define IDD_MISSINGMACRO_OPTSDLG        137
 #define IDD_TOOLTIPLENGTH_OPTSDLG       139
 #define IDD_FOLDERSELECTION_DLG         141
+#define IDD_UNUSEDSTRINGS_EDITDLG       143
 #define IDC_LAB                         1000
 #define IDC_IMAGESANDCOMMANDS_BTN       1001
 #define IDC_OUTPUTEDIT                  1002
@@ -23,6 +24,7 @@
 #define IDC_FOLDERBUTTON                1008
 #define IDC_MOVETORIGHTBUTTON           1008
 #define IDC_ALLBUTTON                   1008
+#define IDC_REMOVEBUTTON                1008
 #define IDC_TOOLTIPSMAX_BTN2            1009
 #define IDC_REGRESETDLG_BTN             1009
 #define IDC_MOVETOLEFTBUTTON            1009
@@ -47,14 +49,17 @@
 #define IDC_MARGINEDIT                  1023
 #define IDC_MINIMUMEDIT                 1024
 #define IDC_MAXIMUMEDIT                 1025
+#define IDC_MODULELIST                  1026
+#define IDC_RESOURCELIST                1027
+#define IDC_FILENAMESTATIC              1029
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        143
+#define _APS_NEXT_RESOURCE_VALUE        145
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1026
+#define _APS_NEXT_CONTROL_VALUE         1030
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

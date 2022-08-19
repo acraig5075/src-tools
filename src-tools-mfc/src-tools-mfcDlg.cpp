@@ -14,6 +14,7 @@
 #include "UnusedStringsOptionsDlg.h"
 #include "MissingMacroOptionsDlg.h"
 #include "TooltipLengthOptionsDlg.h"
+#include "UnusedStringsEditingDlg.h"
 
 
 #ifdef _DEBUG
@@ -207,6 +208,13 @@ void CsrctoolsmfcDlg::OnBnClickedUnusedstringsBtn()
 	CString output(ss.str().c_str());
 	output.Replace(_T("\n"), _T("\r\n"));
 	m_outputEdit.SetWindowTextW(output);
+
+	int ret = MessageBox(_T("Do you want to proceed with editing?"), _T("Confirm"), MB_YESNO | MB_ICONQUESTION);
+	if (IDYES == ret)
+		{
+		CUnusedStringsEditingDlg dlg(out, this);
+		dlg.DoModal();
+		}
 }
 
 

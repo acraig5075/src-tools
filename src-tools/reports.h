@@ -3,6 +3,8 @@
 struct UnusedResources
 {
 	std::filesystem::path m_path;
+	std::filesystem::path m_header;
+	std::filesystem::path m_rc;
 	std::vector<std::string> m_names;
 };
 
