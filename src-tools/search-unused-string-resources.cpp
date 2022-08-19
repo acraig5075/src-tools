@@ -8,12 +8,9 @@
 
 namespace fs = std::filesystem;
 
-using PathResourcePair = std::pair<fs::path, std::vector<std::string>>;
-
-
-static std::vector<PathResourcePair> get_file_list_custom(const fs::path &root, const std::string &extension)
+static std::vector<UnusedResources> get_file_list_custom(const fs::path &root, const std::string &extension)
 {
-	std::vector<PathResourcePair> files;
+	std::vector<UnusedResources> files;
 
 	// intentionally not including root
 
@@ -21,7 +18,9 @@ static std::vector<PathResourcePair> get_file_list_custom(const fs::path &root, 
 		{
 		if (itr.path().extension() == extension)
 			{
-			files.push_back(std::make_pair(itr.path(), std::vector<std::string>()));
+			UnusedResources p;
+			p.m_path = itr.path();
+			files.push_back(p);
 			}
 		}
 
@@ -59,15 +58,15 @@ std::vector<std::string> get_resource_list(const fs::path &root, const std::stri
 {
 	auto files = get_file_list_custom(root, extension);
 
-	std::for_each(begin(files), end(files), [](PathResourcePair & p)
+	std::for_each(begin(files), end(files), [](UnusedResources & p)
 		{
-		find_resource_strings(p.first, p.second);
+		find_resource_strings(p.m_path, p.m_names);
 		});
 
 	std::vector<std::string> resources;
-	std::for_each(begin(files), end(files), [&](const PathResourcePair & p)
+	std::for_each(begin(files), end(files), [&](const UnusedResources & p)
 		{
-		resources.insert(resources.end(), begin(p.second), end(p.second));
+		resources.insert(resources.end(), begin(p.m_names), end(p.m_names));
 		});
 
 	std::sort(begin(resources), end(resources));
@@ -78,7 +77,7 @@ std::vector<std::string> get_resource_list(const fs::path &root, const std::stri
 
 
 /// Lookup resource ID names defined in .rc files but not referenced in any .cpp files
-int search_unused_string_resources(const fs::path& root, std::ostream& output, UnusedStringsOptions& options)
+int search_unused_string_resources(const fs::path& root, std::ostream& output, const UnusedStringsOptions& options, UnusedStringsOutput &out)
 	{
 	std::vector<Report> reports;
 
@@ -101,6 +100,11 @@ int search_unused_string_resources(const fs::path& root, std::ostream& output, U
 
 		if (difference.empty())
 			continue;
+
+		UnusedResources o;
+		o.m_path = dir;
+		o.m_names = difference;
+		out.m_folders.push_back(o);
 
 		Report r;
 		r.m_dir = dir;

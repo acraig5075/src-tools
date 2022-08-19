@@ -147,7 +147,7 @@ void get_registered_dialogs(const fs::path& root, std::vector<std::string> &regi
 }
 
 /// Search all resizable headers not referenced in RegReset project
-int search_resizable_not_in_reg_reset(const fs::path& root, std::ostream& output, RegResetOptions &)
+int search_resizable_not_in_reg_reset(const fs::path& root, std::ostream& output, const RegResetOptions &)
 {
 	std::unordered_map<std::string, std::string> ids;
 	map_dialog_resources(root, ids);

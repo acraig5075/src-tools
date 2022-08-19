@@ -8,6 +8,7 @@
 #include "src-tools-mfcDlg.h"
 #include "afxdialogex.h"
 #include "..\src-tools\src-tools.h"
+#include "..\src-tools\reports.h"
 #include "DuplicateStringsOptionsDlg.h"
 #include "RcFileRulesOptionsDlg.h"
 #include "UnusedStringsOptionsDlg.h"
@@ -197,9 +198,10 @@ void CsrctoolsmfcDlg::OnBnClickedUnusedstringsBtn()
 	}
 
 	std::stringstream ss;
+	UnusedStringsOutput out;
 
 	BeginWaitCursor();
-	search_unused_string_resources(rootPath, ss, m_options.m_unusedStringsOpts);
+	search_unused_string_resources(rootPath, ss, m_options.m_unusedStringsOpts, out);
 	EndWaitCursor();
 
 	CString output(ss.str().c_str());

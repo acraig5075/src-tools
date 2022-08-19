@@ -5,6 +5,7 @@
 #include <windows.h>
 #include <shlwapi.h>
 #include "..\src-tools\src-tools.h"
+#include "..\src-tools\reports.h"
 
 void usage()
 {
@@ -23,7 +24,7 @@ void usage()
 	std::cout << "optionsfile  : .options file [Default looks in .exe folder]\n";
 }
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
 	if (argc == 1)
 		{
@@ -67,8 +68,11 @@ int main(int argc, char* argv[])
 			search_duplicate_string_resources(rootPath, std::cout, options.m_duplicateStringsOpts);
 			break;
 		case 3:
-			search_unused_string_resources(rootPath, std::cout, options.m_unusedStringsOpts);
+			{
+			UnusedStringsOutput out;
+			search_unused_string_resources(rootPath, std::cout, options.m_unusedStringsOpts, out);
 			break;
+			}
 		case 4:
 			search_cpp_files_missing_debug_new_macro(rootPath, std::cout, options.m_missingMacroOpts);
 			break;

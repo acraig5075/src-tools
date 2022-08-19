@@ -1,5 +1,16 @@
 #pragma once
 
+struct UnusedResources
+{
+	std::filesystem::path m_path;
+	std::vector<std::string> m_names;
+};
+
+struct UnusedStringsOutput
+{
+	std::vector<UnusedResources> m_folders;
+};
+
 struct Report
 {
 	std::filesystem::path m_dir;

@@ -746,7 +746,7 @@ void filter_by_options(std::vector<broken_rule> &faults, const RcFileRulesOption
 		FilterOut(HORIZONTAL_ALIGNMENT_BOTTOM);
 }
 
-int examine_rc_file_for_conformity(const fs::path &input, std::ostream &output, RcFileRulesOptions &options)
+int examine_rc_file_for_conformity(const fs::path &input, std::ostream &output, const RcFileRulesOptions &options)
 {
 	std::vector<fs::path> files;
 

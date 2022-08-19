@@ -249,7 +249,7 @@ void output_report(const std::vector<ReportEx> &reports, std::ostream &output)
 	std::cout << "\n";
 }
 
-int search_duplicate_string_resources(const fs::path &input, std::ostream &output, DuplicateStringsOptions &options)
+int search_duplicate_string_resources(const fs::path &input, std::ostream &output, const DuplicateStringsOptions &options)
 {
 	output_format order;
 
