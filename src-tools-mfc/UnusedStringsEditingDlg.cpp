@@ -6,6 +6,7 @@
 #include "UnusedStringsEditingDlg.h"
 #include "afxdialogex.h"
 #include "..\src-tools\reports.h"
+#include "..\src-tools\src-tools.h"
 
 
 // CUnusedStringsEditingDlg dialog
@@ -103,6 +104,42 @@ void CUnusedStringsEditingDlg::OnSelchangeModulelist()
 
 void CUnusedStringsEditingDlg::OnClickedRemovebutton()
 {
+	int sel = m_moduleList.GetCurSel();
+	if (LB_ERR == sel)
+		return;
+
+	size_t index = static_cast<size_t>(sel);
+	if (index >= m_report.m_folders.size())
+		return;
+
+	UnusedResources unused = m_report.m_folders.at(index);
+
+	CString file1 = CString(unused.m_rc.string().c_str());
+	CString file2 = CString(unused.m_header.string().c_str());
+	::SetFileAttributes(file1, GetFileAttributes(file1) & ~FILE_ATTRIBUTE_READONLY);
+	::SetFileAttributes(file2, GetFileAttributes(file2) & ~FILE_ATTRIBUTE_READONLY);
+
+	size_t numBefore = unused.m_names.size();
+
+	delete_unused_string_resources(unused);
+
+	size_t numAfter = unused.m_names.size();
+
 	m_removeButton.EnableWindow(FALSE);
 	m_resourceList.ResetContent();
-}
+
+	for (auto itr = unused.m_names.cbegin(); itr != unused.m_names.cend(); ++itr)
+		{
+		std::string resourceName = *itr;
+		m_resourceList.AddString(CString(resourceName.c_str()));
+		}
+
+	CString msg;
+	msg.Format(_T("Files modified:\n%ws\n%ws\n\n%zu Successful changes\n%zu Unsuccessful changes"),
+		file1.GetString(),
+		file2.GetString(),
+		numBefore - numAfter,
+		numAfter);
+
+	MessageBox(msg, _T("Unused string resources"), (0 == numAfter ? (MB_OK | MB_ICONINFORMATION) : (MB_OK | MB_ICONERROR)));
+	}

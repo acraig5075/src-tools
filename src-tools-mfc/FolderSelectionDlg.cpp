@@ -91,6 +91,7 @@ void CFolderSelectionDlg::OnBnClickedMovetorightbutton()
 	m_includeListBox.GetText(sel, name);
 	m_includeListBox.DeleteString(sel);
 	m_excludeListBox.AddString(name);
+	m_includeListBox.SetCurSel(std::min<int>(sel, m_includeListBox.GetCount() - 1));
 }
 
 
@@ -101,4 +102,5 @@ void CFolderSelectionDlg::OnBnClickedMovetoleftbutton()
 	m_excludeListBox.GetText(sel, name);
 	m_excludeListBox.DeleteString(sel);
 	m_includeListBox.AddString(name);
+	m_excludeListBox.SetCurSel(std::min<int>(sel, m_excludeListBox.GetCount() - 1));
 }

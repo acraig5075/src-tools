@@ -18,6 +18,9 @@ static std::vector<UnusedResources> get_file_list_custom(const fs::path &root, c
 		{
 		if (itr.path().extension() == extension)
 			{
+			if (itr.path().filename() == "resource.h")
+				continue;
+
 			UnusedResources p;
 			p.m_path = itr.path();
 			files.push_back(p);
@@ -44,7 +47,8 @@ void find_resource_strings(const fs::path &filename, std::vector<std::string> &r
 				{
 				size_t end = line.find_first_of(" ,;)]\t}", start);
 				std::string token = line.substr(start, end - start);
-				resources.push_back(token);
+				if (token.length() > 4)
+					resources.push_back(token);
 				off = start + 1;
 				start = line.find("IDS_", off);
 				}
@@ -54,20 +58,26 @@ void find_resource_strings(const fs::path &filename, std::vector<std::string> &r
 
 
 
-std::vector<std::string> get_resource_list(const fs::path &root, const std::string &extension)
+std::vector<std::string> get_resource_list(const fs::path &root, const std::vector<std::string> &extensions)
 {
-	auto files = get_file_list_custom(root, extension);
-
-	std::for_each(begin(files), end(files), [](UnusedResources & p)
-		{
-		find_resource_strings(p.m_path, p.m_names);
-		});
-
 	std::vector<std::string> resources;
-	std::for_each(begin(files), end(files), [&](const UnusedResources & p)
+
+	for (const std::string &ext : extensions)
 		{
-		resources.insert(resources.end(), begin(p.m_names), end(p.m_names));
-		});
+		auto files = get_file_list_custom(root, ext);
+
+		
+
+		std::for_each(begin(files), end(files), [](UnusedResources& p)
+			{
+			find_resource_strings(p.m_path, p.m_names);
+			});
+
+		std::for_each(begin(files), end(files), [&](const UnusedResources& p)
+			{
+			resources.insert(resources.end(), begin(p.m_names), end(p.m_names));
+			});
+		}
 
 	std::sort(begin(resources), end(resources));
 	resources.erase(std::unique(begin(resources), end(resources)), end(resources));
@@ -77,13 +87,13 @@ std::vector<std::string> get_resource_list(const fs::path &root, const std::stri
 
 
 /// Lookup resource ID names defined in .rc files but not referenced in any .cpp files
-int search_unused_string_resources(const fs::path& root, std::ostream& output, const UnusedStringsOptions& options, UnusedStringsOutput &out)
-	{
+int search_unused_string_resources(const fs::path &root, std::ostream &output, const UnusedStringsOptions &options, UnusedStringsOutput &out)
+{
 	std::vector<Report> reports;
 
 	std::vector<fs::path> directories = get_directory_list(root);
 
-	const std::vector<std::string>& exclusions = options.m_excludeFolders;
+	const std::vector<std::string> &exclusions = options.m_excludeFolders;
 	filter_directory_list(directories, exclusions);
 
 	output << "Excluding directories: ";
@@ -96,8 +106,8 @@ int search_unused_string_resources(const fs::path& root, std::ostream& output, c
 		if (!get_resource_filenames(dir, rc, header))
 			continue;
 
-		std::vector<std::string> used = get_resource_list(dir, ".cpp");
-		std::vector<std::string> avail = get_resource_list(dir, ".rc");
+		std::vector<std::string> used = get_resource_list(dir, { ".cpp", ".h" });
+		std::vector<std::string> avail = get_resource_list(dir, { ".rc" });
 
 		std::vector<std::string> difference;
 		std::set_difference(begin(avail), end(avail), begin(used), end(used), std::back_inserter(difference));
@@ -122,8 +132,8 @@ int search_unused_string_resources(const fs::path& root, std::ostream& output, c
 			std::string heading(dir.filename().string());
 			std::string underline(heading.length(), '-');
 			output
-				<< heading << "\n"
-				<< underline << "\n";
+					<< heading << "\n"
+					<< underline << "\n";
 
 			std::copy(begin(difference), end(difference), std::ostream_iterator<std::string>(output, "\n"));
 			output << "\n";
@@ -135,4 +145,107 @@ int search_unused_string_resources(const fs::path& root, std::ostream& output, c
 	output << "Done\n";
 
 	return 0;
+}
+
+struct DeletionCandidate
+{
+	std::string m_id;
+	int m_rcLineNum = -1;
+	int m_headerLineNum = -1;
+};
+
+
+// search a file for a given string returning the line number if found, else -1
+int find_search_term_line_number(const fs::path &filename, const std::string &search)
+{
+	std::string line;
+	std::ifstream fin(filename.string());
+
+	for (int lineNum = 0; std::getline(fin, line); ++lineNum)
+		{
+		if (line.find(search) != std::string::npos)
+			{
+			return lineNum;
+			}
+		}
+
+	return -1;
+};
+
+
+// Copy a file by making a line-by-line copy, but excluding given line numbers
+void copy_file_line_by_line(const fs::path &source, const fs::path &destination, std::vector<int> &ignoreLines)
+{
+	std::string line;
+	std::ifstream fin(source.string());
+	std::ofstream fout(destination.string());
+
+	std::sort(ignoreLines.begin(), ignoreLines.end());
+	auto itr = ignoreLines.cbegin();
+
+	for (int lineNum = 0; std::getline(fin, line); ++lineNum)
+		{
+		if (itr != ignoreLines.cend() && lineNum == *itr)
+			{
+			++itr;
+			}
+		else
+			{
+			fout << line << "\n";
+			}
+		}
+}
+
+void delete_unused_string_resources(UnusedResources &report)
+{
+	std::vector<DeletionCandidate> candidates(report.m_names.size());
+	for (size_t i = 0; i < report.m_names.size(); ++i)
+		{
+		candidates[i].m_id = report.m_names[i];
+		}
+
+	// find the line number of the string resource in both the .rc and the header file
+	for (DeletionCandidate &c : candidates)
+		{
+		std::string search = std::string(" ") + c.m_id + " ";
+		c.m_rcLineNum     = find_search_term_line_number(report.m_rc, search);
+		c.m_headerLineNum = find_search_term_line_number(report.m_header, search);
+		}
+
+	// not found candidates still have a -1 line number - these are possible errors in `search_unused_string_resources`
+	candidates.erase(std::remove_if(candidates.begin(), candidates.end(), [](const DeletionCandidate & c)
+		{
+		return c.m_rcLineNum == -1 || c.m_headerLineNum == -1;
+		}), candidates.end());
+
+	fs::path tempFileRc = report.m_rc.string() + ".bak";
+	fs::path tempFileHeader = report.m_header.string() + ".bak";
+
+	std::vector<int> ignoreLines(candidates.size());
+
+	// copy the .rc file ignoring the candidate lines
+	std::transform(candidates.begin(), candidates.end(), ignoreLines.begin(), [](const DeletionCandidate & c)
+		{
+		return c.m_rcLineNum;
+		});
+	copy_file_line_by_line(report.m_rc, tempFileRc, ignoreLines);
+
+	// copy the header file ignoring the candidate lines
+	std::transform(candidates.begin(), candidates.end(), ignoreLines.begin(), [](const DeletionCandidate & c)
+		{
+		return c.m_headerLineNum;
+		});
+	copy_file_line_by_line(report.m_header, tempFileHeader, ignoreLines);
+
+	// leave the report with the resource strings not deleted
+	for (const DeletionCandidate &c : candidates)
+		{
+		report.m_names.erase(std::find(report.m_names.cbegin(), report.m_names.cend(), c.m_id));
+		}
+
+	// replace originals
+	fs::copy(tempFileRc, report.m_rc, fs::copy_options::overwrite_existing);
+	fs::copy(tempFileHeader, report.m_header, fs::copy_options::overwrite_existing);
+	fs::remove(tempFileRc);
+	fs::remove(tempFileHeader);
 }
