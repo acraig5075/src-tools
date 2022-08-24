@@ -6,6 +6,7 @@ struct ImagesAndCommandsOptions
 
 struct DuplicateStringsOptions
 	{
+	std::vector<std::string> m_excludeFolders;
 	int m_outputFormat = 0;
 	bool m_onlySummary = false;
 	};

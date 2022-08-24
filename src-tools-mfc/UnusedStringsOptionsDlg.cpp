@@ -39,7 +39,7 @@ END_MESSAGE_MAP()
 
 // CUnusedStringsOptionsDlg message handlers
 
-CString ToString(const std::vector<std::string> &folders)
+static CString ToString(const std::vector<std::string> &folders)
 {
 	CString str;
 	for (auto itr = folders.begin(); itr != folders.end(); ++itr)
@@ -49,7 +49,7 @@ CString ToString(const std::vector<std::string> &folders)
 	return str;
 }
 
-std::vector<std::string> FromString(const CString &str)
+static std::vector<std::string> FromString(const CString &str)
 {
 	std::vector<std::string> folders = split(std::string(CW2A(str)), ';');
 	folders.erase(std::remove_if(folders.begin(), folders.end(), [](const std::string & s)

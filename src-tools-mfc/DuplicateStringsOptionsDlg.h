@@ -8,7 +8,7 @@ class CDuplicateStringsOptionsDlg : public CDialog
 	DECLARE_DYNAMIC(CDuplicateStringsOptionsDlg)
 
 public:
-	CDuplicateStringsOptionsDlg(DuplicateStringsOptions &options, CWnd* pParent = nullptr);   // standard constructor
+	CDuplicateStringsOptionsDlg(DuplicateStringsOptions &options, const CString& rootFolder, CWnd* pParent = nullptr);   // standard constructor
 	virtual ~CDuplicateStringsOptionsDlg();
 
 // Dialog Data
@@ -20,9 +20,12 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	virtual BOOL OnInitDialog();
 	virtual void OnOK();
+	afx_msg void OnBnClickedFolderbutton();
 
 private:
 	DuplicateStringsOptions& m_options;
+	CString m_rootFolder;
+	CEdit m_folderEdit;
 
 	DECLARE_MESSAGE_MAP()
 };

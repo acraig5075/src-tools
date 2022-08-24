@@ -276,6 +276,13 @@ int search_duplicate_string_resources(const fs::path &input, std::ostream &outpu
 		return 1;
 		}
 
+	const std::vector<std::string>& exclusions = options.m_excludeFolders;
+	filter_directory_list(files, exclusions);
+
+	output << "Excluding directories: ";
+	std::copy(begin(exclusions), end(exclusions), std::ostream_iterator<std::string>(output, ", "));
+	output << "\n\n";
+
 	std::vector<ReportEx> reports = find_duplicates(files);
 
 	std::sort(reports.begin(), reports.end(), [](const ReportEx& lhs, const ReportEx& rhs)

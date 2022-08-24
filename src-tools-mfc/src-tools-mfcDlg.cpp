@@ -338,7 +338,12 @@ void CsrctoolsmfcDlg::OnBnClickedImagesandcommandsOpts()
 
 void CsrctoolsmfcDlg::OnBnClickedDuplicatestringsOpts()
 	{
-	CDuplicateStringsOptionsDlg dlg(m_options.m_duplicateStringsOpts, this);
+	CString strRoot;
+	m_editBrowseCtrl.GetWindowTextW(strRoot);
+	if (strRoot.IsEmpty())
+		return;
+
+	CDuplicateStringsOptionsDlg dlg(m_options.m_duplicateStringsOpts, strRoot, this);
 	dlg.DoModal();
 	}
 
