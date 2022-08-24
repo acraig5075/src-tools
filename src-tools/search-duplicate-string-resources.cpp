@@ -2,6 +2,7 @@
 #include "string-utils.h"
 #include "filesystem-utils.h"
 #include "options.h"
+#include "reports.h"
 
 namespace fs = std::filesystem;
 
@@ -11,22 +12,6 @@ struct Resource
 	std::string m_description;
 };
 
-struct Duplicate
-{
-	std::string m_description;
-	std::vector<std::string> m_names;
-};
-
-struct ReportEx
-{
-	fs::path m_filename;
-	std::vector<Duplicate> m_duplicates;
-
-	size_t count() const
-		{
-		return m_duplicates.size();
-		}
-};
 
 std::ostream &operator<<(std::ostream &out, const Resource &r)
 {
@@ -161,9 +146,9 @@ void sort_in_replacement_order(std::vector<std::string>& names)
 	std::sort(part, names.end());
 }
 
-std::vector<ReportEx> find_duplicates(const std::vector<fs::path> &files)
+DuplicateStringsOutput find_duplicates(const std::vector<fs::path> &files)
 {
-	std::vector<ReportEx> reports;
+	DuplicateStringsOutput reports;
 
 	for (size_t i = 0; i < files.size(); ++i)
 		{
@@ -208,16 +193,16 @@ std::vector<ReportEx> find_duplicates(const std::vector<fs::path> &files)
 			itr = next;
 			}
 
-		ReportEx rep;
+		DuplicateResources rep;
 		rep.m_filename = files[i].string();
 		rep.m_duplicates = duplicates;
-		reports.push_back(rep);
+		reports.m_folders.push_back(rep);
 		}
 
 	return reports;
 }
 
-void output_report(const std::vector<ReportEx> &reports, std::ostream &output)
+void output_report(const std::vector<DuplicateResources> &reports, std::ostream &output)
 {
 	size_t col_width = 0;
 	for (const auto& r : reports)
@@ -249,7 +234,7 @@ void output_report(const std::vector<ReportEx> &reports, std::ostream &output)
 	std::cout << "\n";
 }
 
-int search_duplicate_string_resources(const fs::path &input, std::ostream &output, const DuplicateStringsOptions &options)
+int search_duplicate_string_resources(const fs::path &input, std::ostream &output, const DuplicateStringsOptions &options, DuplicateStringsOutput &out)
 {
 	output_format order;
 
@@ -283,16 +268,16 @@ int search_duplicate_string_resources(const fs::path &input, std::ostream &outpu
 	std::copy(begin(exclusions), end(exclusions), std::ostream_iterator<std::string>(output, ", "));
 	output << "\n\n";
 
-	std::vector<ReportEx> reports = find_duplicates(files);
+	out = find_duplicates(files);
 
-	std::sort(reports.begin(), reports.end(), [](const ReportEx& lhs, const ReportEx& rhs)
+	std::sort(out.m_folders.begin(), out.m_folders.end(), [](const DuplicateResources& lhs, const DuplicateResources& rhs)
 		{
 		return lhs.count() > rhs.count();
 		});
 
 	if (!options.m_onlySummary)
 		{
-		for (const auto& r : reports)
+		for (const auto& r : out.m_folders)
 			{
 			std::string text = make_report_text(r.m_duplicates, order);
 
@@ -310,7 +295,7 @@ int search_duplicate_string_resources(const fs::path &input, std::ostream &outpu
 		output << "\n";
 		}
 
-	output_report(reports, output);
+	output_report(out.m_folders, output);
 
 	output << "Done\n";
 

@@ -13,6 +13,29 @@ struct UnusedStringsOutput
 	std::vector<UnusedResources> m_folders;
 };
 
+struct Duplicate
+{
+	std::string m_description;
+	std::vector<std::string> m_names;
+};
+
+struct DuplicateResources
+{
+	std::filesystem::path m_filename;
+	std::vector<Duplicate> m_duplicates;
+
+	size_t count() const
+		{
+		return m_duplicates.size();
+		}
+};
+
+struct DuplicateStringsOutput
+{
+	std::vector<DuplicateResources> m_folders;
+};
+
+
 struct Report
 {
 	std::filesystem::path m_dir;

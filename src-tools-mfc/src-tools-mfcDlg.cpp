@@ -171,9 +171,10 @@ void CsrctoolsmfcDlg::OnBnClickedDuplicatestringsBtn()
 	}
 
 	std::stringstream ss;
+	DuplicateStringsOutput out;
 
 	BeginWaitCursor();
-	search_duplicate_string_resources(rootPath, ss, m_options.m_duplicateStringsOpts);
+	search_duplicate_string_resources(rootPath, ss, m_options.m_duplicateStringsOpts, out);
 	EndWaitCursor();
 
 	CString output(ss.str().c_str());

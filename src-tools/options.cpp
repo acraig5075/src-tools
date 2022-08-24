@@ -11,6 +11,7 @@ void WriteOptions(const std::string& filename, const Options& options)
 		{
 			{ "tool_duplicate_strings_output_format",                options.m_duplicateStringsOpts.m_outputFormat },
 			{ "tool_duplicate_strings_only_summary",                 options.m_duplicateStringsOpts.m_onlySummary },
+			{ "tool_duplicate_strings_exclude_folders",              Json{options.m_duplicateStringsOpts.m_excludeFolders} },
 			{ "tool_unused_strings_only_summary",                    options.m_unusedStringsOpts.m_onlySummary },
 			{ "tool_unused_strings_exclude_folders",                 Json{options.m_unusedStringsOpts.m_excludeFolders} },
 			{ "tool_missing_macro_only_summary",                     options.m_missingMacroOpts.m_onlySummary },
@@ -73,8 +74,15 @@ void ReadOptions(const std::string& filename, Options& options)
 	options.m_tooltipLengthOpts.m_maximum                    = json["tool_tooltip_length_maximum"].int_value();
 	options.m_tooltipLengthOpts.m_onlySummary                = json["tool_tooltip_length_only_summary"].bool_value();
 
-	Json::array folders = json["tool_unused_strings_exclude_folders"].array_items();
+	Json::array folders;
+	
+	folders = json["tool_unused_strings_exclude_folders"].array_items();
 	options.m_unusedStringsOpts.m_excludeFolders.resize(folders.size());
 	for (size_t i = 0; i < folders.size(); ++i)
 		options.m_unusedStringsOpts.m_excludeFolders[i] = folders[i].string_value();
+
+	folders = json["tool_duplicate_strings_exclude_folders"].array_items();
+	options.m_duplicateStringsOpts.m_excludeFolders.resize(folders.size());
+	for (size_t i = 0; i < folders.size(); ++i)
+		options.m_duplicateStringsOpts.m_excludeFolders[i] = folders[i].string_value();
 }

@@ -65,8 +65,11 @@ int main(int argc, char *argv[])
 			search_commands_not_in_imageandcommands(rootPath, std::cout, options.m_imagesAndCommandsOpts);
 			break;
 		case 2:
-			search_duplicate_string_resources(rootPath, std::cout, options.m_duplicateStringsOpts);
+			{
+			DuplicateStringsOutput out;
+			search_duplicate_string_resources(rootPath, std::cout, options.m_duplicateStringsOpts, out);
 			break;
+			}
 		case 3:
 			{
 			UnusedStringsOutput out;
