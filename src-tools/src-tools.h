@@ -7,6 +7,7 @@ struct UnusedStringsOptions;
 struct UnusedStringsOutput;
 struct UnusedResources;
 struct DuplicateStringsOutput;
+struct DuplicateResources;
 
 int search_commands_not_in_imageandcommands(const std::filesystem::path& rootPath, std::ostream& output, const ImagesAndCommandsOptions &options);
 int search_duplicate_string_resources(const std::filesystem::path& input, std::ostream& output, const DuplicateStringsOptions &options, DuplicateStringsOutput &out);
@@ -17,3 +18,4 @@ int search_tooltips_exceeding_max_length(const std::filesystem::path& root, std:
 int search_resizable_not_in_reg_reset(const std::filesystem::path& root, std::ostream& output, const RegResetOptions &options);
 
 void delete_unused_string_resources(UnusedResources& report);
+void replace_duplicate_string_resources(const DuplicateResources& out);

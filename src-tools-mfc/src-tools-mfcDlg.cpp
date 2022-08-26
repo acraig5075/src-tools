@@ -15,6 +15,7 @@
 #include "MissingMacroOptionsDlg.h"
 #include "TooltipLengthOptionsDlg.h"
 #include "UnusedStringsEditingDlg.h"
+#include "DuplicateStringsEditingDlg.h"
 
 
 #ifdef _DEBUG
@@ -180,6 +181,13 @@ void CsrctoolsmfcDlg::OnBnClickedDuplicatestringsBtn()
 	CString output(ss.str().c_str());
 	output.Replace(_T("\n"), _T("\r\n"));
 	m_outputEdit.SetWindowTextW(output);
+
+	int ret = MessageBox(_T("Do you want to proceed with editing?"), _T("Confirm"), MB_YESNO | MB_ICONQUESTION);
+	if (IDYES == ret)
+		{
+		CDuplicateStringsEditingDlg dlg(out, this);
+		dlg.DoModal();
+		}
 }
 
 

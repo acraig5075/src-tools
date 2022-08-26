@@ -54,6 +54,9 @@
     <ClInclude Include="UnusedStringsEditingDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DuplicateStringsEditingDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src-tools-mfc.cpp">
@@ -84,6 +87,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="UnusedStringsEditingDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DuplicateStringsEditingDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

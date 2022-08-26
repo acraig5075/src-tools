@@ -301,3 +301,8 @@ int search_duplicate_string_resources(const fs::path &input, std::ostream &outpu
 
 	return 0;
 }
+
+void replace_duplicate_string_resources(const DuplicateResources& out)
+	{
+
+	}

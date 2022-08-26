@@ -187,6 +187,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="DuplicateStringsEditingDlg.h" />
     <ClInclude Include="DuplicateStringsOptionsDlg.h" />
     <ClInclude Include="FolderSelectionDlg.h" />
     <ClInclude Include="framework.h" />
@@ -202,6 +203,7 @@
     <ClInclude Include="UnusedStringsOptionsDlg.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DuplicateStringsEditingDlg.cpp" />
     <ClCompile Include="FolderSelectionDlg.cpp" />
     <ClCompile Include="DuplicateStringsOptionsDlg.cpp" />
     <ClCompile Include="MissingMacroOptionsDlg.cpp" />

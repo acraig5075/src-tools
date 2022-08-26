@@ -3,6 +3,7 @@
 // Used by srctoolsmfc.rc
 //
 #define IDD_SRCTOOLSMFC_DIALOG          102
+#define IDD_DUPLICATESTRINGS_EDITDLG    103
 #define IDR_MAINFRAME                   128
 #define IDD_DUPLICATESTRINGS_OPTSDLG    131
 #define IDD_RCFILERULES_OPTSDLG         133
@@ -25,6 +26,7 @@
 #define IDC_MOVETORIGHTBUTTON           1008
 #define IDC_ALLBUTTON                   1008
 #define IDC_REMOVEBUTTON                1008
+#define IDC_REPLACEBUTTON               1008
 #define IDC_TOOLTIPSMAX_BTN2            1009
 #define IDC_REGRESETDLG_BTN             1009
 #define IDC_MOVETOLEFTBUTTON            1009
@@ -52,14 +54,16 @@
 #define IDC_MODULELIST                  1026
 #define IDC_RESOURCELIST                1027
 #define IDC_FILENAMESTATIC              1029
+#define IDC_DUPLICATESEDIT              1031
+#define IDC_ROTATEBUTTON                1032
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        145
+#define _APS_NEXT_RESOURCE_VALUE        146
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1031
-#define _APS_NEXT_SYMED_VALUE           101
+#define _APS_NEXT_CONTROL_VALUE         1033
+#define _APS_NEXT_SYMED_VALUE           104
 #endif
 #endif
