@@ -149,6 +149,12 @@ void CDuplicateStringsEditingDlg::OnBnClickedRotatebutton()
 	OnSelchangeResourcelist();
 	}
 
+void RemoveReadOnly(const std::string& filename)
+{
+	CString file = CString(filename.c_str());
+	::SetFileAttributes(file, GetFileAttributes(file) & ~FILE_ATTRIBUTE_READONLY);
+}
+
 
 void CDuplicateStringsEditingDlg::OnBnClickedReplacebutton()
 	{
@@ -173,15 +179,15 @@ void CDuplicateStringsEditingDlg::OnBnClickedReplacebutton()
 		if (0 == i)
 			replacer = CString(duplicates.m_names[i].c_str());
 		else
-			replacee.AppendFormat(_T("%ws; "), CString(duplicates.m_names[i].c_str()));
+			replacee.AppendFormat(_T("%ws; "), CString(duplicates.m_names[i].c_str()).GetString());
 		}
 	replacee.Trim(_T("; "));
 
 	CString msg;
-	msg.Format(_T("Proceed with using %ws as a replacement for %ws"), replacer, replacee);
+	msg.Format(_T("Proceed with using %ws as a replacement for %ws"), replacer.GetString(), replacee.GetString());
 	int ret = MessageBox(msg, _T("Proceed"), MB_YESNO | MB_ICONQUESTION);
 	if (IDYES == ret)
 		{
-		replace_duplicate_string_resources(resources);
+		replace_duplicate_string_resources(resources, index2, RemoveReadOnly);
 		}
 	}

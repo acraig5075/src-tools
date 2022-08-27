@@ -19,6 +19,7 @@
 #include <numeric>
 #include <iomanip>
 #include <unordered_map>
+#include <functional>
 #include "framework.h"
 
 #endif //PCH_H

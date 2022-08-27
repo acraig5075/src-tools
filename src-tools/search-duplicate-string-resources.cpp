@@ -302,7 +302,120 @@ int search_duplicate_string_resources(const fs::path &input, std::ostream &outpu
 	return 0;
 }
 
-void replace_duplicate_string_resources(const DuplicateResources& out)
-	{
+struct FileEdit
+{
+	fs::path m_filename;
+	int m_lineNumber = 0;
+	std::string m_replacee;
+	std::string m_replacer;
+};
 
-	}
+// Get the list of files needing editing
+std::vector<FileEdit> required_edits(const fs::path& filename, const std::string &replacer, const std::vector<std::string> &replacees)
+{
+	if (replacees.empty())
+		return {};
+
+	std::vector<FileEdit> edits;
+	std::string lcs = longest_common_substring(replacees);
+	std::ifstream fin(filename.string());
+	std::string line;
+	
+	for (int number = 0; std::getline(fin, line); ++number)
+		{
+		if (line.find(lcs, 0) == std::string::npos)
+			continue;
+
+		size_t off = 0;
+		for (const std::string& replacee : replacees)
+			{
+			size_t fnd = find_substr_exact(line, replacee, off);
+			while (fnd != std::string::npos)
+				{
+				FileEdit fe;
+				fe.m_filename = filename;
+				fe.m_lineNumber = number;
+				fe.m_replacee = replacee;
+				fe.m_replacer = replacer;
+				edits.push_back(fe);
+
+				off = fnd + replacee.length();
+				fnd = find_substr_exact(line, replacee, off);
+				}
+			}
+		}
+
+	return edits;
+}
+
+
+void replace_duplicate_string_resources(const DuplicateResources& report, size_t index, std::function<void(const std::string&)> RemoveReadOnlyFunc)
+{
+	fs::path root = report.m_filename.parent_path();
+
+	if (index >= report.m_duplicates.size())
+		return;
+
+	const Duplicate& out = report.m_duplicates.at(index);
+	if (out.m_names.size() <= 1)
+		return;
+
+	std::vector<std::string> replacees{ out.m_names.begin() + 1, out.m_names.end() };
+
+	std::vector<FileEdit> allEdits;
+
+	// Find targets for replacements
+	for (const auto& itr : fs::recursive_directory_iterator(root))
+		{
+		fs::path ext = itr.path().extension();
+
+		if (fs::is_regular_file(itr) && (".h" == ext.string() || ".cpp" == ext.string()))
+			{
+			if (itr.path().filename() == "resource.h")
+				continue;
+
+			std::vector<FileEdit> edits = required_edits(itr, out.m_names[0], replacees);
+			if (!edits.empty())
+				{
+				allEdits.insert(allEdits.end(), edits.begin(), edits.end());
+				}
+			}
+		}
+
+	// Do replacements
+	for (const FileEdit& edit : allEdits)
+		{
+		fs::path original = edit.m_filename;
+		fs::path temporary = original.string() + ".bak";
+
+		std::string line;
+		std::ifstream fin(original.string());
+		std::ofstream fout(temporary.string());
+
+		bool modified = false;
+
+		for (int number = 0; std::getline(fin, line); ++number)
+			{
+			if (number == edit.m_lineNumber)
+				{
+				std::string before = line;
+				replace_substr(line, edit.m_replacee, edit.m_replacer);
+
+				if (line != before)
+					modified = true;
+				}
+
+			fout << line << "\n";
+			}
+
+		fin.close();
+		fout.close();
+
+		if (modified)
+			{
+			RemoveReadOnlyFunc(original.string());
+			fs::copy(temporary, original, fs::copy_options::overwrite_existing);
+			fs::remove(temporary);
+			}
+		}
+}

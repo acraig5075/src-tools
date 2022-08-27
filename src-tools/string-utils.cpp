@@ -181,3 +181,53 @@ std::string pretty_print_json11(const std::string& text)
 
 	return ret;
 }
+
+
+// Longest common prefix substring of a list of strings
+std::string longest_common_substring(const std::vector<std::string>& strings)
+{
+	if (strings.empty())
+		return {};
+
+	size_t length = strings[0].length();
+	for (size_t i = 1; i < strings.size(); ++i)
+		{
+		if (strings[i].length() < length)
+			length = strings[i].length();
+		}
+
+	std::string lcs;
+
+	for (size_t i = 0; i < length; ++i)
+		{
+		char ch = strings[0][i];
+
+		for (size_t j = 1; j < strings.size(); ++j)
+			{
+			if (strings[j][i] != ch)
+				return lcs;
+			}
+
+		lcs += ch;
+		}
+
+	return lcs;
+}
+
+
+// Search for a whole-word substring 
+size_t find_substr_exact(const std::string& str, const std::string& substr, size_t off)
+{
+	size_t fnd = str.find(substr, off);
+	while (fnd != std::string::npos)
+		{
+		char next = str[fnd + substr.length()];
+		if (!std::isalnum(next))
+			return fnd;
+
+		off = fnd + substr.length();
+		fnd = str.find(substr, off);
+		}
+
+	return std::string::npos;
+}
