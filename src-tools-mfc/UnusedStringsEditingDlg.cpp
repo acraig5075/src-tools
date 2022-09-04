@@ -102,6 +102,13 @@ void CUnusedStringsEditingDlg::OnSelchangeModulelist()
 }
 
 
+static void RemoveReadOnly(const std::string& filename)
+{
+	CString file = CString(filename.c_str());
+	::SetFileAttributes(file, GetFileAttributes(file) & ~FILE_ATTRIBUTE_READONLY);
+}
+
+
 void CUnusedStringsEditingDlg::OnClickedRemovebutton()
 {
 	int sel = m_moduleList.GetCurSel();
@@ -116,12 +123,10 @@ void CUnusedStringsEditingDlg::OnClickedRemovebutton()
 
 	CString file1 = CString(unused.m_rc.string().c_str());
 	CString file2 = CString(unused.m_header.string().c_str());
-	::SetFileAttributes(file1, GetFileAttributes(file1) & ~FILE_ATTRIBUTE_READONLY);
-	::SetFileAttributes(file2, GetFileAttributes(file2) & ~FILE_ATTRIBUTE_READONLY);
 
 	size_t numBefore = unused.m_names.size();
 
-	delete_unused_string_resources(unused);
+	delete_unused_string_resources(unused, RemoveReadOnly);
 
 	size_t numAfter = unused.m_names.size();
 
@@ -142,4 +147,4 @@ void CUnusedStringsEditingDlg::OnClickedRemovebutton()
 		numAfter);
 
 	MessageBox(msg, _T("Unused string resources"), (0 == numAfter ? (MB_OK | MB_ICONINFORMATION) : (MB_OK | MB_ICONERROR)));
-	}
+}

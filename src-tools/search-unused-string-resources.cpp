@@ -196,7 +196,7 @@ void copy_file_line_by_line(const fs::path &source, const fs::path &destination,
 		}
 }
 
-void delete_unused_string_resources(UnusedResources &report)
+void delete_unused_string_resources(UnusedResources &report, std::function<void(const std::string&)> RemoveReadOnlyFunc)
 {
 	std::vector<DeletionCandidate> candidates(report.m_names.size());
 	for (size_t i = 0; i < report.m_names.size(); ++i)
@@ -244,8 +244,25 @@ void delete_unused_string_resources(UnusedResources &report)
 		}
 
 	// replace originals
+	RemoveReadOnlyFunc(report.m_rc.string());
+	RemoveReadOnlyFunc(report.m_header.string());
 	fs::copy(tempFileRc, report.m_rc, fs::copy_options::overwrite_existing);
 	fs::copy(tempFileHeader, report.m_header, fs::copy_options::overwrite_existing);
 	fs::remove(tempFileRc);
 	fs::remove(tempFileHeader);
 }
+
+size_t count_unused_string_resources(const fs::path& path)
+	{
+	std::stringstream ss;
+	UnusedStringsOptions options;
+	UnusedStringsOutput out;
+
+	search_unused_string_resources(path, ss, options, out);
+	if (!out.m_folders.empty())
+		{
+		return out.m_folders[0].m_names.size();
+		}
+
+	return 0;
+	}

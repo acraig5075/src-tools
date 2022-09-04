@@ -348,15 +348,14 @@ std::vector<FileEdit> required_edits(const fs::path& filename, const std::string
 	return edits;
 }
 
-
-void replace_duplicate_string_resources(const DuplicateResources& report, size_t index, std::function<void(const std::string&)> RemoveReadOnlyFunc)
+void replace_duplicate_string_resources(DuplicateResources& report, size_t index, std::function<void(const std::string&)> RemoveReadOnlyFunc)
 {
 	fs::path root = report.m_filename.parent_path();
 
 	if (index >= report.m_duplicates.size())
 		return;
 
-	const Duplicate& out = report.m_duplicates.at(index);
+	Duplicate& out = report.m_duplicates.at(index);
 	if (out.m_names.size() <= 1)
 		return;
 
@@ -382,6 +381,8 @@ void replace_duplicate_string_resources(const DuplicateResources& report, size_t
 			}
 		}
 
+	bool modified = false;
+
 	// Do replacements
 	for (const FileEdit& edit : allEdits)
 		{
@@ -392,17 +393,16 @@ void replace_duplicate_string_resources(const DuplicateResources& report, size_t
 		std::ifstream fin(original.string());
 		std::ofstream fout(temporary.string());
 
-		bool modified = false;
+		modified = false;
 
 		for (int number = 0; std::getline(fin, line); ++number)
 			{
 			if (number == edit.m_lineNumber)
 				{
-				std::string before = line;
-				replace_substr(line, edit.m_replacee, edit.m_replacer);
-
-				if (line != before)
+				if (replace_substr(line, edit.m_replacee, edit.m_replacer))
+					{
 					modified = true;
+					}
 				}
 
 			fout << line << "\n";
@@ -413,9 +413,14 @@ void replace_duplicate_string_resources(const DuplicateResources& report, size_t
 
 		if (modified)
 			{
+			// overwrite original file with new
 			RemoveReadOnlyFunc(original.string());
 			fs::copy(temporary, original, fs::copy_options::overwrite_existing);
 			fs::remove(temporary);
 			}
 		}
+
+	auto itr = report.m_duplicates.cbegin() + index;
+	if (modified)
+		report.m_duplicates.erase(itr);
 }

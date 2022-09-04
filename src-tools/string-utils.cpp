@@ -156,15 +156,19 @@ std::string erase_substr(const std::string &str, const std::string &substr)
 
 
 // Replace every occurence of a substring with another
-void replace_substr(std::string& str, const std::string& substr, const std::string& replacement)
+bool replace_substr(std::string& str, const std::string& substr, const std::string& replacement)
 {
+	bool modified = false;
 	size_t off = 0;
 	size_t fnd = 0;;
 	while ((fnd = str.find(substr, off)) != std::string::npos)
 		{
 		str = str.replace(fnd, substr.size(), replacement);
 		off = fnd + replacement.size();
+		modified = true;
 		}
+
+	return modified;
 }
 
 

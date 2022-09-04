@@ -149,7 +149,8 @@ void CDuplicateStringsEditingDlg::OnBnClickedRotatebutton()
 	OnSelchangeResourcelist();
 	}
 
-void RemoveReadOnly(const std::string& filename)
+
+static void RemoveReadOnly(const std::string& filename)
 {
 	CString file = CString(filename.c_str());
 	::SetFileAttributes(file, GetFileAttributes(file) & ~FILE_ATTRIBUTE_READONLY);
@@ -168,8 +169,8 @@ void CDuplicateStringsEditingDlg::OnBnClickedReplacebutton()
 	if (index1 >= m_report.m_folders.size() || index2 >= m_report.m_folders.at(index1).m_duplicates.size())
 		return;
 
-	const DuplicateResources& resources = m_report.m_folders.at(index1);
-	const Duplicate& duplicates = resources.m_duplicates.at(index2);
+	DuplicateResources& resources = m_report.m_folders.at(index1);
+	Duplicate& duplicates = resources.m_duplicates.at(index2);
 
 	CString replacer;
 	CString replacee;
@@ -188,6 +189,28 @@ void CDuplicateStringsEditingDlg::OnBnClickedReplacebutton()
 	int ret = MessageBox(msg, _T("Proceed"), MB_YESNO | MB_ICONQUESTION);
 	if (IDYES == ret)
 		{
+		std::filesystem::path folder = resources.m_filename.parent_path();
+
+		size_t numExpectedRemovals = resources.m_duplicates.at(index2).m_names.size() - 1;
+		size_t numDuplicatesBefore = resources.count();
+		size_t numUnusedBefore = count_unused_string_resources(folder);
+
 		replace_duplicate_string_resources(resources, index2, RemoveReadOnly);
+
+		size_t numDuplicatesAfter = resources.count();
+		size_t numUnusedAfter = count_unused_string_resources(folder);
+
+		size_t numRemoved = numDuplicatesBefore - numDuplicatesAfter;
+		size_t numNewUnused = numUnusedAfter - numUnusedBefore;
+
+		if (numRemoved)
+			OnSelchangeModulelist();
+
+		CString msg;
+		msg.Format(_T("%zu Duplicate resource(s) removed\n%zu New unused resources"),
+			numExpectedRemovals,
+			numNewUnused);
+
+		MessageBox(msg, _T("Unused string resources"), (numExpectedRemovals == numNewUnused ? (MB_OK | MB_ICONINFORMATION) : (MB_OK | MB_ICONERROR)));
 		}
 	}
