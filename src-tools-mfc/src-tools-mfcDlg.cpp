@@ -16,6 +16,7 @@
 #include "TooltipLengthOptionsDlg.h"
 #include "UnusedStringsEditingDlg.h"
 #include "DuplicateStringsEditingDlg.h"
+#include "TooltipLengthEditingDlg.h"
 
 
 #ifdef _DEBUG
@@ -313,11 +314,8 @@ void CsrctoolsmfcDlg::OnBnClickedTooltipsmaxBtn()
 	int ret = MessageBox(_T("Do you want to proceed with editing?"), _T("Confirm"), MB_YESNO | MB_ICONQUESTION);
 	if (IDYES == ret)
 		{
-		CString msg;
-		for (const auto& o : out.m_projectResources)
-			msg.AppendFormat(_T("%ws : %zu\n"), o.m_rcFilename.wstring().c_str(), o.m_stringResources.size());
-
-		MessageBox(msg.GetString(), _T("Information"), MB_OK | MB_ICONINFORMATION);
+		CTooltipLengthEditingDlg dlg(out, this);
+		dlg.DoModal();
 		}
 	}
 
