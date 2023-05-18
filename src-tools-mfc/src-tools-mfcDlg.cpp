@@ -313,7 +313,11 @@ void CsrctoolsmfcDlg::OnBnClickedTooltipsmaxBtn()
 	int ret = MessageBox(_T("Do you want to proceed with editing?"), _T("Confirm"), MB_YESNO | MB_ICONQUESTION);
 	if (IDYES == ret)
 		{
-		MessageBox(_T("Not yet implemented"), _T("Information"), MB_OK | MB_ICONINFORMATION);
+		CString msg;
+		for (const auto& o : out.m_projectResources)
+			msg.AppendFormat(_T("%ws : %zu\n"), o.m_rcFilename.wstring().c_str(), o.m_stringResources.size());
+
+		MessageBox(msg.GetString(), _T("Information"), MB_OK | MB_ICONINFORMATION);
 		}
 	}
 

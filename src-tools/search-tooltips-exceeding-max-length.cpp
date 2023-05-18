@@ -171,6 +171,7 @@ int search_tooltips_exceeding_max_length(const fs::path &root, std::ostream &out
 		std::vector<IDSResource> cppStrings; // resource strings (name only) used by tooltips in the .cpp files
 		std::vector<unsigned int> cppValues; // resource string numbers used by tooltips in the .cpp files
 		std::unordered_map<unsigned int, std::string> valueMap; // map of resource.h number to resource name
+		fs::path rcFilename;
 
 		for (const auto& file : fs::directory_iterator(dir))
 			{
@@ -182,6 +183,7 @@ int search_tooltips_exceeding_max_length(const fs::path &root, std::ostream &out
 					}
 				else if (file.path().extension() == ".rc")
 					{
+					rcFilename = file;
 					rcStrings = parse_string_table(file);
 					}
 				else if (file.path().filename() == "Resource.h")
@@ -225,6 +227,11 @@ int search_tooltips_exceeding_max_length(const fs::path &root, std::ostream &out
 			{
 			r.m_description.insert(options.m_maximum, "|");
 			}
+
+		TooltipLength tooltips;
+		tooltips.m_rcFilename = rcFilename;
+		tooltips.m_stringResources = suspects;
+		out.m_projectResources.push_back(tooltips);
 
 		Report report;
 		report.m_dir = dir;
