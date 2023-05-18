@@ -300,15 +300,22 @@ void CsrctoolsmfcDlg::OnBnClickedTooltipsmaxBtn()
 	}
 
 	std::stringstream ss;
+	TooltipLengthOutput out;
 
 	BeginWaitCursor();
-	search_tooltips_exceeding_max_length(rootPath, ss, m_options.m_tooltipLengthOpts);
+	search_tooltips_exceeding_max_length(rootPath, ss, m_options.m_tooltipLengthOpts, out);
 	EndWaitCursor();
 
 	CString output(ss.str().c_str());
 	output.Replace(_T("\n"), _T("\r\n"));
 	m_outputEdit.SetWindowTextW(output);
-}
+
+	int ret = MessageBox(_T("Do you want to proceed with editing?"), _T("Confirm"), MB_YESNO | MB_ICONQUESTION);
+	if (IDYES == ret)
+		{
+		MessageBox(_T("Not yet implemented"), _T("Information"), MB_OK | MB_ICONINFORMATION);
+		}
+	}
 
 
 void CsrctoolsmfcDlg::OnBnClickedRegresetdlgBtn()

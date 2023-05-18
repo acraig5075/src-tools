@@ -83,8 +83,11 @@ int main(int argc, char *argv[])
 			examine_rc_file_for_conformity(rootPath, std::cout, options.m_rcFileRulesOpts);
 			break;
 		case 6:
-			search_tooltips_exceeding_max_length(rootPath, std::cout, options.m_tooltipLengthOpts);
+			{
+			TooltipLengthOutput out;
+			search_tooltips_exceeding_max_length(rootPath, std::cout, options.m_tooltipLengthOpts, out);
 			break;
+			}
 		case 7:
 			search_resizable_not_in_reg_reset(rootPath, std::cout, options.m_regResetOpts);
 			break;

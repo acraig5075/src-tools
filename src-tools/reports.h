@@ -35,6 +35,22 @@ struct DuplicateStringsOutput
 	std::vector<DuplicateResources> m_folders;
 };
 
+struct IDSResource
+{
+	std::string m_name;
+	std::string m_description;
+};
+
+struct TooltipLength
+{
+	std::filesystem::path m_rcFilename;
+	std::vector<IDSResource> m_stringResources;
+};
+
+struct TooltipLengthOutput
+{
+	std::vector<TooltipLength> m_projectResources;
+};
 
 struct Report
 {
