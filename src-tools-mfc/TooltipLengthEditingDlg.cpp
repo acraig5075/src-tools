@@ -94,7 +94,13 @@ void CTooltipLengthEditingDlg::LoadData()
 
 	m_fileLabel.SetWindowTextW(CA2W(tooltip.m_rcFilename.string().c_str()));
 	m_resourceLabel.SetWindowTextW(CA2W(resource.m_name.c_str()));
-	m_stringEdit.SetWindowTextW(CA2W(resource.m_description.c_str()));
+
+	// show the description unless it's already a pending change
+	auto itr = std::find_if(m_changes.cbegin(), m_changes.cend(), [&](const TooltipReplacement& pending) { return pending.m_name == resource.m_name; });
+	if (itr == m_changes.end())
+		m_stringEdit.SetWindowTextW(CA2W(resource.m_description.c_str()));
+	else
+		m_stringEdit.SetWindowTextW(CA2W(itr->m_newString.c_str()));
 
 	CString fileCount, resourceCount, stringLength;
 	fileCount.Format(_T("%zu/%zu"), m_currentFile + 1, m_data.m_projectResources.size());
@@ -182,12 +188,19 @@ void CTooltipLengthEditingDlg::OnBnClickedUpdatebutton()
 
 	TooltipReplacement change;
 	change.m_filename = m_data.m_projectResources[m_currentFile].m_rcFilename;
+	change.m_name = m_data.m_projectResources[m_currentFile].m_stringResources[m_currentResource].m_name;
 	change.m_oldString = m_data.m_projectResources[m_currentFile].m_stringResources[m_currentResource].m_description;
 	change.m_newString = CW2A(newString);
 
+	auto itr = std::find_if(m_changes.cbegin(), m_changes.cend(), [&](const TooltipReplacement& pending) { return pending.m_name == change.m_name; });
+	if (itr != m_changes.cend())
+		{
+		m_changes.erase(itr);
+		}
+
 	if (change.m_newString != change.m_oldString)
 		{
-		m_changes.Add(change);
+		m_changes.push_back(change);
 
 		m_currentResource++;
 		if (m_currentResource == m_data.m_projectResources[m_currentFile].m_stringResources.size())
@@ -208,7 +221,7 @@ void CTooltipLengthEditingDlg::OnBnClickedUpdatebutton()
 		}
 
 	CString changesCount;
-	changesCount.Format(_T("%I64d updates wating to be saved"), m_changes.GetCount());
+	changesCount.Format(_T("%zu updates wating to be saved"), m_changes.size());
 	m_changesLabel.SetWindowTextW(changesCount);
 	m_changesLabel.ShowWindow(SW_SHOW);
 }
@@ -222,11 +235,11 @@ static void RemoveReadOnly(const std::string &filename)
 void CTooltipLengthEditingDlg::OnOK()
 {
 	CString msg;
-	msg.Format(_T("Proceed with saving %I64d changes to .rc file(s), making them readable if necessary?"), m_changes.GetCount());
+	msg.Format(_T("Proceed with saving %zu changes to .rc file(s), making them readable if necessary?"), m_changes.size());
 	if (IDNO == MessageBox(msg, _T("Warning"), MB_YESNO | MB_ICONQUESTION))
 		CDialogEx::OnCancel();
 
-	for (INT_PTR i = 0; i < m_changes.GetCount(); ++i)
+	for (size_t i = 0; i < m_changes.size(); ++i)
 		{
 		replace_tooltip(m_changes[i], RemoveReadOnly);
 		}

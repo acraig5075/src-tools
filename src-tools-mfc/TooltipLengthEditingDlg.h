@@ -36,7 +36,7 @@ private:
 	TooltipLengthOutput &m_data;
 	size_t m_currentFile = 0;
 	size_t m_currentResource = 0;
-	CArray<TooltipReplacement, TooltipReplacement> m_changes;
+	std::vector<TooltipReplacement> m_changes;
 
 	CStatic m_fileLabel;
 	CStatic m_resourceLabel;
