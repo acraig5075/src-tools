@@ -12,7 +12,7 @@
 
 IMPLEMENT_DYNAMIC(CTooltipLengthEditingDlg, CDialogEx)
 
-CTooltipLengthEditingDlg::CTooltipLengthEditingDlg(TooltipLengthOutput& data, CWnd* pParent /*=nullptr*/)
+CTooltipLengthEditingDlg::CTooltipLengthEditingDlg(TooltipLengthOutput &data, CWnd *pParent /*=nullptr*/)
 	: CDialogEx(IDD_TOOLTIPLENGTH_EDITDLG, pParent)
 	, m_data(data)
 {
@@ -22,7 +22,7 @@ CTooltipLengthEditingDlg::~CTooltipLengthEditingDlg()
 {
 }
 
-void CTooltipLengthEditingDlg::DoDataExchange(CDataExchange* pDX)
+void CTooltipLengthEditingDlg::DoDataExchange(CDataExchange *pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_FILELABEL, m_fileLabel);
@@ -33,7 +33,7 @@ void CTooltipLengthEditingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_RESOURCEPREVBUTTON, m_prevResourceButton);
 	DDX_Control(pDX, IDC_RESOURCENEXTBUTTON, m_nextResourceButton);
 	DDX_Control(pDX, IDC_UPDATESCOUNT, m_changesLabel);
-	}
+}
 
 
 BEGIN_MESSAGE_MAP(CTooltipLengthEditingDlg, CDialogEx)
@@ -50,16 +50,19 @@ END_MESSAGE_MAP()
 
 
 BOOL CTooltipLengthEditingDlg::OnInitDialog()
-	{
+{
 	CDialogEx::OnInitDialog();
 
 	// ignore empty sets
-	m_data.m_projectResources.erase(std::remove_if(m_data.m_projectResources.begin(), m_data.m_projectResources.end(), [](const TooltipLength& tooltip) { return tooltip.m_stringResources.empty(); }), m_data.m_projectResources.end());
+	m_data.m_projectResources.erase(std::remove_if(m_data.m_projectResources.begin(), m_data.m_projectResources.end(), [](const TooltipLength & tooltip)
+		{
+		return tooltip.m_stringResources.empty();
+		}), m_data.m_projectResources.end());
 
 	// erase the '|' max indicator
 	for (auto itr = m_data.m_projectResources.begin(); itr != m_data.m_projectResources.end(); ++itr)
 		{
-		std::for_each(itr->m_stringResources.begin(), itr->m_stringResources.end(), [](IDSResource& resource)
+		std::for_each(itr->m_stringResources.begin(), itr->m_stringResources.end(), [](IDSResource & resource)
 			{
 			std::string &s = resource.m_description;
 			s.erase(std::find(s.begin(), s.end(), '|'));
@@ -71,7 +74,7 @@ BOOL CTooltipLengthEditingDlg::OnInitDialog()
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
-	}
+}
 
 void CTooltipLengthEditingDlg::LoadData()
 {
@@ -101,52 +104,52 @@ void CTooltipLengthEditingDlg::LoadData()
 	SetDlgItemTextW(IDC_FILECOUNT, fileCount.GetString());
 	SetDlgItemTextW(IDC_RESOURCECOUNT, resourceCount.GetString());
 	SetDlgItemTextW(IDC_LENGTHCOUNT, stringLength.GetString());
-	}
+}
 
 void CTooltipLengthEditingDlg::OnBnClickedFileprevbutton()
-	{
+{
 	if (m_currentFile > 0)
 		{
 		m_currentFile--;
 		m_currentResource = 0;
-		EnableControls(); 
+		EnableControls();
 		LoadData();
 		}
-	}
+}
 
 void CTooltipLengthEditingDlg::OnBnClickedFilenextbutton()
-	{
+{
 	if (m_currentFile < m_data.m_projectResources.size() - 1)
 		{
 		m_currentFile++;
 		m_currentResource = 0;
-		EnableControls(); 
+		EnableControls();
 		LoadData();
 		}
-	}
+}
 
 void CTooltipLengthEditingDlg::OnBnClickedResourceprevbutton()
-	{
+{
 	if (m_currentResource > 0)
 		{
 		m_currentResource--;
-		EnableControls(); 
+		EnableControls();
 		LoadData();
 		}
-	}
+}
 
 void CTooltipLengthEditingDlg::OnBnClickedResourcenextbutton()
-	{
+{
 	if (m_currentResource < m_data.m_projectResources[m_currentFile].m_stringResources.size())
 		{
 		m_currentResource++;
 		EnableControls();
 		LoadData();
 		}
-	}
+}
 
 void CTooltipLengthEditingDlg::EnableControls()
-	{
+{
 	m_prevFileButton.EnableWindow(m_currentFile > 0);
 	m_nextFileButton.EnableWindow(m_currentFile + 1 < m_data.m_projectResources.size());
 
@@ -155,11 +158,11 @@ void CTooltipLengthEditingDlg::EnableControls()
 		m_prevResourceButton.EnableWindow(m_currentResource > 0);
 		m_nextResourceButton.EnableWindow(m_currentResource + 1 < m_data.m_projectResources[m_currentFile].m_stringResources.size());
 		}
-	}
+}
 
 
 void CTooltipLengthEditingDlg::OnChangeStringedit()
-	{
+{
 	// TODO:  If this is a RICHEDIT control, the control will not
 	// send this notification unless you override the CDialogEx::OnInitDialog()
 	// function and call CRichEditCtrl().SetEventMask()
@@ -169,11 +172,11 @@ void CTooltipLengthEditingDlg::OnChangeStringedit()
 	CString strLength;
 	strLength.Format(_T("%d"), length);
 	SetDlgItemTextW(IDC_LENGTHCOUNT, strLength.GetString());
-	}
+}
 
 
 void CTooltipLengthEditingDlg::OnBnClickedUpdatebutton()
-	{
+{
 	CString newString;
 	m_stringEdit.GetWindowTextW(newString);
 
@@ -208,9 +211,9 @@ void CTooltipLengthEditingDlg::OnBnClickedUpdatebutton()
 	changesCount.Format(_T("%I64d updates wating to be saved"), m_changes.GetCount());
 	m_changesLabel.SetWindowTextW(changesCount);
 	m_changesLabel.ShowWindow(SW_SHOW);
-	}
+}
 
-static void RemoveReadOnly(const std::string& filename)
+static void RemoveReadOnly(const std::string &filename)
 {
 	CString file = CString(filename.c_str());
 	::SetFileAttributes(file, GetFileAttributes(file) & ~FILE_ATTRIBUTE_READONLY);
@@ -229,4 +232,4 @@ void CTooltipLengthEditingDlg::OnOK()
 		}
 
 	CDialogEx::OnOK();
-	}
+}

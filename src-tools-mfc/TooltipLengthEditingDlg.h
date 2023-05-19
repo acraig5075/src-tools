@@ -9,7 +9,7 @@ class CTooltipLengthEditingDlg : public CDialogEx
 	DECLARE_DYNAMIC(CTooltipLengthEditingDlg)
 
 public:
-	CTooltipLengthEditingDlg(TooltipLengthOutput &data, CWnd* pParent = nullptr);   // standard constructor
+	CTooltipLengthEditingDlg(TooltipLengthOutput &data, CWnd *pParent = nullptr);   // standard constructor
 	virtual ~CTooltipLengthEditingDlg();
 
 // Dialog Data
@@ -18,7 +18,7 @@ public:
 #endif
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	virtual void DoDataExchange(CDataExchange *pDX);    // DDX/DDV support
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedFileprevbutton();
 	afx_msg void OnBnClickedFilenextbutton();
@@ -33,7 +33,7 @@ private:
 	void EnableControls();
 
 private:
-	TooltipLengthOutput& m_data;
+	TooltipLengthOutput &m_data;
 	size_t m_currentFile = 0;
 	size_t m_currentResource = 0;
 	CArray<TooltipReplacement, TooltipReplacement> m_changes;
@@ -48,4 +48,4 @@ private:
 	CButton m_nextResourceButton;
 
 	DECLARE_MESSAGE_MAP()
-	};
+};
