@@ -32,6 +32,7 @@ void CTooltipLengthEditingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_FILENEXTBUTTON, m_nextFileButton);
 	DDX_Control(pDX, IDC_RESOURCEPREVBUTTON, m_prevResourceButton);
 	DDX_Control(pDX, IDC_RESOURCENEXTBUTTON, m_nextResourceButton);
+	DDX_Control(pDX, IDC_UPDATESCOUNT, m_changesLabel);
 	}
 
 
@@ -202,6 +203,11 @@ void CTooltipLengthEditingDlg::OnBnClickedUpdatebutton()
 		m_stringEdit.SetFocus();
 		m_stringEdit.SetSel(0, -1);
 		}
+
+	CString changesCount;
+	changesCount.Format(_T("%I64d updates wating to be saved"), m_changes.GetCount());
+	m_changesLabel.SetWindowTextW(changesCount);
+	m_changesLabel.ShowWindow(SW_SHOW);
 	}
 
 static void RemoveReadOnly(const std::string& filename)

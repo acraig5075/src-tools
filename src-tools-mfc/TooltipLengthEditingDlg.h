@@ -26,6 +26,7 @@ protected:
 	afx_msg void OnBnClickedResourcenextbutton();
 	afx_msg void OnChangeStringedit();
 	afx_msg void OnBnClickedUpdatebutton();
+	virtual void OnOK();
 
 private:
 	void LoadData();
@@ -39,6 +40,7 @@ private:
 
 	CStatic m_fileLabel;
 	CStatic m_resourceLabel;
+	CStatic m_changesLabel;
 	CEdit m_stringEdit;
 	CButton m_prevFileButton;
 	CButton m_nextFileButton;
@@ -46,5 +48,4 @@ private:
 	CButton m_nextResourceButton;
 
 	DECLARE_MESSAGE_MAP()
-		virtual void OnOK();
 	};
