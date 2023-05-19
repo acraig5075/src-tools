@@ -314,7 +314,8 @@ void CsrctoolsmfcDlg::OnBnClickedTooltipsmaxBtn()
 	int ret = MessageBox(_T("Do you want to proceed with editing?"), _T("Confirm"), MB_YESNO | MB_ICONQUESTION);
 	if (IDYES == ret)
 		{
-		CTooltipLengthEditingDlg dlg(out, this);
+		size_t maxLength = m_options.m_tooltipLengthOpts.m_maximum;
+		CTooltipLengthEditingDlg dlg(out, maxLength, this);
 		dlg.DoModal();
 		}
 	}

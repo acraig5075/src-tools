@@ -8,14 +8,20 @@
 #include "..\src-tools\src-tools.h"
 
 
+static COLORREF RED = RGB(200, 0, 0);
+static COLORREF GREEN = RGB(0, 200, 0);
+
+
 // CTooltipLengthEditingDlg dialog
 
 IMPLEMENT_DYNAMIC(CTooltipLengthEditingDlg, CDialogEx)
 
-CTooltipLengthEditingDlg::CTooltipLengthEditingDlg(TooltipLengthOutput &data, CWnd *pParent /*=nullptr*/)
+CTooltipLengthEditingDlg::CTooltipLengthEditingDlg(TooltipLengthOutput &data, size_t maxLength, CWnd *pParent /*=nullptr*/)
 	: CDialogEx(IDD_TOOLTIPLENGTH_EDITDLG, pParent)
 	, m_data(data)
+	, m_maxLength(maxLength)
 {
+	m_textColour = ::GetSysColor(COLOR_WINDOWTEXT);
 }
 
 CTooltipLengthEditingDlg::~CTooltipLengthEditingDlg()
@@ -43,6 +49,7 @@ BEGIN_MESSAGE_MAP(CTooltipLengthEditingDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_RESOURCENEXTBUTTON, &CTooltipLengthEditingDlg::OnBnClickedResourcenextbutton)
 	ON_EN_CHANGE(IDC_STRINGEDIT, &CTooltipLengthEditingDlg::OnChangeStringedit)
 	ON_BN_CLICKED(IDC_UPDATEBUTTON, &CTooltipLengthEditingDlg::OnBnClickedUpdatebutton)
+	ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
 
@@ -96,11 +103,15 @@ void CTooltipLengthEditingDlg::LoadData()
 	m_resourceLabel.SetWindowTextW(CA2W(resource.m_name.c_str()));
 
 	// show the description unless it's already a pending change
+	std::string str;
 	auto itr = std::find_if(m_changes.cbegin(), m_changes.cend(), [&](const TooltipReplacement& pending) { return pending.m_name == resource.m_name; });
 	if (itr == m_changes.end())
-		m_stringEdit.SetWindowTextW(CA2W(resource.m_description.c_str()));
+		str = resource.m_description;
 	else
-		m_stringEdit.SetWindowTextW(CA2W(itr->m_newString.c_str()));
+		str = itr->m_newString;
+
+	m_textColour = str.length() <= m_maxLength ? GREEN : RED;
+	m_stringEdit.SetWindowTextW(CA2W(str.c_str()));
 
 	CString fileCount, resourceCount, stringLength;
 	fileCount.Format(_T("%zu/%zu"), m_currentFile + 1, m_data.m_projectResources.size());
@@ -175,6 +186,8 @@ void CTooltipLengthEditingDlg::OnChangeStringedit()
 	// with the ENM_CHANGE flag ORed into the mask.
 
 	int length = m_stringEdit.GetWindowTextLengthW();
+	m_textColour = length <= m_maxLength ? GREEN : RED;
+
 	CString strLength;
 	strLength.Format(_T("%d"), length);
 	SetDlgItemTextW(IDC_LENGTHCOUNT, strLength.GetString());
@@ -236,8 +249,15 @@ void CTooltipLengthEditingDlg::OnOK()
 {
 	CString msg;
 	msg.Format(_T("Proceed with saving %zu changes to .rc file(s), making them readable if necessary?"), m_changes.size());
-	if (IDNO == MessageBox(msg, _T("Warning"), MB_YESNO | MB_ICONQUESTION))
-		CDialogEx::OnCancel();
+	switch (MessageBox(msg, _T("Warning"), MB_YESNOCANCEL | MB_ICONQUESTION))
+		{
+		case IDYES:
+			break;
+		case IDNO:
+			CDialogEx::OnCancel();
+		case IDCANCEL:
+			return;
+		}
 
 	for (size_t i = 0; i < m_changes.size(); ++i)
 		{
@@ -246,3 +266,18 @@ void CTooltipLengthEditingDlg::OnOK()
 
 	CDialogEx::OnOK();
 }
+
+
+HBRUSH CTooltipLengthEditingDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+	{
+	HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
+
+	if (nCtlColor == CTLCOLOR_EDIT && pWnd->GetDlgCtrlID() == IDC_STRINGEDIT)
+		{
+		pDC->SetTextColor(m_textColour);
+		return hbr;
+		}
+
+	// TODO:  Return a different brush if the default is not desired
+	return hbr;
+	}
