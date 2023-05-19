@@ -5,6 +5,7 @@
 #include "src-tools-mfc.h"
 #include "afxdialogex.h"
 #include "TooltipLengthEditingDlg.h"
+#include "..\src-tools\src-tools.h"
 
 
 // CTooltipLengthEditingDlg dialog
@@ -51,7 +52,18 @@ BOOL CTooltipLengthEditingDlg::OnInitDialog()
 	{
 	CDialogEx::OnInitDialog();
 
+	// ignore empty sets
 	m_data.m_projectResources.erase(std::remove_if(m_data.m_projectResources.begin(), m_data.m_projectResources.end(), [](const TooltipLength& tooltip) { return tooltip.m_stringResources.empty(); }), m_data.m_projectResources.end());
+
+	// erase the '|' max indicator
+	for (auto itr = m_data.m_projectResources.begin(); itr != m_data.m_projectResources.end(); ++itr)
+		{
+		std::for_each(itr->m_stringResources.begin(), itr->m_stringResources.end(), [](IDSResource& resource)
+			{
+			std::string &s = resource.m_description;
+			s.erase(std::find(s.begin(), s.end(), '|'));
+			});
+		}
 
 	EnableControls();
 	LoadData();
@@ -78,10 +90,7 @@ void CTooltipLengthEditingDlg::LoadData()
 
 	m_fileLabel.SetWindowTextW(CA2W(tooltip.m_rcFilename.string().c_str()));
 	m_resourceLabel.SetWindowTextW(CA2W(resource.m_name.c_str()));
-
-	CString str = CA2W(resource.m_description.c_str());
-	str.Remove(_T('|'));
-	m_stringEdit.SetWindowTextW(str);
+	m_stringEdit.SetWindowTextW(CA2W(resource.m_description.c_str()));
 
 	CString fileCount, resourceCount, stringLength;
 	fileCount.Format(_T("%zu/%zu"), m_currentFile + 1, m_data.m_projectResources.size());
@@ -164,10 +173,13 @@ void CTooltipLengthEditingDlg::OnChangeStringedit()
 
 void CTooltipLengthEditingDlg::OnBnClickedUpdatebutton()
 	{
-	Change change;
-	change.m_rcFilename = m_data.m_projectResources[m_currentFile].m_rcFilename.c_str();
-	change.m_oldString = m_data.m_projectResources[m_currentFile].m_stringResources[m_currentResource].m_description.c_str();
-	m_stringEdit.GetWindowTextW(change.m_newString);
+	CString newString;
+	m_stringEdit.GetWindowTextW(newString);
+
+	TooltipReplacement change;
+	change.m_filename = m_data.m_projectResources[m_currentFile].m_rcFilename;
+	change.m_oldString = m_data.m_projectResources[m_currentFile].m_stringResources[m_currentResource].m_description;
+	change.m_newString = CW2A(newString);
 
 	if (change.m_newString != change.m_oldString)
 		{
@@ -192,11 +204,23 @@ void CTooltipLengthEditingDlg::OnBnClickedUpdatebutton()
 		}
 	}
 
+static void RemoveReadOnly(const std::string& filename)
+{
+	CString file = CString(filename.c_str());
+	::SetFileAttributes(file, GetFileAttributes(file) & ~FILE_ATTRIBUTE_READONLY);
+}
 
 void CTooltipLengthEditingDlg::OnOK()
-	{
+{
 	CString msg;
-	msg.Format(_T("%I64d changes\nSave not yet implemented"), m_changes.GetCount());
-	MessageBox(msg, _T("Warning"), MB_OK | MB_ICONWARNING);
+	msg.Format(_T("Proceed with saving %I64d changes to .rc file(s), making them readable if necessary?"), m_changes.GetCount());
+	if (IDNO == MessageBox(msg, _T("Warning"), MB_YESNO | MB_ICONQUESTION))
+		CDialogEx::OnCancel();
+
+	for (INT_PTR i = 0; i < m_changes.GetCount(); ++i)
+		{
+		replace_tooltip(m_changes[i], RemoveReadOnly);
+		}
+
 	CDialogEx::OnOK();
 	}

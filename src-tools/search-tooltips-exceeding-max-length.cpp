@@ -273,3 +273,36 @@ int search_tooltips_exceeding_max_length(const fs::path &root, std::ostream &out
 
 	return 0;
 }
+
+void replace_tooltip(const TooltipReplacement& tooltip, std::function<void(const std::string&)> RemoveReadOnlyFunc)
+{
+	fs::path original = tooltip.m_filename;
+	fs::path temporary = original.string() + ".bak";
+
+	std::ifstream fin(original.string());
+	std::ofstream fout(temporary.string());
+
+	bool modified = false;
+
+	for (std::string line; std::getline(fin, line);)
+		{
+		if (replace_substr(line, tooltip.m_oldString, tooltip.m_newString))
+			{
+			modified = true;
+			}
+
+		fout << line << "\n";
+		}
+
+	fin.close();
+	fout.close();
+
+	if (modified)
+		{
+		// overwrite original file with new
+		RemoveReadOnlyFunc(original.string());
+		fs::copy(temporary, original, fs::copy_options::overwrite_existing);
+		}
+
+	fs::remove(temporary);
+}

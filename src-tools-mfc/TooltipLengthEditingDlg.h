@@ -4,13 +4,6 @@
 
 // CTooltipLengthEditingDlg dialog
 
-struct Change
-	{
-	CString m_rcFilename;
-	CString m_oldString;
-	CString m_newString;
-	};
-
 class CTooltipLengthEditingDlg : public CDialogEx
 {
 	DECLARE_DYNAMIC(CTooltipLengthEditingDlg)
@@ -42,7 +35,7 @@ private:
 	TooltipLengthOutput& m_data;
 	size_t m_currentFile = 0;
 	size_t m_currentResource = 0;
-	CArray<Change, Change> m_changes;
+	CArray<TooltipReplacement, TooltipReplacement> m_changes;
 
 	CStatic m_fileLabel;
 	CStatic m_resourceLabel;

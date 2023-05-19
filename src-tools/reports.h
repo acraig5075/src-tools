@@ -52,6 +52,13 @@ struct TooltipLengthOutput
 	std::vector<TooltipLength> m_projectResources;
 };
 
+struct TooltipReplacement
+{
+	std::filesystem::path m_filename;
+	std::string m_oldString;
+	std::string m_newString;
+};
+
 struct Report
 {
 	std::filesystem::path m_dir;

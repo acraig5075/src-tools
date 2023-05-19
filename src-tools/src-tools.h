@@ -22,3 +22,4 @@ int search_resizable_not_in_reg_reset(const std::filesystem::path &root, std::os
 void delete_unused_string_resources(UnusedResources &report, std::function<void(const std::string&)> RemoveReadOnlyFunc);
 void replace_duplicate_string_resources(DuplicateResources &report, size_t index, std::function<void(const std::string&)> RemoveReadOnlyFunc);
 size_t count_unused_string_resources(const std::filesystem::path& path);
+void replace_tooltip(const TooltipReplacement &tooltip, std::function<void(const std::string&)> RemoveReadOnlyFunc);
