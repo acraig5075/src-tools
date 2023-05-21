@@ -281,3 +281,17 @@ HBRUSH CTooltipLengthEditingDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor
 	// TODO:  Return a different brush if the default is not desired
 	return hbr;
 	}
+
+
+void CTooltipLengthEditingDlg::OnCancel()
+{
+	if (!m_changes.empty())
+		{
+		if (IDNO == MessageBox(_T("You have unsaved changes pending. Do you really want to cancel and lose the changes?"), _T("Lose changes"), MB_YESNO | MB_ICONHAND))
+			{
+			return;
+			}
+		}
+
+	CDialogEx::OnCancel();
+}

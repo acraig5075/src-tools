@@ -51,4 +51,5 @@ private:
 	CButton m_nextResourceButton;
 
 	DECLARE_MESSAGE_MAP()
-};
+		virtual void OnCancel();
+	};
