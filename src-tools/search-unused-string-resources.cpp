@@ -2,6 +2,7 @@
 //
 
 #include "pch.h"
+#include "string-utils.h"
 #include "filesystem-utils.h"
 #include "reports.h"
 #include "options.h"
@@ -18,7 +19,7 @@ static std::vector<UnusedResources> get_file_list_custom(const fs::path &root, c
 		{
 		if (itr.path().extension() == extension)
 			{
-			if (itr.path().filename() == "resource.h")
+			if (lowercase(itr.path().filename().string()) == "resource.h")
 				continue;
 
 			UnusedResources p;

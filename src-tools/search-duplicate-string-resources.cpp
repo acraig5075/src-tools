@@ -370,7 +370,7 @@ void replace_duplicate_string_resources(DuplicateResources& report, size_t index
 
 		if (fs::is_regular_file(itr) && (".h" == ext.string() || ".cpp" == ext.string()))
 			{
-			if (itr.path().filename() == "resource.h")
+			if (lowercase(itr.path().filename().string()) == "resource.h")
 				continue;
 
 			std::vector<FileEdit> edits = required_edits(itr, out.m_names[0], replacees);
