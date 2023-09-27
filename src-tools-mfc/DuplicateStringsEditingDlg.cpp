@@ -203,14 +203,29 @@ void CDuplicateStringsEditingDlg::OnBnClickedReplacebutton()
 		size_t numRemoved = numDuplicatesBefore - numDuplicatesAfter;
 		size_t numNewUnused = numUnusedAfter - numUnusedBefore;
 
-		if (numRemoved)
-			OnSelchangeModulelist();
-
 		CString msg;
 		msg.Format(_T("%zu Duplicate resource(s) removed\n%zu New unused resources"),
 			numExpectedRemovals,
 			numNewUnused);
 
 		MessageBox(msg, _T("Unused string resources"), (numExpectedRemovals == numNewUnused ? (MB_OK | MB_ICONINFORMATION) : (MB_OK | MB_ICONERROR)));
+
+		if (numRemoved)
+			{
+			OnSelchangeModulelist();
+
+			if (numExpectedRemovals == numNewUnused)
+				{
+				// Automatically select the next one
+				int remaining = m_resourceList.GetCount();
+				if (remaining == 0)
+					return;
+
+				if (sel2 >= remaining)
+					sel2 = remaining - 1;
+				m_resourceList.SetCurSel(sel2);
+				OnSelchangeResourcelist();
+				}
+			}
 		}
 	}
