@@ -748,6 +748,10 @@ void filter_by_options(std::vector<broken_rule> &faults, const RcFileRulesOption
 
 int examine_rc_file_for_conformity(const fs::path &input, std::ostream &output, const RcFileRulesOptions &options)
 {
+	inputbox_heights.clear();
+	okCancel_gaps.clear();
+	label_colons.clear();
+
 	std::vector<fs::path> files;
 
 	if (fs::exists(input) && fs::is_directory(input))
