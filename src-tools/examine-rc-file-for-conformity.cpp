@@ -381,7 +381,7 @@ std::vector<broken_rule> inspect(const std::vector<dialog_defn> &dialogs, const 
 
 		for (auto ctrl : dlg.m_controls)
 			{
-			if (!ends_with(dlg.m_uid, "_BR") && (ctrl.m_x < MARGIN || ctrl.m_y < MARGIN || (ctrl.m_x + ctrl.m_width > dlg.m_width - MARGIN) || ctrl.m_y > dlg.m_height - MARGIN))
+			if (!ends_with(dlg.m_uid, "_BR") && (ctrl.m_x < MARGIN || ctrl.m_y < MARGIN || (ctrl.m_x + ctrl.m_width > dlg.m_width - MARGIN + 1) || (ctrl.m_y + ctrl.m_height > dlg.m_height - MARGIN + 1)))
 				{
 				faults.push_back(broken_rule{ EXCEEDS_DIALOG_MARGIN, dlg.m_uid, ctrl.m_uid });
 				}
