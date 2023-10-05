@@ -38,6 +38,7 @@ struct RcFileRulesOptions
 	bool m_verticalAlignmentRight = true;
 	bool m_horizontalAlignmentTop = true;
 	bool m_horizontalAlignmentBottom = true;
+	bool m_controlsOverlap = true;
 	int m_dialogMargin = 7;
 	int m_minInputBoxHeight = 12;
 	int m_maxInputBoxHeight = 14;

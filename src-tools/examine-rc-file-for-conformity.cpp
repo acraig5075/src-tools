@@ -23,6 +23,7 @@ enum rule_code
 	VERTICAL_ALIGNMENT_RIGHT,
 	HORIZONTAL_ALIGNMENT_TOP,
 	HORIZONTAL_ALIGNMENT_BOTTOM,
+	CONTROLS_OVERLAP,
 };
 
 enum output_format
@@ -47,6 +48,44 @@ std::unordered_map<rule_code, std::string> rule_descriptions =
 	{ VERTICAL_ALIGNMENT_RIGHT,         "Controls don't align vertically on the right" },       // alignment
 	{ HORIZONTAL_ALIGNMENT_TOP,         "Controls don't align horizontally at the top" },       // alignment
 	{ HORIZONTAL_ALIGNMENT_BOTTOM,      "Controls don't align horizontally at the bottom" },    // alignment
+	{ CONTROLS_OVERLAP,                 "Controls overlap" },                                   // control size
+};
+
+
+struct control_rect
+{
+	int m_top = 0;
+	int m_left = 0;
+	int m_right = 0;
+	int m_bottom = 0;
+
+	bool Intersects(const control_rect &r2) const
+		{
+		return !(r2.m_left > m_right
+			|| r2.m_right  < m_left
+			|| r2.m_top    > m_bottom
+			|| r2.m_bottom < m_top
+			);
+		}
+
+	bool Contains(const control_rect &r2) const
+		{
+		return (r2.m_left > m_left
+			&& r2.m_right < m_right
+			&& r2.m_top > m_top
+			&& r2.m_bottom < m_bottom
+			);
+		}
+
+	bool Identical(const control_rect &r2) const
+		{
+		return (m_top == r2.m_top
+			&& m_left == r2.m_left
+			&& m_right == r2.m_right
+			&& m_bottom == r2.m_bottom
+			);
+		}
+
 };
 
 
@@ -63,7 +102,7 @@ struct control_defn
 
 	control_defn(const std::string &type, const std::string &uid, const std::string &label, const std::string &flags, int x, int y, int width, int height)
 		: m_type(type)
-		, m_uid(uid)
+		, m_uid(trim(uid, " "))
 		, m_label(trim(label, "\""))
 		, m_flags(flags)
 		, m_x(x)
@@ -97,6 +136,16 @@ struct control_defn
 	bool IsAutoAligned() const
 	{
 		return m_type == "CONTROL" && HasFlag("UDS_AUTOBUDDY");
+	}
+
+	control_rect GetRect() const
+	{
+		control_rect rect;
+		rect.m_top = m_y;
+		rect.m_left = m_x;
+		rect.m_right = m_x + m_width;
+		rect.m_bottom = m_y + m_height;
+		return rect;
 	}
 };
 
@@ -354,6 +403,44 @@ std::vector<std::string> check_alignment(const std::vector<control_defn> &contro
 	return comments;
 }
 
+std::vector<std::string> check_overlaps(const std::vector<control_defn> &controls)
+{
+	if (controls.size() < 2)
+		return {};
+
+	std::vector<std::string> comments;
+
+	for (auto i = controls.begin(); i < controls.end() - 1; ++i)
+		{
+		if (i->IsAutoAligned())
+			continue;
+
+		control_rect rect1 = i->GetRect();
+
+		for (auto j = i + 1; j < controls.end(); ++j)
+			{
+			if (j->IsAutoAligned())
+				continue;
+
+			control_rect rect2 = j->GetRect();
+
+			if (rect1.Intersects(rect2) && !rect1.Contains(rect2) && !rect2.Contains(rect1) && !rect1.Identical(rect2))
+				{
+				std::stringstream ss;
+				ss
+					<< "Overlapping controls: "
+					<< i->m_uid
+					<< " and "
+					<< j->m_uid;
+
+				comments.push_back(ss.str());
+				}
+			}
+		}
+
+	return comments;
+}
+
 // Inspect dialog definitions for breaking the rules
 std::vector<broken_rule> inspect(const std::vector<dialog_defn> &dialogs, const RcFileRulesOptions& options)
 {
@@ -474,6 +561,13 @@ std::vector<broken_rule> inspect(const std::vector<dialog_defn> &dialogs, const 
 		std::for_each(begin(bottom_misalignments), end(bottom_misalignments), [&](const auto & comment)
 			{
 			faults.push_back(broken_rule{ HORIZONTAL_ALIGNMENT_BOTTOM, dlg.m_uid, comment });
+			});
+
+		std::vector<std::string> overlaps = check_overlaps(dlg.m_controls);
+
+		std::for_each(begin(overlaps), end(overlaps), [&](const auto &comment)
+			{
+			faults.push_back(broken_rule{ CONTROLS_OVERLAP, dlg.m_uid, comment });
 			});
 		}
 
@@ -744,6 +838,8 @@ void filter_by_options(std::vector<broken_rule> &faults, const RcFileRulesOption
 		FilterOut(HORIZONTAL_ALIGNMENT_TOP);
 	if (!options.m_horizontalAlignmentBottom)
 		FilterOut(HORIZONTAL_ALIGNMENT_BOTTOM);
+	if (!options.m_controlsOverlap)
+		FilterOut(CONTROLS_OVERLAP);
 }
 
 int examine_rc_file_for_conformity(const fs::path &input, std::ostream &output, const RcFileRulesOptions &options)

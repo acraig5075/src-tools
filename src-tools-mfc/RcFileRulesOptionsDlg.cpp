@@ -66,6 +66,7 @@ BOOL CRcFileRulesOptionsDlg::OnInitDialog()
 	m_ruleList.AddString(_T("Controls don't align vertically on the right"));
 	m_ruleList.AddString(_T("Controls don't align horizontally at the top"));
 	m_ruleList.AddString(_T("Controls don't align horizontally at the bottom"));
+	m_ruleList.AddString(_T("Controls overlap"));
 
 	m_ruleList.SetCheck(0, m_options.m_redundantCaptionSuffix       ? BST_CHECKED : BST_UNCHECKED);
 	m_ruleList.SetCheck(1, m_options.m_captionsNotTitleCase         ? BST_CHECKED : BST_UNCHECKED);
@@ -80,6 +81,7 @@ BOOL CRcFileRulesOptionsDlg::OnInitDialog()
 	m_ruleList.SetCheck(10, m_options.m_verticalAlignmentRight      ? BST_CHECKED : BST_UNCHECKED);
 	m_ruleList.SetCheck(11, m_options.m_horizontalAlignmentTop      ? BST_CHECKED : BST_UNCHECKED);
 	m_ruleList.SetCheck(12, m_options.m_horizontalAlignmentBottom   ? BST_CHECKED : BST_UNCHECKED);
+	m_ruleList.SetCheck(13, m_options.m_controlsOverlap             ? BST_CHECKED : BST_UNCHECKED);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
@@ -109,6 +111,7 @@ void CRcFileRulesOptionsDlg::OnOK()
 	m_options.m_verticalAlignmentRight       = m_ruleList.GetCheck(10) != BST_UNCHECKED;
 	m_options.m_horizontalAlignmentTop       = m_ruleList.GetCheck(11) != BST_UNCHECKED;
 	m_options.m_horizontalAlignmentBottom    = m_ruleList.GetCheck(12) != BST_UNCHECKED;
+	m_options.m_controlsOverlap              = m_ruleList.GetCheck(13) != BST_UNCHECKED;
 
 	CDialogEx::OnOK();
 	}
