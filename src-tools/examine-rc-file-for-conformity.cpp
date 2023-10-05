@@ -232,6 +232,13 @@ void get_dialog_definitions(const fs::path &path, std::vector<dialog_defn> &dial
 			if (fields.size() == 6)
 				dlg.m_controls.push_back(control_defn{ "EDITTEXT", fields[0], "", fields[5], std::stoi(fields[1]), std::stoi(fields[2]), std::stoi(fields[3]), std::stoi(fields[4]) });
 			}
+		else if (starts_with(line, "COMBOBOX"))
+			{
+			std::string control = trim(erase_substr(line, "COMBOBOX"), " ");
+			auto fields = split(control, ',');
+			if (fields.size() == 6)
+				dlg.m_controls.push_back(control_defn{ "COMBOBOX", fields[0], "", fields[5], std::stoi(fields[1]), std::stoi(fields[2]), std::stoi(fields[3]), 12 });
+			}
 		else if (starts_with(line, "GROUPBOX"))
 			{
 			std::string control = trim(erase_substr(line, "GROUPBOX"), " ");
@@ -249,16 +256,16 @@ void get_dialog_definitions(const fs::path &path, std::vector<dialog_defn> &dial
 		else if (starts_with(line, "LTEXT"))
 			{
 			std::string control = trim(erase_substr(line, "LTEXT"), " ");
-			auto fields = split(control, ',');
-			if (fields.size() == 6)
-				dlg.m_controls.push_back(control_defn{ "LTEXT", fields[1], fields[0], "", std::stoi(fields[2]), std::stoi(fields[3]), std::stoi(fields[4]), std::stoi(fields[5]) });
+			auto fields = quote_aware_split(control, ',');
+			if (fields.size() >= 6)
+				dlg.m_controls.push_back(control_defn{ "LTEXT", fields[1], fields[0], (fields.size() > 6 ? fields[6] : ""), std::stoi(fields[2]), std::stoi(fields[3]), std::stoi(fields[4]), std::stoi(fields[5])});
 			}
 		else if (starts_with(line, "RTEXT"))
 			{
 			std::string control = trim(erase_substr(line, "RTEXT"), " ");
-			auto fields = split(control, ',');
-			if (fields.size() == 6)
-				dlg.m_controls.push_back(control_defn{ "RTEXT", fields[1], fields[0], "", std::stoi(fields[2]), std::stoi(fields[3]), std::stoi(fields[4]), std::stoi(fields[5]) });
+			auto fields = quote_aware_split(control, ',');
+			if (fields.size() >= 6)
+				dlg.m_controls.push_back(control_defn{ "RTEXT", fields[1], fields[0], (fields.size() > 6 ? fields[6] : ""), std::stoi(fields[2]), std::stoi(fields[3]), std::stoi(fields[4]), std::stoi(fields[5])});
 			}
 		else if (starts_with(line, "CONTROL"))
 			{

@@ -68,6 +68,39 @@ std::vector<std::string> split(const std::string &value, char delimiter)
 	return ret;
 }
 
+// Tokenise a string that may have quoted fields
+std::vector<std::string> quote_aware_split(const std::string &line, char delimiter)
+{
+	std::vector<std::string> values;
+	std::string value;
+	bool in_quoted = false;
+
+	for (const char *p = line.c_str(); *p; ++p)
+		{
+		if (*p == delimiter && !in_quoted)
+			{
+			values.push_back(value);
+			value.clear();
+			}
+		else if (*p == '"')
+			{
+			if (in_quoted)
+				{
+				if (p[1] == '"')
+					value += *++p;
+				else
+					in_quoted = false;
+				}
+			else
+				in_quoted = true;
+			}
+		else
+			value += *p;
+		}
+
+	values.push_back(value);
+	return values;
+};
 
 // Convert to lowercase
 std::string lowercase(const std::string &str)
