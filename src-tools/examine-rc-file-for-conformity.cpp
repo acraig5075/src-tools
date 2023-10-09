@@ -267,6 +267,13 @@ void get_dialog_definitions(const fs::path &path, std::vector<dialog_defn> &dial
 			if (fields.size() >= 6)
 				dlg.m_controls.push_back(control_defn{ "RTEXT", fields[1], fields[0], (fields.size() > 6 ? fields[6] : ""), std::stoi(fields[2]), std::stoi(fields[3]), std::stoi(fields[4]), std::stoi(fields[5])});
 			}
+		else if (starts_with(line, "CTEXT"))
+			{
+			std::string control = trim(erase_substr(line, "CTEXT"), " ");
+			auto fields = quote_aware_split(control, ',');
+			if (fields.size() >= 6)
+				dlg.m_controls.push_back(control_defn{ "CTEXT", fields[1], fields[0], (fields.size() > 6 ? fields[6] : ""), std::stoi(fields[2]), std::stoi(fields[3]), std::stoi(fields[4]), std::stoi(fields[5]) });
+			}
 		else if (starts_with(line, "CONTROL"))
 			{
 			std::string control = trim(erase_substr(line, "CONTROL"), " ");
@@ -286,7 +293,7 @@ void get_dialog_definitions(const fs::path &path, std::vector<dialog_defn> &dial
 
 bool top_exclusions(const control_defn &ctrl)
 {
-	if (ctrl.IsAutoAligned() || ctrl.m_type == "LTEXT" || ctrl.m_type == "RTEXT")
+	if (ctrl.IsAutoAligned() || ctrl.m_type == "LTEXT" || ctrl.m_type == "RTEXT" || ctrl.m_type == "CTEXT")
 		return true;
 	return false;
 }
@@ -307,7 +314,7 @@ bool right_exclusions(const control_defn &ctrl)
 
 bool bottom_exclusions(const control_defn &ctrl)
 {
-	if (ctrl.IsAutoAligned() || ctrl.m_type == "LTEXT" || ctrl.m_type == "RTEXT")
+	if (ctrl.IsAutoAligned() || ctrl.m_type == "LTEXT" || ctrl.m_type == "RTEXT" || ctrl.m_type == "CTEXT")
 		return true;
 	return false;
 }
@@ -319,7 +326,7 @@ bool word_ellipsis(const control_defn &ctrl1, const control_defn &ctrl2)
 
 	const control_defn &lhs = ctrl1.Left() < ctrl2.Left() ? ctrl1 : ctrl2;
 
-	return ("LTEXT" == lhs.m_type || "RTEXT" == lhs.m_type) && lhs.HasFlag("SS_WORDELLIPSIS");
+	return ("LTEXT" == lhs.m_type || "RTEXT" == lhs.m_type || "CTEXT" == lhs.m_type) && lhs.HasFlag("SS_WORDELLIPSIS");
 }
 
 std::vector<std::string> check_alignment(const std::vector<control_defn> &controls_, int(control_defn::* coordFunc)() const, bool(*excludeFunc)(const control_defn &))
@@ -501,11 +508,11 @@ std::vector<broken_rule> inspect(const std::vector<dialog_defn> &dialogs, const 
 				{
 				inputbox_heights[ctrl.m_height]++;
 				}
-			if ((ctrl.m_type == "LTEXT" || ctrl.m_type == "RTEXT") && ends_with(trim(ctrl.m_label, " "), ":"))
+			if ((ctrl.m_type == "LTEXT" || ctrl.m_type == "RTEXT" || ctrl.m_type == "CTEXT") && ends_with(trim(ctrl.m_label, " "), ":"))
 				{
 				faults.push_back(broken_rule{ LABEL_ENDS_WITH_COLON, dlg.m_uid, ctrl.m_label });
 				}
-			if ((ctrl.m_type == "LTEXT" || ctrl.m_type == "RTEXT"))
+			if ((ctrl.m_type == "LTEXT" || ctrl.m_type == "RTEXT" || ctrl.m_type == "CTEXT"))
 				{
 				if (ends_with(trim(ctrl.m_label, " "), ":"))
 					label_colons[1]++;
@@ -516,7 +523,7 @@ std::vector<broken_rule> inspect(const std::vector<dialog_defn> &dialogs, const 
 				{
 				faults.push_back(broken_rule{ RIGHT_ALIGNED_CHECKBOX, dlg.m_uid, ctrl.m_label });
 				}
-			//if ((ctrl.m_type == "LTEXT" || ctrl.m_type == "RTEXT") && !is_sentence_case(ctrl.m_label))
+			//if ((ctrl.m_type == "LTEXT" || ctrl.m_type == "RTEXT" || ctrl.m_type == "CTEXT") && !is_sentence_case(ctrl.m_label))
 			//{
 			//	faults.push_back(broken_rule{ LABEL_NOT_SENTENCE_CASE, dlg.m_uid, ctrl.m_label });
 			//}
@@ -920,7 +927,7 @@ int examine_rc_file_for_conformity(const fs::path &input, std::ostream &output, 
 
 	OutputOccurences("EDITTEXT heights", "Pixels", inputbox_heights, false, output);
 	OutputOccurences("IDOK/IDCANCEL gaps", "Pixels", okCancel_gaps, false, output);
-	OutputOccurences("LTEXT/RTEXT suffix", "Has a colon",  label_colons, true, output);
+	OutputOccurences("Label suffix", "Has a colon",  label_colons, true, output);
 
 
 	output << "Done\n";

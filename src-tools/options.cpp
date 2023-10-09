@@ -29,6 +29,7 @@ void WriteOptions(const std::string& filename, const Options& options)
 			{ "tool_rc_file_rules_vertical_alignment_right",         options.m_rcFileRulesOpts.m_verticalAlignmentRight },
 			{ "tool_rc_file_rules_horizontal_alignment_top",         options.m_rcFileRulesOpts.m_horizontalAlignmentTop },
 			{ "tool_rc_file_rules_horizontal_alignment_bottom",      options.m_rcFileRulesOpts.m_horizontalAlignmentBottom },
+			{ "tool_rc_file_rules_controls_overlap",                 options.m_rcFileRulesOpts.m_controlsOverlap },
 			{ "tool_tooltip_length_maximum",                         static_cast<int>(options.m_tooltipLengthOpts.m_maximum) },
 			{ "tool_tooltip_length_only_summary",                    options.m_tooltipLengthOpts.m_onlySummary },
 		};
@@ -71,6 +72,7 @@ void ReadOptions(const std::string& filename, Options& options)
 	options.m_rcFileRulesOpts.m_verticalAlignmentRight       = json["tool_rc_file_rules_vertical_alignment_right"].bool_value();
 	options.m_rcFileRulesOpts.m_horizontalAlignmentTop       = json["tool_rc_file_rules_horizontal_alignment_top"].bool_value();
 	options.m_rcFileRulesOpts.m_horizontalAlignmentBottom    = json["tool_rc_file_rules_horizontal_alignment_bottom"].bool_value();
+	options.m_rcFileRulesOpts.m_controlsOverlap              = json["tool_rc_file_rules_controls_overlap"].bool_value();
 	options.m_tooltipLengthOpts.m_maximum                    = json["tool_tooltip_length_maximum"].int_value();
 	options.m_tooltipLengthOpts.m_onlySummary                = json["tool_tooltip_length_only_summary"].bool_value();
 
