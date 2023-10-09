@@ -312,6 +312,15 @@ bool bottom_exclusions(const control_defn &ctrl)
 	return false;
 }
 
+bool word_ellipsis(const control_defn &ctrl1, const control_defn &ctrl2)
+{
+	if (ctrl1.Left() == ctrl2.Left())
+		return false;
+
+	const control_defn &lhs = ctrl1.Left() < ctrl2.Left() ? ctrl1 : ctrl2;
+
+	return ("LTEXT" == lhs.m_type || "RTEXT" == lhs.m_type) && lhs.HasFlag("SS_WORDELLIPSIS");
+}
 
 std::vector<std::string> check_alignment(const std::vector<control_defn> &controls_, int(control_defn::* coordFunc)() const, bool(*excludeFunc)(const control_defn &))
 {
@@ -431,7 +440,7 @@ std::vector<std::string> check_overlaps(const std::vector<control_defn> &control
 
 			control_rect rect2 = j->GetRect();
 
-			if (rect1.Intersects(rect2) && !rect1.Contains(rect2) && !rect2.Contains(rect1) && !rect1.Identical(rect2))
+			if (rect1.Intersects(rect2) && !rect1.Contains(rect2) && !rect2.Contains(rect1) && !rect1.Identical(rect2) && !word_ellipsis(*i, *j))
 				{
 				std::stringstream ss;
 				ss
