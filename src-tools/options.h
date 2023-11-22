@@ -55,6 +55,10 @@ struct RegResetOptions
 	{
 	};
 
+struct MenuTitleCaseOptions
+	{
+	};
+
 struct Options
 	{
 	ImagesAndCommandsOptions m_imagesAndCommandsOpts;
@@ -64,6 +68,7 @@ struct Options
 	RcFileRulesOptions m_rcFileRulesOpts;
 	TooltipLengthOptions m_tooltipLengthOpts;
 	RegResetOptions m_regResetOpts;
+	MenuTitleCaseOptions m_menuTitleCaseOpts;
 	};
 
 void WriteOptions(const std::string& filename, const Options &options);

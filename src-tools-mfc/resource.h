@@ -48,7 +48,9 @@
 #define IDC_REGRESETDLG_OPTS            1016
 #define IDC_FOLDEREDIT                  1016
 #define IDC_ROOTSTATIC                  1017
+#define IDC_MENUTITLECASE_BTN           1017
 #define IDC_INCLUDELIST                 1018
+#define IDC_MENUTITLECASE_OPTS          1018
 #define IDC_EXCLUDELIST                 1019
 #define IDC_RULELIST                    1019
 #define IDC_NONEBUTTON                  1020

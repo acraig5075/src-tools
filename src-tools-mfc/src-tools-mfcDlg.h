@@ -43,6 +43,8 @@ protected:
 	afx_msg void OnBnClickedConformingrcfileOpts();
 	afx_msg void OnBnClickedTooltipsmaxOpts();
 	afx_msg void OnBnClickedRegresetdlgOpts();
+	afx_msg void OnBnClickedMenutitlecaseBtn();
+	afx_msg void OnBnClickedMenutitlecaseOpts();
 
 private:
 	CEdit m_outputEdit;
@@ -52,4 +54,4 @@ private:
 	Options m_options;
 
 	DECLARE_MESSAGE_MAP()
-	};
+};

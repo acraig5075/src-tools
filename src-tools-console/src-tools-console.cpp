@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
 			search_resizable_not_in_reg_reset(rootPath, std::cout, options.m_regResetOpts);
 			break;
 		case 8:
-			search_menu_files_title_case(rootPath, std::cout);
+			search_menu_files_title_case(rootPath, std::cout, options.m_menuTitleCaseOpts);
 			break;
 		default:
 			usage();

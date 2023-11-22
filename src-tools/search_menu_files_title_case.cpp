@@ -2,6 +2,7 @@
 #include "string-utils.h"
 #include "filesystem-utils.h"
 #include "reports.h"
+#include "options.h"
 #include <stack>
 
 namespace fs = std::filesystem;
@@ -84,7 +85,7 @@ std::vector<MenuItem> get_menu_items(const std::filesystem::path &path)
 }
 
 
-int search_menu_files_title_case(const std::filesystem::path &root, std::ostream &output)
+int search_menu_files_title_case(const std::filesystem::path &root, std::ostream &output, const MenuTitleCaseOptions &options)
 {
 	std::vector<fs::path> mnuFiles = get_file_list(root, ".mnu");
 

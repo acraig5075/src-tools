@@ -69,6 +69,8 @@ BEGIN_MESSAGE_MAP(CsrctoolsmfcDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_CONFORMINGRCFILE_OPTS, &CsrctoolsmfcDlg::OnBnClickedConformingrcfileOpts)
 	ON_BN_CLICKED(IDC_TOOLTIPSMAX_OPTS, &CsrctoolsmfcDlg::OnBnClickedTooltipsmaxOpts)
 	ON_BN_CLICKED(IDC_REGRESETDLG_OPTS, &CsrctoolsmfcDlg::OnBnClickedRegresetdlgOpts)
+	ON_BN_CLICKED(IDC_MENUTITLECASE_BTN, &CsrctoolsmfcDlg::OnBnClickedMenutitlecaseBtn)
+	ON_BN_CLICKED(IDC_MENUTITLECASE_OPTS, &CsrctoolsmfcDlg::OnBnClickedMenutitlecaseOpts)
 END_MESSAGE_MAP()
 
 
@@ -349,6 +351,34 @@ void CsrctoolsmfcDlg::OnBnClickedRegresetdlgBtn()
 }
 
 
+void CsrctoolsmfcDlg::OnBnClickedMenutitlecaseBtn()
+{
+	CString strRoot;
+	m_editBrowseCtrl.GetWindowTextW(strRoot);
+	if (strRoot.IsEmpty())
+		return;
+
+	fs::path rootPath(strRoot.GetString());
+	if (rootPath.empty() || !fs::exists(rootPath))
+		{
+		CString msg;
+		msg.Format(_T("%ws does not exist"), strRoot.GetString());
+		MessageBox(msg, _T("Error"), MB_OK | MB_ICONSTOP);
+		return;
+		}
+
+	std::stringstream ss;
+
+	BeginWaitCursor();
+	search_menu_files_title_case(rootPath, ss, m_options.m_menuTitleCaseOpts);
+	EndWaitCursor();
+
+	CString output(ss.str().c_str());
+	output.Replace(_T("\n"), _T("\r\n"));
+	m_outputEdit.SetWindowTextW(output);
+}
+
+
 void CsrctoolsmfcDlg::OnBnClickedImagesandcommandsOpts()
 	{
 		MessageBox(_T("Not yet implemented"), _T("Info"), MB_OK | MB_ICONINFORMATION);
@@ -401,6 +431,12 @@ void CsrctoolsmfcDlg::OnBnClickedTooltipsmaxOpts()
 
 
 void CsrctoolsmfcDlg::OnBnClickedRegresetdlgOpts()
+	{
+	MessageBox(_T("Not yet implemented"), _T("Info"), MB_OK | MB_ICONINFORMATION);
+	}
+
+
+void CsrctoolsmfcDlg::OnBnClickedMenutitlecaseOpts()
 	{
 	MessageBox(_T("Not yet implemented"), _T("Info"), MB_OK | MB_ICONINFORMATION);
 	}
