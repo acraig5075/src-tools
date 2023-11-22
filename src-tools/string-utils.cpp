@@ -134,17 +134,23 @@ static std::vector<std::string> conjunctions =
 // Test for title case
 bool is_title_case(const std::string &str)
 {
-	auto words = split(trim(str, "."), ' ');
+	std::stringstream ss(trim(str, "."));
+	std::string word;
 
-	auto newEnd = std::remove_if(begin(words), end(words), [](const std::string & str)
+	while (ss >> word)
 		{
-		return std::find(begin(conjunctions), end(conjunctions), str) != end(conjunctions);
-		});
-
-	for (auto itr = begin(words); itr != newEnd; ++itr)
-		{
-		if ((*itr)[0] >= 97 && (*itr)[0] <= 122)
-			return false;
+		if (std::find(begin(conjunctions), end(conjunctions), word) != end(conjunctions))
+			{
+			// Conjunctions expect lower case
+			if ((word)[0] >= 'A' && (word)[0] <= 'Z')
+				return false;
+			}
+		else
+			{
+			// Other words expect upper case
+			if ((word)[0] >= 'a' && (word)[0] <= 'z')
+				return false;
+			}
 		}
 
 	return true;
