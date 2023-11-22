@@ -126,6 +126,9 @@ static std::vector<std::string> conjunctions =
 	"by",
 	"on",
 	"a",
+	"an",
+	"at",
+	"with",
 };
 
 // Test for title case

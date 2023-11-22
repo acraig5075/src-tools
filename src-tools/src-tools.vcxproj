@@ -200,6 +200,7 @@
     <ClCompile Include="search-resizable-not-in-reg-reset.cpp" />
     <ClCompile Include="search-tooltips-exceeding-max-length.cpp" />
     <ClCompile Include="search-unused-string-resources.cpp" />
+    <ClCompile Include="search_menu_files_title_case.cpp" />
     <ClCompile Include="src-tools.cpp" />
     <ClCompile Include="string-utils.cpp" />
   </ItemGroup>
