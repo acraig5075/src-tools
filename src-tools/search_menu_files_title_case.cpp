@@ -13,7 +13,6 @@ struct MenuItem
 	std::string m_command;
 	std::string m_description;
 	std::string m_breadcrumbs;
-	size_t m_accelerator = std::string::npos;
 };
 
 std::string stringify(std::stack<std::string> hierarchy)
@@ -70,11 +69,7 @@ std::vector<MenuItem> get_menu_items(const std::filesystem::path &path)
 				item.m_title = trim(tokens[0], "\"");
 				item.m_command = trim(tokens[1], " ");
 				item.m_description = trim(tokens[2], "\" ");
-				item.m_accelerator = item.m_title.find('&');
 				item.m_breadcrumbs = stringify(hierarchy);
-
-				if (item.m_accelerator != std::string::npos)
-					item.m_title.erase(item.m_accelerator, 1);
 
 				menuItems.push_back(item);
 				}
@@ -97,7 +92,7 @@ int search_menu_files_title_case(const std::filesystem::path &root, std::ostream
 
 		auto newEnd = std::remove_if(menuItems.begin(), menuItems.end(), [](const MenuItem &item)
 			{
-			return is_title_case(item.m_title);
+			return is_title_case(erase_substr(item.m_title, "&"));
 			});
 
 		menuItems.erase(newEnd, menuItems.end());

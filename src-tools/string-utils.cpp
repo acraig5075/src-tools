@@ -114,7 +114,7 @@ std::string lowercase(const std::string &str)
 }
 
 
-// Title-case exceptions
+// Title-case grammar
 static std::vector<std::string> conjunctions =
 {
 	"and",
@@ -131,6 +131,17 @@ static std::vector<std::string> conjunctions =
 	"with",
 };
 
+// Title-case exceptions
+static std::vector<std::string> exceptions =
+{
+	"before",
+	"behind",
+	"deg",
+	"t-T",
+	"file",
+	"using",
+};
+
 // Test for title case
 bool is_title_case(const std::string &str)
 {
@@ -139,6 +150,13 @@ bool is_title_case(const std::string &str)
 
 	while (ss >> word)
 		{
+		// Exceptions can be skipped-over
+		if (std::find_if(begin(exceptions), end(exceptions), [word](const std::string &str)
+			{
+			return lowercase(word) == lowercase(str);
+			}) != end(exceptions))
+			continue;
+
 		if (std::find(begin(conjunctions), end(conjunctions), word) != end(conjunctions))
 			{
 			// Conjunctions expect lower case

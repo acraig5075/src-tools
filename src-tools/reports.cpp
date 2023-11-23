@@ -4,6 +4,14 @@
 
 void output_report(std::vector<Report>& reports, std::ostream& output)
 	{
+	bool none = std::all_of(begin(reports), end(reports), [](const Report &r)
+		{
+		return r.m_count == 0;
+		});
+
+	if (none)
+		return;
+
 	std::sort(begin(reports), end(reports), [](const auto& lhs, const auto& rhs)
 		{
 		return lhs.m_count > rhs.m_count;
