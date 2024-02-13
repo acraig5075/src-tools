@@ -40,7 +40,7 @@ std::vector<fs::path> get_file_list_case_sensitive(const fs::path &root, std::st
 }
 
 
-// This will return a list of directories, optionally with or without root included
+// This will return a list of directories, optionally with or without root included (see is_solution_folder)
 std::vector<fs::path> get_directory_list(const fs::path &root, bool inclusive)
 {
 	std::vector<fs::path> paths;
@@ -122,4 +122,28 @@ bool get_resource_filenames(const std::filesystem::path& folder, std::filesystem
 		}
 
 	return ok1 && ok2;
+}
+
+// Determine if the folder is the .sln folder, and therefore can be considered the root of the entire solution
+bool is_solution_folder(const std::filesystem::path &folder)
+{
+	bool sln = false;
+	bool vcxproj = false;
+
+	for (const auto &itr : fs::directory_iterator(folder))
+		{
+		if (itr.is_regular_file())
+			{
+			if (itr.path().extension() == ".sln")
+				{
+				sln = true;
+				}
+			else if (itr.path().extension() == ".vcxproj")
+				{
+				vcxproj = true;
+				}
+			}
+		}
+
+	return sln && !vcxproj;
 }
