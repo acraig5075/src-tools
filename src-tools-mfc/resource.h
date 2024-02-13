@@ -53,7 +53,9 @@
 #define IDC_MENUTITLECASE_OPTS          1018
 #define IDC_EXCLUDELIST                 1019
 #define IDC_RULELIST                    1019
+#define IDC_UNREFERENCEDFILES_BTN       1019
 #define IDC_NONEBUTTON                  1020
+#define IDC_UNREFERENCEDFILES_OPTS      1020
 #define IDC_GAPEDIT                     1021
 #define IDC_MARGINEDIT                  1023
 #define IDC_MINIMUMEDIT                 1024

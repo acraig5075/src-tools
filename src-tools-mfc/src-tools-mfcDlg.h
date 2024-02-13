@@ -45,6 +45,7 @@ protected:
 	afx_msg void OnBnClickedRegresetdlgOpts();
 	afx_msg void OnBnClickedMenutitlecaseBtn();
 	afx_msg void OnBnClickedMenutitlecaseOpts();
+	afx_msg void OnBnClickedUnreferencedfilesBtn();
 
 private:
 	CEdit m_outputEdit;
@@ -54,4 +55,6 @@ private:
 	Options m_options;
 
 	DECLARE_MESSAGE_MAP()
-};
+public:
+	afx_msg void OnBnClickedUnreferencedfilesOpts();
+	};

@@ -71,6 +71,8 @@ BEGIN_MESSAGE_MAP(CsrctoolsmfcDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_REGRESETDLG_OPTS, &CsrctoolsmfcDlg::OnBnClickedRegresetdlgOpts)
 	ON_BN_CLICKED(IDC_MENUTITLECASE_BTN, &CsrctoolsmfcDlg::OnBnClickedMenutitlecaseBtn)
 	ON_BN_CLICKED(IDC_MENUTITLECASE_OPTS, &CsrctoolsmfcDlg::OnBnClickedMenutitlecaseOpts)
+	ON_BN_CLICKED(IDC_UNREFERENCEDFILES_BTN, &CsrctoolsmfcDlg::OnBnClickedUnreferencedfilesBtn)
+	ON_BN_CLICKED(IDC_UNREFERENCEDFILES_OPTS, &CsrctoolsmfcDlg::OnBnClickedUnreferencedfilesOpts)
 END_MESSAGE_MAP()
 
 
@@ -448,3 +450,37 @@ void CsrctoolsmfcDlg::OnOK()
 
 	CDialogEx::OnOK();
 }
+
+
+void CsrctoolsmfcDlg::OnBnClickedUnreferencedfilesBtn()
+	{
+	CString strRoot;
+	m_editBrowseCtrl.GetWindowTextW(strRoot);
+	if (strRoot.IsEmpty())
+		return;
+
+	fs::path rootPath(strRoot.GetString());
+	if (rootPath.empty() || !fs::exists(rootPath))
+		{
+		CString msg;
+		msg.Format(_T("%ws does not exist"), strRoot.GetString());
+		MessageBox(msg, _T("Error"), MB_OK | MB_ICONSTOP);
+		return;
+		}
+
+	std::stringstream ss;
+
+	BeginWaitCursor();
+	search_files_not_referenced_by_project(rootPath, ss);
+	EndWaitCursor();
+
+	CString output(ss.str().c_str());
+	output.Replace(_T("\n"), _T("\r\n"));
+	m_outputEdit.SetWindowTextW(output);
+	}
+
+
+void CsrctoolsmfcDlg::OnBnClickedUnreferencedfilesOpts()
+	{
+	MessageBox(_T("Not yet implemented"), _T("Info"), MB_OK | MB_ICONINFORMATION);
+	}
