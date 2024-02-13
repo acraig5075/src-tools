@@ -80,5 +80,8 @@
     <ClCompile Include="search_menu_files_title_case.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="search-files-not-referenced-by-project.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

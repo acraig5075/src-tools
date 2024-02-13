@@ -20,6 +20,7 @@ void usage()
 	std::cout << "           6 : search_tooltips_exceeding_max_length\n";
 	std::cout << "           7 : search_resizable_not_in_reg_reset\n";
 	std::cout << "           8 : search_menu_files_title_case\n";
+	std::cout << "           9 : search_files_not_referenced_by_project\n";
 	std::cout << "path         : Root folder path of source tree for multiple .rc files to be parsed.\n";
 	std::cout << "file         : File path for a single .rc file to be parsed.\n";
 	std::cout << "optionsfile  : .options file [Default looks in .exe folder]\n";
@@ -95,6 +96,10 @@ int main(int argc, char *argv[])
 		case 8:
 			search_menu_files_title_case(rootPath, std::cout, options.m_menuTitleCaseOpts);
 			break;
+		case 9:
+			search_files_not_referenced_by_project(rootPath, std::cout);
+			break;
+
 		default:
 			usage();
 			return EXIT_FAILURE;

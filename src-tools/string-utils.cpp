@@ -295,3 +295,21 @@ size_t find_substr_exact(const std::string& str, const std::string& substr, size
 
 	return std::string::npos;
 }
+
+// Extract substring being an xml quoted attribute
+std::string get_xml_text_attribute(const std::string &line, const std::string &attr)
+{
+	std::string search = attr + "=\"";
+
+	size_t start = line.find(search, 0);
+	if (start == std::string::npos)
+		return {};
+	start += std::string(search).length();
+
+	size_t end = line.find("\"", start + 1);
+	if (end == std::string::npos)
+		return {};
+
+	std::string name = line.substr(start, end - start);
+	return name;
+}

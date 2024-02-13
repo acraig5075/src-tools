@@ -197,6 +197,7 @@
     </ClCompile>
     <ClCompile Include="search-commands-not-in-imageandcommands.cpp" />
     <ClCompile Include="search-duplicate-string-resources.cpp" />
+    <ClCompile Include="search-files-not-referenced-by-project.cpp" />
     <ClCompile Include="search-resizable-not-in-reg-reset.cpp" />
     <ClCompile Include="search-tooltips-exceeding-max-length.cpp" />
     <ClCompile Include="search-unused-string-resources.cpp" />

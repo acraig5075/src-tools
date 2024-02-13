@@ -14,3 +14,4 @@ std::string pretty_print_json11(const std::string &text);
 bool replace_substr(std::string &str, const std::string &substr, const std::string &replacement);
 std::string longest_common_substring(const std::vector<std::string> &strings);
 size_t find_substr_exact(const std::string &str, const std::string &substr, size_t off);
+std::string get_xml_text_attribute(const std::string &line, const std::string &attr);
