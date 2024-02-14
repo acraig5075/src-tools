@@ -136,12 +136,12 @@ std::vector<std::string> get_api_commands(const fs::path &path)
 
 int search_commands_not_in_imageandcommands(const fs::path &rootPath, std::ostream &output, const ImagesAndCommandsOptions &)
 {
-	fs::path imagesAndCommands = search_for_filename(rootPath, "ImagesAndCommands.h");
+	fs::path imagesAndCommands = filesystem_utils::search_for_filename(rootPath, "ImagesAndCommands.h");
 	if (imagesAndCommands.empty())
 		return 1;
 
-	std::vector<fs::path> apiFiles = get_file_list(rootPath, "API.cpp");
-	std::vector<fs::path> mnuFiles = get_file_list(rootPath, ".mnu");
+	std::vector<fs::path> apiFiles = filesystem_utils::get_file_list(rootPath, "API.cpp");
+	std::vector<fs::path> mnuFiles = filesystem_utils::get_file_list(rootPath, ".mnu");
 
 	std::vector<std::string> imagesCommands = get_images_commands(imagesAndCommands);
 	std::vector<std::string> menuCommands   = get_menu_commands(mnuFiles);

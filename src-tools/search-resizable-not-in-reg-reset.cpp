@@ -93,7 +93,7 @@ void iterate_resizable_dialogs(const fs::path& root, const std::unordered_map<st
 
 void map_dialog_resources(const fs::path& root, std::unordered_map<std::string, std::string> &ids)
 {
-	auto resources = get_file_list_case_sensitive(root, "resource.h");
+	auto resources = filesystem_utils::get_file_list_case_sensitive(root, "resource.h");
 
 	for (const auto filename : resources)
 	{
@@ -126,7 +126,7 @@ void map_dialog_resources(const fs::path& root, std::unordered_map<std::string, 
 
 void get_registered_dialogs(const fs::path& root, std::vector<std::string> &registered)
 {
-	auto path = search_for_filename(root, "RegResetDlg.cpp");
+	auto path = filesystem_utils::search_for_filename(root, "RegResetDlg.cpp");
 	if (path.empty())
 		return;
 

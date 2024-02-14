@@ -95,7 +95,7 @@ void parse_resource_h(const fs::path& file, std::unordered_map<unsigned int, std
 
 int search_tooltips_exceeding_max_length(const fs::path &root, std::ostream &output, const TooltipLengthOptions &options, TooltipLengthOutput &out)
 {
-	std::vector<fs::path> directories = get_directory_list(root);
+	std::vector<fs::path> directories = filesystem_utils::get_directory_list(root);
 
 	std::vector<Report> summary;
 

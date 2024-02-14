@@ -92,10 +92,10 @@ int search_unused_string_resources(const fs::path &root, std::ostream &output, c
 {
 	std::vector<Report> reports;
 
-	std::vector<fs::path> directories = get_directory_list(root);
+	std::vector<fs::path> directories = filesystem_utils::get_directory_list(root);
 
 	const std::vector<std::string> &exclusions = options.m_excludeFolders;
-	filter_directory_list(directories, exclusions);
+	filesystem_utils::filter_directory_list(directories, exclusions);
 
 	output << "Excluding directories: ";
 	std::copy(begin(exclusions), end(exclusions), std::ostream_iterator<std::string>(output, ", "));
@@ -104,7 +104,7 @@ int search_unused_string_resources(const fs::path &root, std::ostream &output, c
 	for (const auto &dir : directories)
 		{
 		fs::path rc, header;
-		if (!get_resource_filenames(dir, rc, header))
+		if (!filesystem_utils::get_resource_filenames(dir, rc, header))
 			continue;
 
 		std::vector<std::string> used = get_resource_list(dir, { ".cpp", ".h" });

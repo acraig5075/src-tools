@@ -669,7 +669,7 @@ int examine_dialogs_for_conformity(const fs::path &input, std::ostream &output, 
 
 	if (fs::exists(input) && fs::is_directory(input))
 		{
-		files = get_file_list(input, ".rc");
+		files = filesystem_utils::get_file_list(input, ".rc");
 		}
 	else if (fs::exists(input) && fs::is_regular_file(input) && ends_with(input.string(), ".rc"))
 		{

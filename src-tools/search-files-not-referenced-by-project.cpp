@@ -34,9 +34,9 @@ int search_files_not_referenced_by_project(const fs::path &rootPath, std::ostrea
 {
 	std::vector<Report> reports;
 
-	bool topLevel = is_solution_folder(rootPath);
+	bool topLevel = filesystem_utils::is_solution_folder(rootPath);
 
-	std::vector<fs::path> directories = get_directory_list(rootPath, (topLevel ? false : true));
+	std::vector<fs::path> directories = filesystem_utils::get_directory_list(rootPath, (topLevel ? false : true));
 	for (const auto &dir : directories)
 		{
 		if (dir.filename() == "RxRasterServices")

@@ -186,7 +186,7 @@ int search_duplicate_string_resources(const fs::path &input, std::ostream &outpu
 
 	if (fs::exists(input) && fs::is_directory(input))
 		{
-		files = get_file_list(input, ".rc");
+		files = filesystem_utils::get_file_list(input, ".rc");
 		}
 	else if (fs::exists(input) && fs::is_regular_file(input) && ends_with(input.string(), ".rc"))
 		{
@@ -199,7 +199,7 @@ int search_duplicate_string_resources(const fs::path &input, std::ostream &outpu
 		}
 
 	const std::vector<std::string>& exclusions = options.m_excludeFolders;
-	filter_directory_list(files, exclusions);
+	filesystem_utils::filter_directory_list(files, exclusions);
 
 	output << "Excluding directories: ";
 	std::copy(begin(exclusions), end(exclusions), std::ostream_iterator<std::string>(output, ", "));

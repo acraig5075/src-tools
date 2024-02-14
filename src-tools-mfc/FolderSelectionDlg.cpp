@@ -51,7 +51,7 @@ BOOL CFolderSelectionDlg::OnInitDialog()
 
 	fs::path root(m_rootFolder.GetString());
 
-	std::vector<fs::path> list = get_directory_list(root, false);
+	std::vector<fs::path> list = filesystem_utils::get_directory_list(root, false);
 
 	for (auto itr = list.cbegin(); itr != list.cend(); ++itr)
 		{
