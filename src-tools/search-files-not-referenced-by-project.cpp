@@ -64,7 +64,7 @@ int search_files_not_referenced_by_project(const fs::path &rootPath, std::ostrea
 				}
 			}
 
-		projects.erase(std::remove_if(projects.begin(), projects.end(), [](const fs::path & path)
+		projects.erase(std::remove_if(projects.begin(), projects.end(), [](const fs::path &path)
 			{
 			return path.filename().string().find('_') != std::string::npos;
 			}), projects.end());
@@ -72,33 +72,38 @@ int search_files_not_referenced_by_project(const fs::path &rootPath, std::ostrea
 		if (projects.empty() || filenames.empty())
 			continue;
 
-		std::sort(filenames.begin(), filenames.end());
-		std::sort(projects.begin(), projects.end());
+		std::vector<fs::path> references;
 
 		for (const auto &vcxproj : projects)
 			{
-			std::vector<fs::path> references = get_referenced_files(vcxproj);
-
-			std::vector<fs::path> orphans;
-			std::set_difference(filenames.begin(), filenames.end(), references.begin(), references.end(), std::back_inserter(orphans));
-
-			Report report;
-			report.m_dir = fs::relative(vcxproj, dir);
-			report.m_count = orphans.size();
-			reports.push_back(report);
-
-			if (orphans.empty())
-				continue;
-
-			std::string heading = vcxproj.filename().string();
-			std::string underline(heading.length(), '-');
-			output
-					<< heading << "\n"
-					<< underline << "\n";
-
-			std::copy(orphans.begin(), orphans.end(), std::ostream_iterator<fs::path>(output, "\n"));
-			output << "\n";
+			std::vector<fs::path> v = get_referenced_files(vcxproj);
+			references.insert(references.end(), v.begin(), v.end());
 			}
+
+		std::sort(references.begin(), references.end());
+		references.erase(std::unique(references.begin(), references.end()), references.end());
+
+		std::sort(filenames.begin(), filenames.end());
+
+		std::vector<fs::path> orphans;
+		std::set_difference(filenames.begin(), filenames.end(), references.begin(), references.end(), std::back_inserter(orphans));
+
+		Report report;
+		report.m_dir = dir;
+		report.m_count = orphans.size();
+		reports.push_back(report);
+
+		if (orphans.empty())
+			continue;
+
+		std::string heading = dir.filename().string();
+		std::string underline(heading.length(), '-');
+		output
+				<< heading << "\n"
+				<< underline << "\n";
+
+		std::copy(orphans.begin(), orphans.end(), std::ostream_iterator<fs::path>(output, "\n"));
+		output << "\n";
 		}
 
 	output_report(reports, output);
