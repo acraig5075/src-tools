@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "string-utils.h"
 #include "filesystem-utils.h"
+#include "resource-utils.h"
 #include "options.h"
 
 namespace fs = std::filesystem;
@@ -52,115 +53,6 @@ std::unordered_map<rule_code, std::string> rule_descriptions =
 };
 
 
-struct control_rect
-{
-	int m_top = 0;
-	int m_left = 0;
-	int m_right = 0;
-	int m_bottom = 0;
-
-	bool Intersects(const control_rect &r2) const
-		{
-		return !(r2.m_left > m_right
-			|| r2.m_right  < m_left
-			|| r2.m_top    > m_bottom
-			|| r2.m_bottom < m_top
-			);
-		}
-
-	bool Contains(const control_rect &r2) const
-		{
-		return (r2.m_left > m_left
-			&& r2.m_right < m_right
-			&& r2.m_top > m_top
-			&& r2.m_bottom < m_bottom
-			);
-		}
-
-	bool Identical(const control_rect &r2) const
-		{
-		return (m_top == r2.m_top
-			&& m_left == r2.m_left
-			&& m_right == r2.m_right
-			&& m_bottom == r2.m_bottom
-			);
-		}
-
-};
-
-
-struct control_defn
-{
-	std::string m_type;
-	std::string m_uid;
-	std::string m_label;
-	std::string m_flags;
-	int m_x = 0;
-	int m_y = 0;
-	int m_width = 0;
-	int m_height = 0;
-
-	control_defn(const std::string &type, const std::string &uid, const std::string &label, const std::string &flags, int x, int y, int width, int height)
-		: m_type(type)
-		, m_uid(trim(uid, " "))
-		, m_label(trim(label, "\""))
-		, m_flags(flags)
-		, m_x(x)
-		, m_y(y)
-		, m_width(width)
-		, m_height(height)
-	{}
-
-	int Top() const
-	{
-		return m_y;
-	}
-	int Left() const
-	{
-		return m_x;
-	}
-	int Right() const
-	{
-		return m_x + m_width;
-	}
-	int Bottom() const
-	{
-		return m_y + m_height;
-	}
-
-	bool HasFlag(const std::string &flag) const
-	{
-		return m_flags.find(flag) != std::string::npos;
-	}
-
-	bool IsAutoAligned() const
-	{
-		return m_type == "CONTROL" && HasFlag("UDS_AUTOBUDDY");
-	}
-
-	control_rect GetRect() const
-	{
-		control_rect rect;
-		rect.m_top = m_y;
-		rect.m_left = m_x;
-		rect.m_right = m_x + m_width;
-		rect.m_bottom = m_y + m_height;
-		return rect;
-	}
-};
-
-
-struct dialog_defn
-{
-	std::string m_uid;
-	std::string m_caption;
-	int m_width = 0;
-	int m_height = 0;
-	bool m_style = false;
-	std::vector<control_defn> m_controls;
-};
-
-
 struct broken_rule
 {
 	rule_code m_code = NONE;
@@ -192,104 +84,6 @@ std::unordered_map<int, unsigned int> inputbox_heights;
 std::unordered_map<int, unsigned int> okCancel_gaps;
 std::unordered_map<int, unsigned int> label_colons;
 
-
-// Build up dialog definitions from an .rc file
-void get_dialog_definitions(const fs::path &path, std::vector<dialog_defn> &dialogs)
-{
-	std::string line;
-	dialog_defn dlg;
-
-	std::ifstream fin(path.string());
-
-	while (std::getline(fin, line))
-		{
-		line = trim(line, " \t");
-
-		if (starts_with(line, "IDD_"))
-			{
-			auto fields = split(line, ' ');
-			if (fields.size() == 6)
-				{
-				dlg.m_uid = fields[0];
-				dlg.m_width = std::stoi(trim(fields[4], ","));
-				dlg.m_height = std::stoi(trim(fields[5], ","));
-				}
-			}
-		else if (starts_with(line, "STYLE "))
-			{
-			dlg.m_style = true;
-			}
-		else if (starts_with(line, "CAPTION "))
-			{
-			auto fields = split(line, '\"');
-			if (fields.size() == 3)
-				dlg.m_caption = trim(fields[1], "\"");
-			}
-		else if (starts_with(line, "EDITTEXT"))
-			{
-			std::string control = trim(erase_substr(line, "EDITTEXT"), " ");
-			auto fields = split(control, ',');
-			if (fields.size() == 6)
-				dlg.m_controls.push_back(control_defn{ "EDITTEXT", fields[0], "", fields[5], std::stoi(fields[1]), std::stoi(fields[2]), std::stoi(fields[3]), std::stoi(fields[4]) });
-			}
-		else if (starts_with(line, "COMBOBOX"))
-			{
-			std::string control = trim(erase_substr(line, "COMBOBOX"), " ");
-			auto fields = split(control, ',');
-			if (fields.size() == 6)
-				dlg.m_controls.push_back(control_defn{ "COMBOBOX", fields[0], "", fields[5], std::stoi(fields[1]), std::stoi(fields[2]), std::stoi(fields[3]), 12 });
-			}
-		else if (starts_with(line, "GROUPBOX"))
-			{
-			std::string control = trim(erase_substr(line, "GROUPBOX"), " ");
-			auto fields = split(control, ',');
-			if (fields.size() == 6)
-				dlg.m_controls.push_back(control_defn{ "GROUPBOX", fields[1], fields[0], "", std::stoi(fields[2]), std::stoi(fields[3]), std::stoi(fields[4]), std::stoi(fields[5]) });
-			}
-		else if (starts_with(line, "DEFPUSHBUTTON") || starts_with(line, "PUSHBUTTON"))
-			{
-			std::string control = trim(erase_substr(line, "PUSHBUTTON"), " ");
-			auto fields = split(control, ',');
-			if (fields.size() == 6)
-				dlg.m_controls.push_back(control_defn{ "PUSHBUTTON", fields[1], fields[0], "", std::stoi(fields[2]), std::stoi(fields[3]), std::stoi(fields[4]), std::stoi(fields[5]) });
-			}
-		else if (starts_with(line, "LTEXT"))
-			{
-			std::string control = trim(erase_substr(line, "LTEXT"), " ");
-			auto fields = quote_aware_split(control, ',');
-			if (fields.size() >= 6)
-				dlg.m_controls.push_back(control_defn{ "LTEXT", fields[1], fields[0], (fields.size() > 6 ? fields[6] : ""), std::stoi(fields[2]), std::stoi(fields[3]), std::stoi(fields[4]), std::stoi(fields[5])});
-			}
-		else if (starts_with(line, "RTEXT"))
-			{
-			std::string control = trim(erase_substr(line, "RTEXT"), " ");
-			auto fields = quote_aware_split(control, ',');
-			if (fields.size() >= 6)
-				dlg.m_controls.push_back(control_defn{ "RTEXT", fields[1], fields[0], (fields.size() > 6 ? fields[6] : ""), std::stoi(fields[2]), std::stoi(fields[3]), std::stoi(fields[4]), std::stoi(fields[5])});
-			}
-		else if (starts_with(line, "CTEXT"))
-			{
-			std::string control = trim(erase_substr(line, "CTEXT"), " ");
-			auto fields = quote_aware_split(control, ',');
-			if (fields.size() >= 6)
-				dlg.m_controls.push_back(control_defn{ "CTEXT", fields[1], fields[0], (fields.size() > 6 ? fields[6] : ""), std::stoi(fields[2]), std::stoi(fields[3]), std::stoi(fields[4]), std::stoi(fields[5]) });
-			}
-		else if (starts_with(line, "CONTROL"))
-			{
-			std::string control = trim(erase_substr(line, "CONTROL"), " ");
-			auto fields = split(control, ',');
-			if (fields.size() == 8)
-				dlg.m_controls.push_back(control_defn{ "CONTROL", fields[1], fields[0], fields[3], std::stoi(fields[4]), std::stoi(fields[5]), std::stoi(fields[6]), std::stoi(fields[7]) });
-			}
-		else if (line == "END")
-			{
-			if (dlg.m_style)
-				dialogs.push_back(dlg);
-
-			dlg = dialog_defn{};
-			}
-		}
-}
 
 bool top_exclusions(const control_defn &ctrl)
 {
@@ -892,7 +686,9 @@ int examine_dialogs_for_conformity(const fs::path &input, std::ostream &output, 
 
 	for (const auto &path : files)
 		{
-		get_dialog_definitions(path, dialogs);
+		std::vector<dialog_defn> single = get_dialog_definitions(path);
+
+		dialogs.insert(dialogs.end(), single.begin(), single.end());
 		}
 
 	std::vector<broken_rule> faults = inspect(dialogs, options);
