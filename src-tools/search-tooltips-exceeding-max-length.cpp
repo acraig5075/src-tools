@@ -118,7 +118,7 @@ int search_tooltips_exceeding_max_length(const fs::path &root, std::ostream &out
 				else if (file.path().extension() == ".rc")
 					{
 					rcFilename = file;
-					rcStrings = parse_string_table(file);
+					rcStrings = resource_utils::parse_string_table(file);
 					}
 				else if (file.path().filename() == "Resource.h")
 					{

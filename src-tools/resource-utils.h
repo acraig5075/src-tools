@@ -59,5 +59,8 @@ struct dialog_defn
 };
 
 
-std::vector<IDSResource> parse_string_table(const std::filesystem::path &path);
-std::vector<dialog_defn> get_dialog_definitions(const std::filesystem::path &path);
+namespace resource_utils
+{
+	std::vector<IDSResource> parse_string_table(const std::filesystem::path &path);
+	std::vector<dialog_defn> get_dialog_definitions(const std::filesystem::path &path);
+}

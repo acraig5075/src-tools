@@ -100,153 +100,156 @@ control_rect control_defn::GetRect() const
 }
 
 
-std::vector<IDSResource> parse_string_table(const fs::path &path)
+namespace resource_utils
 {
-	std::vector<IDSResource> ids;
+	std::vector<IDSResource> parse_string_table(const fs::path &path)
+	{
+		std::vector<IDSResource> ids;
 
-	std::ifstream fin(path.string());
-	std::string line;
-	bool table = false;
-	bool begin = false;
+		std::ifstream fin(path.string());
+		std::string line;
+		bool table = false;
+		bool begin = false;
 
-	while (std::getline(fin, line))
-		{
-		if ("STRINGTABLE" == line)
+		while (std::getline(fin, line))
 			{
-			table = true;
-			begin = false;
-			}
-		else if (table && "BEGIN" == line)
-			{
-			begin = true;
-			}
-		else if (table && "END" == line)
-			{
-			begin = false;
-			table = false;
-			}
-		else if (table && begin && starts_with(trim(line, " "), "IDS_"))
-			{
-			size_t fnd = line.find('\"', 0);
-			if (fnd != line.npos)
+			if ("STRINGTABLE" == line)
 				{
-				std::string name = line.substr(0, fnd);
-				std::string desc = line.substr(fnd);
-				name = trim(name, " ");
-				desc = trim(desc, " \"");
-
-				if (!name.empty() && !desc.empty())
+				table = true;
+				begin = false;
+				}
+			else if (table && "BEGIN" == line)
+				{
+				begin = true;
+				}
+			else if (table && "END" == line)
+				{
+				begin = false;
+				table = false;
+				}
+			else if (table && begin && starts_with(trim(line, " "), "IDS_"))
+				{
+				size_t fnd = line.find('\"', 0);
+				if (fnd != line.npos)
 					{
-					IDSResource s;
-					s.m_name = name;
-					s.m_description = desc;
-					ids.push_back(s);
+					std::string name = line.substr(0, fnd);
+					std::string desc = line.substr(fnd);
+					name = trim(name, " ");
+					desc = trim(desc, " \"");
+
+					if (!name.empty() && !desc.empty())
+						{
+						IDSResource s;
+						s.m_name = name;
+						s.m_description = desc;
+						ids.push_back(s);
+						}
 					}
 				}
 			}
-		}
 
-	return ids;
-}
+		return ids;
+	}
 
-// Build up dialog definitions from an .rc file
-std::vector<dialog_defn> get_dialog_definitions(const fs::path &path)
-{
-	std::vector<dialog_defn> dialogs;
+	// Build up dialog definitions from an .rc file
+	std::vector<dialog_defn> get_dialog_definitions(const fs::path &path)
+	{
+		std::vector<dialog_defn> dialogs;
 
-	std::string line;
-	dialog_defn dlg;
+		std::string line;
+		dialog_defn dlg;
 
-	std::ifstream fin(path.string());
+		std::ifstream fin(path.string());
 
-	while (std::getline(fin, line))
-		{
-		line = trim(line, " \t");
-
-		if (starts_with(line, "IDD_"))
+		while (std::getline(fin, line))
 			{
-			auto fields = split(line, ' ');
-			if (fields.size() == 6)
+			line = trim(line, " \t");
+
+			if (starts_with(line, "IDD_"))
 				{
-				dlg.m_uid = fields[0];
-				dlg.m_width = std::stoi(trim(fields[4], ","));
-				dlg.m_height = std::stoi(trim(fields[5], ","));
+				auto fields = split(line, ' ');
+				if (fields.size() == 6)
+					{
+					dlg.m_uid = fields[0];
+					dlg.m_width = std::stoi(trim(fields[4], ","));
+					dlg.m_height = std::stoi(trim(fields[5], ","));
+					}
+				}
+			else if (starts_with(line, "STYLE "))
+				{
+				dlg.m_style = true;
+				}
+			else if (starts_with(line, "CAPTION "))
+				{
+				auto fields = split(line, '\"');
+				if (fields.size() == 3)
+					dlg.m_caption = trim(fields[1], "\"");
+				}
+			else if (starts_with(line, "EDITTEXT"))
+				{
+				std::string control = trim(erase_substr(line, "EDITTEXT"), " ");
+				auto fields = split(control, ',');
+				if (fields.size() == 6)
+					dlg.m_controls.push_back(control_defn{ "EDITTEXT", fields[0], "", fields[5], std::stoi(fields[1]), std::stoi(fields[2]), std::stoi(fields[3]), std::stoi(fields[4]) });
+				}
+			else if (starts_with(line, "COMBOBOX"))
+				{
+				std::string control = trim(erase_substr(line, "COMBOBOX"), " ");
+				auto fields = split(control, ',');
+				if (fields.size() == 6)
+					dlg.m_controls.push_back(control_defn{ "COMBOBOX", fields[0], "", fields[5], std::stoi(fields[1]), std::stoi(fields[2]), std::stoi(fields[3]), 12 });
+				}
+			else if (starts_with(line, "GROUPBOX"))
+				{
+				std::string control = trim(erase_substr(line, "GROUPBOX"), " ");
+				auto fields = split(control, ',');
+				if (fields.size() == 6)
+					dlg.m_controls.push_back(control_defn{ "GROUPBOX", fields[1], fields[0], "", std::stoi(fields[2]), std::stoi(fields[3]), std::stoi(fields[4]), std::stoi(fields[5]) });
+				}
+			else if (starts_with(line, "DEFPUSHBUTTON") || starts_with(line, "PUSHBUTTON"))
+				{
+				std::string control = trim(erase_substr(line, "PUSHBUTTON"), " ");
+				auto fields = split(control, ',');
+				if (fields.size() == 6)
+					dlg.m_controls.push_back(control_defn{ "PUSHBUTTON", fields[1], fields[0], "", std::stoi(fields[2]), std::stoi(fields[3]), std::stoi(fields[4]), std::stoi(fields[5]) });
+				}
+			else if (starts_with(line, "LTEXT"))
+				{
+				std::string control = trim(erase_substr(line, "LTEXT"), " ");
+				auto fields = quote_aware_split(control, ',');
+				if (fields.size() >= 6)
+					dlg.m_controls.push_back(control_defn{ "LTEXT", fields[1], fields[0], (fields.size() > 6 ? fields[6] : ""), std::stoi(fields[2]), std::stoi(fields[3]), std::stoi(fields[4]), std::stoi(fields[5]) });
+				}
+			else if (starts_with(line, "RTEXT"))
+				{
+				std::string control = trim(erase_substr(line, "RTEXT"), " ");
+				auto fields = quote_aware_split(control, ',');
+				if (fields.size() >= 6)
+					dlg.m_controls.push_back(control_defn{ "RTEXT", fields[1], fields[0], (fields.size() > 6 ? fields[6] : ""), std::stoi(fields[2]), std::stoi(fields[3]), std::stoi(fields[4]), std::stoi(fields[5]) });
+				}
+			else if (starts_with(line, "CTEXT"))
+				{
+				std::string control = trim(erase_substr(line, "CTEXT"), " ");
+				auto fields = quote_aware_split(control, ',');
+				if (fields.size() >= 6)
+					dlg.m_controls.push_back(control_defn{ "CTEXT", fields[1], fields[0], (fields.size() > 6 ? fields[6] : ""), std::stoi(fields[2]), std::stoi(fields[3]), std::stoi(fields[4]), std::stoi(fields[5]) });
+				}
+			else if (starts_with(line, "CONTROL"))
+				{
+				std::string control = trim(erase_substr(line, "CONTROL"), " ");
+				auto fields = split(control, ',');
+				if (fields.size() == 8)
+					dlg.m_controls.push_back(control_defn{ "CONTROL", fields[1], fields[0], fields[3], std::stoi(fields[4]), std::stoi(fields[5]), std::stoi(fields[6]), std::stoi(fields[7]) });
+				}
+			else if (line == "END")
+				{
+				if (dlg.m_style)
+					dialogs.push_back(dlg);
+
+				dlg = dialog_defn{};
 				}
 			}
-		else if (starts_with(line, "STYLE "))
-			{
-			dlg.m_style = true;
-			}
-		else if (starts_with(line, "CAPTION "))
-			{
-			auto fields = split(line, '\"');
-			if (fields.size() == 3)
-				dlg.m_caption = trim(fields[1], "\"");
-			}
-		else if (starts_with(line, "EDITTEXT"))
-			{
-			std::string control = trim(erase_substr(line, "EDITTEXT"), " ");
-			auto fields = split(control, ',');
-			if (fields.size() == 6)
-				dlg.m_controls.push_back(control_defn{ "EDITTEXT", fields[0], "", fields[5], std::stoi(fields[1]), std::stoi(fields[2]), std::stoi(fields[3]), std::stoi(fields[4]) });
-			}
-		else if (starts_with(line, "COMBOBOX"))
-			{
-			std::string control = trim(erase_substr(line, "COMBOBOX"), " ");
-			auto fields = split(control, ',');
-			if (fields.size() == 6)
-				dlg.m_controls.push_back(control_defn{ "COMBOBOX", fields[0], "", fields[5], std::stoi(fields[1]), std::stoi(fields[2]), std::stoi(fields[3]), 12 });
-			}
-		else if (starts_with(line, "GROUPBOX"))
-			{
-			std::string control = trim(erase_substr(line, "GROUPBOX"), " ");
-			auto fields = split(control, ',');
-			if (fields.size() == 6)
-				dlg.m_controls.push_back(control_defn{ "GROUPBOX", fields[1], fields[0], "", std::stoi(fields[2]), std::stoi(fields[3]), std::stoi(fields[4]), std::stoi(fields[5]) });
-			}
-		else if (starts_with(line, "DEFPUSHBUTTON") || starts_with(line, "PUSHBUTTON"))
-			{
-			std::string control = trim(erase_substr(line, "PUSHBUTTON"), " ");
-			auto fields = split(control, ',');
-			if (fields.size() == 6)
-				dlg.m_controls.push_back(control_defn{ "PUSHBUTTON", fields[1], fields[0], "", std::stoi(fields[2]), std::stoi(fields[3]), std::stoi(fields[4]), std::stoi(fields[5]) });
-			}
-		else if (starts_with(line, "LTEXT"))
-			{
-			std::string control = trim(erase_substr(line, "LTEXT"), " ");
-			auto fields = quote_aware_split(control, ',');
-			if (fields.size() >= 6)
-				dlg.m_controls.push_back(control_defn{ "LTEXT", fields[1], fields[0], (fields.size() > 6 ? fields[6] : ""), std::stoi(fields[2]), std::stoi(fields[3]), std::stoi(fields[4]), std::stoi(fields[5]) });
-			}
-		else if (starts_with(line, "RTEXT"))
-			{
-			std::string control = trim(erase_substr(line, "RTEXT"), " ");
-			auto fields = quote_aware_split(control, ',');
-			if (fields.size() >= 6)
-				dlg.m_controls.push_back(control_defn{ "RTEXT", fields[1], fields[0], (fields.size() > 6 ? fields[6] : ""), std::stoi(fields[2]), std::stoi(fields[3]), std::stoi(fields[4]), std::stoi(fields[5]) });
-			}
-		else if (starts_with(line, "CTEXT"))
-			{
-			std::string control = trim(erase_substr(line, "CTEXT"), " ");
-			auto fields = quote_aware_split(control, ',');
-			if (fields.size() >= 6)
-				dlg.m_controls.push_back(control_defn{ "CTEXT", fields[1], fields[0], (fields.size() > 6 ? fields[6] : ""), std::stoi(fields[2]), std::stoi(fields[3]), std::stoi(fields[4]), std::stoi(fields[5]) });
-			}
-		else if (starts_with(line, "CONTROL"))
-			{
-			std::string control = trim(erase_substr(line, "CONTROL"), " ");
-			auto fields = split(control, ',');
-			if (fields.size() == 8)
-				dlg.m_controls.push_back(control_defn{ "CONTROL", fields[1], fields[0], fields[3], std::stoi(fields[4]), std::stoi(fields[5]), std::stoi(fields[6]), std::stoi(fields[7]) });
-			}
-		else if (line == "END")
-			{
-			if (dlg.m_style)
-				dialogs.push_back(dlg);
 
-			dlg = dialog_defn{};
-			}
-		}
-
-	return dialogs;
+		return dialogs;
+	}
 }

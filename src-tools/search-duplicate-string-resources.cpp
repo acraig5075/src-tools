@@ -91,7 +91,7 @@ DuplicateStringsOutput find_duplicates(const std::vector<fs::path> &files)
 		{
 		size_t count = 0;
 
-		std::vector<IDSResource> ids = parse_string_table(files[i]);
+		std::vector<IDSResource> ids = resource_utils::parse_string_table(files[i]);
 
 		std::sort(begin(ids), end(ids), [](const IDSResource & lhs, const IDSResource & rhs)
 			{

@@ -686,7 +686,7 @@ int examine_dialogs_for_conformity(const fs::path &input, std::ostream &output, 
 
 	for (const auto &path : files)
 		{
-		std::vector<dialog_defn> single = get_dialog_definitions(path);
+		std::vector<dialog_defn> single = resource_utils::get_dialog_definitions(path);
 
 		dialogs.insert(dialogs.end(), single.begin(), single.end());
 		}
