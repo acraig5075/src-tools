@@ -279,7 +279,7 @@ void CsrctoolsmfcDlg::OnBnClickedConformingrcfileBtn()
 	std::stringstream ss;
 
 	BeginWaitCursor();
-	examine_rc_file_for_conformity(rootPath, ss, m_options.m_rcFileRulesOpts);
+	examine_dialogs_for_conformity(rootPath, ss, m_options.m_rcFileRulesOpts);
 	EndWaitCursor();
 
 	CString output(ss.str().c_str());

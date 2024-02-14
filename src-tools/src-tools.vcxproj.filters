@@ -44,7 +44,7 @@
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="examine-rc-file-for-conformity.cpp">
+    <ClCompile Include="examine-dialogs-for-conformity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="search-commands-not-in-imageandcommands.cpp">

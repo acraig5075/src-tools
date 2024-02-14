@@ -16,7 +16,7 @@ void usage()
 	std::cout << "           2 : search_duplicate_string_resources\n";
 	std::cout << "           3 : search_unused_string_resources\n";
 	std::cout << "           4 : search_cpp_files_missing_debug_new_macro\n";
-	std::cout << "           5 : examine_rc_file_for_conformity\n";
+	std::cout << "           5 : examine_dialogs_for_conformity\n";
 	std::cout << "           6 : search_tooltips_exceeding_max_length\n";
 	std::cout << "           7 : search_resizable_not_in_reg_reset\n";
 	std::cout << "           8 : search_menu_files_title_case\n";
@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
 			search_cpp_files_missing_debug_new_macro(rootPath, std::cout, options.m_missingMacroOpts);
 			break;
 		case 5:
-			examine_rc_file_for_conformity(rootPath, std::cout, options.m_rcFileRulesOpts);
+			examine_dialogs_for_conformity(rootPath, std::cout, options.m_rcFileRulesOpts);
 			break;
 		case 6:
 			{

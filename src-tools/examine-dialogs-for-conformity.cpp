@@ -865,7 +865,7 @@ void filter_by_options(std::vector<broken_rule> &faults, const RcFileRulesOption
 		FilterOut(CONTROLS_OVERLAP);
 }
 
-int examine_rc_file_for_conformity(const fs::path &input, std::ostream &output, const RcFileRulesOptions &options)
+int examine_dialogs_for_conformity(const fs::path &input, std::ostream &output, const RcFileRulesOptions &options)
 {
 	inputbox_heights.clear();
 	okCancel_gaps.clear();
