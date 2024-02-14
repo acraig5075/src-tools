@@ -1,74 +1,11 @@
 #include "pch.h"
 #include "string-utils.h"
 #include "filesystem-utils.h"
+#include "resource-utils.h"
 #include "options.h"
 #include "reports.h"
 
 namespace fs = std::filesystem;
-
-struct Resource
-{
-	std::string m_name;
-	std::string m_description;
-};
-
-
-std::ostream &operator<<(std::ostream &out, const Resource &r)
-{
-	out << r.m_name << " - " << r.m_description;
-	return out;
-}
-
-
-std::vector<Resource> ParseStringTable(size_t fileID, const fs::path &path)
-{
-	std::vector<Resource> ids;
-
-	std::ifstream fin(path.string());
-	std::string line;
-	bool table = false;
-	bool begin = false;
-
-	while (std::getline(fin, line))
-		{
-		if ("STRINGTABLE" == line)
-			{
-			table = true;
-			begin = false;
-			}
-		else if (table && "BEGIN" == line)
-			{
-			begin = true;
-			}
-		else if (table && "END" == line)
-			{
-			begin = false;
-			table = false;
-			}
-		else if (table && begin && starts_with(trim(line, " "), "IDS_"))
-			{
-			size_t fnd = line.find('\"', 0);
-			if (fnd != line.npos)
-				{
-				std::string name = line.substr(0, fnd);
-				std::string desc = line.substr(fnd);
-				name = trim(name, " ");
-				desc = trim(desc, " \"");
-
-				if (!name.empty() && !desc.empty())
-					{
-					Resource s;
-					s.m_name = name;
-					s.m_description = desc;
-					ids.push_back(s);
-					}
-				}
-			}
-		}
-
-	return ids;
-}
-
 
 template<class ForwardIt, class Comparison>
 ForwardIt next_unique(ForwardIt first, ForwardIt last, Comparison compare)
@@ -154,9 +91,9 @@ DuplicateStringsOutput find_duplicates(const std::vector<fs::path> &files)
 		{
 		size_t count = 0;
 
-		std::vector<Resource> ids = ParseStringTable(i, files[i]);
+		std::vector<IDSResource> ids = parse_string_table(files[i]);
 
-		std::sort(begin(ids), end(ids), [](const Resource & lhs, const Resource & rhs)
+		std::sort(begin(ids), end(ids), [](const IDSResource & lhs, const IDSResource & rhs)
 			{
 			return std::tie(lhs.m_description, lhs.m_name) < std::tie(rhs.m_description, rhs.m_name);
 			});
@@ -165,7 +102,7 @@ DuplicateStringsOutput find_duplicates(const std::vector<fs::path> &files)
 
 		for (auto itr = ids.begin(); itr != ids.end();)
 			{
-			auto next = next_unique(itr, ids.end(), [](const Resource & lhs, const Resource & rhs)
+			auto next = next_unique(itr, ids.end(), [](const IDSResource & lhs, const IDSResource & rhs)
 				{
 				return lhs.m_description != rhs.m_description;
 				});

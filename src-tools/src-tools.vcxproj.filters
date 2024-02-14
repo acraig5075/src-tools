@@ -36,6 +36,9 @@
     <ClInclude Include="options.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource-utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src-tools.cpp">
@@ -81,6 +84,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="search-files-not-referenced-by-project.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="resource-utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

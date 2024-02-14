@@ -1,5 +1,7 @@
 #pragma once
 
+#include "resource-utils.h"
+
 struct UnusedResources
 {
 	std::filesystem::path m_path;
@@ -35,11 +37,6 @@ struct DuplicateStringsOutput
 	std::vector<DuplicateResources> m_folders;
 };
 
-struct IDSResource
-{
-	std::string m_name;
-	std::string m_description;
-};
 
 struct TooltipLength
 {

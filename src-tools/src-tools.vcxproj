@@ -180,6 +180,7 @@
     <ClInclude Include="options.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="reports.h" />
+    <ClInclude Include="resource-utils.h" />
     <ClInclude Include="src-tools.h" />
     <ClInclude Include="string-utils.h" />
   </ItemGroup>
@@ -188,6 +189,7 @@
     <ClCompile Include="filesystem-utils.cpp" />
     <ClCompile Include="options.cpp" />
     <ClCompile Include="reports.cpp" />
+    <ClCompile Include="resource-utils.cpp" />
     <ClCompile Include="search-cpp-files-missing-debug-new-macro.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
