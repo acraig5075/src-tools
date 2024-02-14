@@ -8,6 +8,7 @@
 #include "options.h"
 
 namespace fs = std::filesystem;
+using namespace string_utils;
 
 static std::vector<UnusedResources> get_file_list_custom(const fs::path &root, const std::string &extension)
 {

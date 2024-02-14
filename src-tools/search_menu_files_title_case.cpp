@@ -6,6 +6,7 @@
 #include <stack>
 
 namespace fs = std::filesystem;
+using namespace string_utils;
 
 struct MenuItem
 {

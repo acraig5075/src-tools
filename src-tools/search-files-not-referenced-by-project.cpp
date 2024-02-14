@@ -4,6 +4,7 @@
 #include "reports.h"
 
 namespace fs = std::filesystem;
+using namespace string_utils;
 
 std::vector<fs::path> get_referenced_files(const fs::path &project)
 {

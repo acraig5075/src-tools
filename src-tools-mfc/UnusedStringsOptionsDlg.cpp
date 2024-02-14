@@ -51,7 +51,7 @@ static CString ToString(const std::vector<std::string> &folders)
 
 static std::vector<std::string> FromString(const CString &str)
 {
-	std::vector<std::string> folders = split(std::string(CW2A(str)), ';');
+	std::vector<std::string> folders = string_utils::split(std::string(CW2A(str)), ';');
 	folders.erase(std::remove_if(folders.begin(), folders.end(), [](const std::string & s)
 		{
 		return s.empty();

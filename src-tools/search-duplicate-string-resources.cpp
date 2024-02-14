@@ -6,6 +6,7 @@
 #include "reports.h"
 
 namespace fs = std::filesystem;
+using namespace string_utils;
 
 template<class ForwardIt, class Comparison>
 ForwardIt next_unique(ForwardIt first, ForwardIt last, Comparison compare)

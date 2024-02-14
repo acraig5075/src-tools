@@ -3,6 +3,7 @@
 #include "string-utils.h"
 
 namespace fs = std::filesystem;
+using namespace string_utils;
 
 
 std::ostream &operator<<(std::ostream &out, const IDSResource &r)

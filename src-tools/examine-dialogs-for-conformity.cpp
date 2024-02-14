@@ -5,7 +5,7 @@
 #include "options.h"
 
 namespace fs = std::filesystem;
-
+using namespace string_utils;
 
 enum rule_code
 {

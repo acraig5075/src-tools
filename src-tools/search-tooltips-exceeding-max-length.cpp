@@ -7,6 +7,7 @@
 #include <stack>
 
 namespace fs = std::filesystem;
+using namespace string_utils;
 
 void tooltips_in_use(const fs::path &path, std::vector<IDSResource> &names, std::vector<unsigned int>& values)
 {

@@ -35,7 +35,7 @@ void WriteOptions(const std::string& filename, const Options& options)
 		};
 
 	std::string text = json.dump();
-	text = pretty_print_json11(text);
+	text = string_utils::pretty_print_json11(text);
 	std::ofstream fout(filename);
 	fout << text;
 }

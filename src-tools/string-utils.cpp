@@ -1,315 +1,320 @@
 #include "pch.h"
 #include "string-utils.h"
 
-// Front and back trimming
-std::string trim(const std::string &value, const std::string &chars)
+namespace string_utils
 {
-	auto right_trim = [chars](const std::string & str) -> std::string
-		{
-		size_t endpos = str.find_last_not_of(chars);
-		if (std::string::npos != endpos)
-			{
-			return str.substr(0, endpos + 1);
-			}
-		return{};
-		};
 
-	auto left_trim = [chars](const std::string & str) -> std::string
+	// Front and back trimming
+	std::string trim(const std::string & value, const std::string & chars)
 		{
-		size_t startpos = str.find_first_not_of(chars);
-		if (std::string::npos != startpos)
+		auto right_trim = [chars](const std::string & str) -> std::string
 			{
-			return str.substr(startpos);
-			}
-		return{};
-		};
+			size_t endpos = str.find_last_not_of(chars);
+			if (std::string::npos != endpos)
+				{
+				return str.substr(0, endpos + 1);
+				}
+			return{};
+			};
 
-	return left_trim(right_trim(value));
-}
+		auto left_trim = [chars](const std::string & str) -> std::string
+			{
+			size_t startpos = str.find_first_not_of(chars);
+			if (std::string::npos != startpos)
+				{
+				return str.substr(startpos);
+				}
+			return{};
+			};
+
+		return left_trim(right_trim(value));
+		}
 
 
 // Test for a prefix
-bool starts_with(const std::string &value, const std::string &test)
-{
-	return value.compare(0, test.length(), test) == 0;
-}
+	bool starts_with(const std::string & value, const std::string & test)
+		{
+		return value.compare(0, test.length(), test) == 0;
+		}
 
 
 // Test for a suffix
-bool ends_with(const std::string &value, const std::string &ending)
-{
-	if (value.length() >= ending.length())
-		return (0 == value.compare(value.length() - ending.length(), ending.length(), ending));
-	return false;
-}
+	bool ends_with(const std::string & value, const std::string & ending)
+		{
+		if (value.length() >= ending.length())
+			return (0 == value.compare(value.length() - ending.length(), ending.length(), ending));
+		return false;
+		}
 
 
 // Tokenise a string
-std::vector<std::string> split(const std::string &value, char delimiter)
-{
-	std::vector<std::string> ret;
-
-	size_t start = 0;
-	while (true)
+	std::vector<std::string> split(const std::string & value, char delimiter)
 		{
-		size_t pos = value.find(delimiter, start);
-		if (pos == -1)
-			{
-			ret.push_back(value.substr(start));
-			break;
-			}
-		else
-			{
-			ret.push_back(value.substr(start, pos - start));
-			start = pos + 1;
-			}
-		}
+		std::vector<std::string> ret;
 
-	return ret;
-}
-
-// Tokenise a string that may have quoted fields
-std::vector<std::string> quote_aware_split(const std::string &line, char delimiter)
-{
-	std::vector<std::string> values;
-	std::string value;
-	bool in_quoted = false;
-
-	for (const char *p = line.c_str(); *p; ++p)
-		{
-		if (*p == delimiter && !in_quoted)
+		size_t start = 0;
+		while (true)
 			{
-			values.push_back(value);
-			value.clear();
-			}
-		else if (*p == '"')
-			{
-			if (in_quoted)
+			size_t pos = value.find(delimiter, start);
+			if (pos == -1)
 				{
-				if (p[1] == '"')
-					value += *++p;
-				else
-					in_quoted = false;
+				ret.push_back(value.substr(start));
+				break;
 				}
 			else
-				in_quoted = true;
+				{
+				ret.push_back(value.substr(start, pos - start));
+				start = pos + 1;
+				}
 			}
-		else
-			value += *p;
+
+		return ret;
 		}
 
-	values.push_back(value);
-	return values;
-};
+// Tokenise a string that may have quoted fields
+	std::vector<std::string> quote_aware_split(const std::string & line, char delimiter)
+		{
+		std::vector<std::string> values;
+		std::string value;
+		bool in_quoted = false;
+
+		for (const char *p = line.c_str(); *p; ++p)
+			{
+			if (*p == delimiter && !in_quoted)
+				{
+				values.push_back(value);
+				value.clear();
+				}
+			else if (*p == '"')
+				{
+				if (in_quoted)
+					{
+					if (p[1] == '"')
+						value += *++p;
+					else
+						in_quoted = false;
+					}
+				else
+					in_quoted = true;
+				}
+			else
+				value += *p;
+			}
+
+		values.push_back(value);
+		return values;
+		};
 
 // Convert to lowercase
-std::string lowercase(const std::string &str)
-{
-	std::string ret = str;
-	std::transform(begin(ret), end(ret), begin(ret), [](unsigned char c)
+	std::string lowercase(const std::string & str)
 		{
-		return std::tolower(c);
-		});
-	return ret;
-}
+		std::string ret = str;
+		std::transform(begin(ret), end(ret), begin(ret), [](unsigned char c)
+			{
+			return std::tolower(c);
+			});
+		return ret;
+		}
 
 
 // Title-case grammar
-static std::vector<std::string> conjunctions =
-{
-	"and",
-	"from",
-	"to",
-	"of",
-	"for",
-	"the",
-	"by",
-	"on",
-	"a",
-	"an",
-	"at",
-	"with",
-};
+	static std::vector<std::string> conjunctions =
+		{
+		"and",
+		"from",
+		"to",
+		"of",
+		"for",
+		"the",
+		"by",
+		"on",
+		"a",
+		"an",
+		"at",
+		"with",
+		};
 
 // Title-case exceptions
-static std::vector<std::string> exceptions =
-{
-	"before",
-	"behind",
-	"deg",
-	"t-T",
-	"file",
-	"using",
-};
+	static std::vector<std::string> exceptions =
+		{
+		"before",
+		"behind",
+		"deg",
+		"t-T",
+		"file",
+		"using",
+		};
 
 // Test for title case
-bool is_title_case(const std::string &str)
-{
-	std::stringstream ss(trim(str, "."));
-	std::string word;
-
-	while (ss >> word)
+	bool is_title_case(const std::string & str)
 		{
-		// Exceptions can be skipped-over
-		if (std::find_if(begin(exceptions), end(exceptions), [word](const std::string &str)
+		std::stringstream ss(trim(str, "."));
+		std::string word;
+
+		while (ss >> word)
+			{
+			// Exceptions can be skipped-over
+			if (std::find_if(begin(exceptions), end(exceptions), [word](const std::string & str)
 			{
 			return lowercase(word) == lowercase(str);
-			}) != end(exceptions))
+				}) != end(exceptions))
 			continue;
 
-		if (std::find(begin(conjunctions), end(conjunctions), word) != end(conjunctions))
-			{
-			// Conjunctions expect lower case
-			if ((word)[0] >= 'A' && (word)[0] <= 'Z')
-				return false;
+			if (std::find(begin(conjunctions), end(conjunctions), word) != end(conjunctions))
+				{
+				// Conjunctions expect lower case
+				if ((word)[0] >= 'A' && (word)[0] <= 'Z')
+					return false;
+				}
+			else
+				{
+				// Other words expect upper case
+				if ((word)[0] >= 'a' && (word)[0] <= 'z')
+					return false;
+				}
 			}
-		else
-			{
-			// Other words expect upper case
-			if ((word)[0] >= 'a' && (word)[0] <= 'z')
-				return false;
-			}
-		}
 
-	return true;
-}
+		return true;
+		}
 
 
 // Test for sentence case
-bool is_sentence_case(const std::string &str)
-{
-	auto words = split(str, ' ');
-
-	bool first = true;
-
-	for (auto itr = begin(words); itr != end(words); ++itr)
+	bool is_sentence_case(const std::string & str)
 		{
-		if (first)
+		auto words = split(str, ' ');
+
+		bool first = true;
+
+		for (auto itr = begin(words); itr != end(words); ++itr)
 			{
-			if ((*itr)[0] >= 97 && (*itr)[0] <= 122)
-				return false;
-			}
-		else
-			{
-			if ((*itr)[0] >= 65 && (*itr)[0] <= 90)
-				return false;
+			if (first)
+				{
+				if ((*itr)[0] >= 97 && (*itr)[0] <= 122)
+					return false;
+				}
+			else
+				{
+				if ((*itr)[0] >= 65 && (*itr)[0] <= 90)
+					return false;
+				}
+
+			first = false;
 			}
 
-		first = false;
+		return true;
 		}
-
-	return true;
-}
 
 
 // Erase a substring
-std::string erase_substr(const std::string &str, const std::string &substr)
-{
-	std::string ret = str;
+	std::string erase_substr(const std::string & str, const std::string & substr)
+		{
+		std::string ret = str;
 
-	size_t fnd = ret.find(substr, 0);
-	if (fnd != std::string::npos)
-		ret.erase(fnd, substr.size());
+		size_t fnd = ret.find(substr, 0);
+		if (fnd != std::string::npos)
+			ret.erase(fnd, substr.size());
 
-	return ret;
-}
+		return ret;
+		}
 
 
 // Replace every occurence of a substring with another
-bool replace_substr(std::string& str, const std::string& substr, const std::string& replacement)
-{
-	bool modified = false;
-	size_t off = 0;
-	size_t fnd = 0;;
-	while ((fnd = str.find(substr, off)) != std::string::npos)
+	bool replace_substr(std::string & str, const std::string & substr, const std::string & replacement)
 		{
-		str = str.replace(fnd, substr.size(), replacement);
-		off = fnd + replacement.size();
-		modified = true;
-		}
+		bool modified = false;
+		size_t off = 0;
+		size_t fnd = 0;;
+		while ((fnd = str.find(substr, off)) != std::string::npos)
+			{
+			str = str.replace(fnd, substr.size(), replacement);
+			off = fnd + replacement.size();
+			modified = true;
+			}
 
-	return modified;
-}
+		return modified;
+		}
 
 
 // json11 doesn't newline or indent it's output, so this is a naive effort at doing so
-std::string pretty_print_json11(const std::string& text)
-{
-	std::string ret = text;
+	std::string pretty_print_json11(const std::string & text)
+		{
+		std::string ret = text;
 
-	replace_substr(ret, "{", "{\n");
-	replace_substr(ret, "}", "\n}");
-	replace_substr(ret, ", ", ",\n");
-	replace_substr(ret, "[", "[\n");
-	replace_substr(ret, "]", "\n]");
+		replace_substr(ret, "{", "{\n");
+		replace_substr(ret, "}", "\n}");
+		replace_substr(ret, ", ", ",\n");
+		replace_substr(ret, "[", "[\n");
+		replace_substr(ret, "]", "\n]");
 
-	return ret;
-}
+		return ret;
+		}
 
 
 // Longest common prefix substring of a list of strings
-std::string longest_common_substring(const std::vector<std::string>& strings)
-{
-	if (strings.empty())
-		return {};
-
-	size_t length = strings[0].length();
-	for (size_t i = 1; i < strings.size(); ++i)
+	std::string longest_common_substring(const std::vector<std::string> &strings)
 		{
-		if (strings[i].length() < length)
-			length = strings[i].length();
-		}
+		if (strings.empty())
+			return {};
 
-	std::string lcs;
-
-	for (size_t i = 0; i < length; ++i)
-		{
-		char ch = strings[0][i];
-
-		for (size_t j = 1; j < strings.size(); ++j)
+		size_t length = strings[0].length();
+		for (size_t i = 1; i < strings.size(); ++i)
 			{
-			if (strings[j][i] != ch)
-				return lcs;
+			if (strings[i].length() < length)
+				length = strings[i].length();
 			}
 
-		lcs += ch;
+		std::string lcs;
+
+		for (size_t i = 0; i < length; ++i)
+			{
+			char ch = strings[0][i];
+
+			for (size_t j = 1; j < strings.size(); ++j)
+				{
+				if (strings[j][i] != ch)
+					return lcs;
+				}
+
+			lcs += ch;
+			}
+
+		return lcs;
 		}
 
-	return lcs;
-}
 
-
-// Search for a whole-word substring 
-size_t find_substr_exact(const std::string& str, const std::string& substr, size_t off)
-{
-	size_t fnd = str.find(substr, off);
-	while (fnd != std::string::npos)
+// Search for a whole-word substring
+	size_t find_substr_exact(const std::string & str, const std::string & substr, size_t off)
 		{
-		char next = str[fnd + substr.length()];
-		if (!std::isalnum(next))
-			return fnd;
+		size_t fnd = str.find(substr, off);
+		while (fnd != std::string::npos)
+			{
+			char next = str[fnd + substr.length()];
+			if (!std::isalnum(next))
+				return fnd;
 
-		off = fnd + substr.length();
-		fnd = str.find(substr, off);
+			off = fnd + substr.length();
+			fnd = str.find(substr, off);
+			}
+
+		return std::string::npos;
 		}
-
-	return std::string::npos;
-}
 
 // Extract substring being an xml quoted attribute
-std::string get_xml_text_attribute(const std::string &line, const std::string &attr)
-{
-	std::string search = attr + "=\"";
+	std::string get_xml_text_attribute(const std::string & line, const std::string & attr)
+		{
+		std::string search = attr + "=\"";
 
-	size_t start = line.find(search, 0);
-	if (start == std::string::npos)
-		return {};
-	start += std::string(search).length();
+		size_t start = line.find(search, 0);
+		if (start == std::string::npos)
+			return {};
+		start += std::string(search).length();
 
-	size_t end = line.find("\"", start + 1);
-	if (end == std::string::npos)
-		return {};
+		size_t end = line.find("\"", start + 1);
+		if (end == std::string::npos)
+			return {};
 
-	std::string name = line.substr(start, end - start);
-	return name;
+		std::string name = line.substr(start, end - start);
+		return name;
+		}
+
 }

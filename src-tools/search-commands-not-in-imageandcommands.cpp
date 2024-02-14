@@ -4,6 +4,7 @@
 #include "options.h"
 
 namespace fs = std::filesystem;
+using namespace string_utils;
 
 // This checks for a valid command name format and convention
 bool is_valid_command_name(const std::string &value)

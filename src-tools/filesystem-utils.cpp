@@ -3,6 +3,7 @@
 #include "string-utils.h"
 
 namespace fs = std::filesystem;
+using namespace string_utils;
 
 namespace filesystem_utils
 	{

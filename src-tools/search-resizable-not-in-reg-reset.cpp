@@ -4,6 +4,7 @@
 #include "options.h"
 
 namespace fs = std::filesystem;
+using namespace string_utils;
 
 struct ResizableDialog
 {

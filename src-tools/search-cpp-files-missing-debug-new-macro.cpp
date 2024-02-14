@@ -5,7 +5,6 @@
 
 namespace fs = std::filesystem;
 
-
 /// Search all .cpp files for a search term
 int search_cpp_files_missing_debug_new_macro(const fs::path &root, std::ostream &output, const MissingMacroOptions &options)
 {
