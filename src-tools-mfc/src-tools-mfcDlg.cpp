@@ -43,6 +43,7 @@ CsrctoolsmfcDlg::CsrctoolsmfcDlg(const CStringA& optionsFilename, CWnd* pParent 
 CsrctoolsmfcDlg::~CsrctoolsmfcDlg()
 {
 	delete m_pFont;
+	m_edittingMenu.DestroyMenu();
 }
 
 void CsrctoolsmfcDlg::DoDataExchange(CDataExchange* pDX)
@@ -50,7 +51,10 @@ void CsrctoolsmfcDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_OUTPUTEDIT, m_outputEdit);
 	DDX_Control(pDX, IDC_EDITBROWSE, m_editBrowseCtrl);
-}
+	DDX_Control(pDX, IDC_TOOLTIPSMAX_BTN, m_tooltipsMenuBtn);
+	DDX_Control(pDX, IDC_DUPLICATESTRINGS_BTN, m_duplicatesMenuBtn);
+	DDX_Control(pDX, IDC_UNUSEDSTRINGS_BTN, m_unusedMenuBtn);
+	}
 
 BEGIN_MESSAGE_MAP(CsrctoolsmfcDlg, CDialogEx)
 	ON_WM_PAINT()
@@ -90,6 +94,13 @@ BOOL CsrctoolsmfcDlg::OnInitDialog()
 	m_editBrowseCtrl.SetWindowTextW(_T("D:\\Src\\Trunk_VS2013\\CivilDesigner"));
 
 	m_outputEdit.SetFont(m_pFont);
+
+	m_edittingMenu.CreatePopupMenu();
+	m_edittingMenu.AppendMenu(MF_STRING, 10000, _T("... and proceed with editing"));
+
+	m_duplicatesMenuBtn.m_hMenu = m_edittingMenu.GetSafeHmenu();
+	m_unusedMenuBtn.m_hMenu = m_edittingMenu.GetSafeHmenu();
+	m_tooltipsMenuBtn.m_hMenu = m_edittingMenu.GetSafeHmenu();
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -187,14 +198,16 @@ void CsrctoolsmfcDlg::OnBnClickedDuplicatestringsBtn()
 	output.Replace(_T("\n"), _T("\r\n"));
 	m_outputEdit.SetWindowTextW(output);
 
-	if (!out.m_folders.empty())
+	int chosen = m_duplicatesMenuBtn.m_nMenuResult;
+	if (10000 == chosen)
 		{
-		int ret = MessageBox(_T("Do you want to proceed with editing?"), _T("Confirm"), MB_YESNO | MB_ICONQUESTION);
-		if (IDYES == ret)
+		if (!out.m_folders.empty())
 			{
 			CDuplicateStringsEditingDlg dlg(out, this);
 			dlg.DoModal();
 			}
+		else
+			MessageBox(_T("Nothing to edit"), _T("Information"), MB_OK | MB_ICONINFORMATION);
 		}
 }
 
@@ -226,14 +239,16 @@ void CsrctoolsmfcDlg::OnBnClickedUnusedstringsBtn()
 	output.Replace(_T("\n"), _T("\r\n"));
 	m_outputEdit.SetWindowTextW(output);
 
-	if (!out.m_folders.empty())
+	int chosen = m_unusedMenuBtn.m_nMenuResult;
+	if (10000 == chosen)
 		{
-		int ret = MessageBox(_T("Do you want to proceed with editing?"), _T("Confirm"), MB_YESNO | MB_ICONQUESTION);
-		if (IDYES == ret)
+		if (!out.m_folders.empty())
 			{
 			CUnusedStringsEditingDlg dlg(out, this);
 			dlg.DoModal();
 			}
+		else
+			MessageBox(_T("Nothing to edit"), _T("Information"), MB_OK | MB_ICONINFORMATION);
 		}
 }
 
@@ -321,15 +336,17 @@ void CsrctoolsmfcDlg::OnBnClickedTooltipsmaxBtn()
 	output.Replace(_T("\n"), _T("\r\n"));
 	m_outputEdit.SetWindowTextW(output);
 
-	if (!out.m_projectResources.empty())
+	int chosen = m_tooltipsMenuBtn.m_nMenuResult;
+	if (10000 == chosen)
 		{
-		int ret = MessageBox(_T("Do you want to proceed with editing?"), _T("Confirm"), MB_YESNO | MB_ICONQUESTION);
-		if (IDYES == ret)
+		if (!out.m_projectResources.empty())
 			{
 			size_t maxLength = m_options.m_tooltipLengthOpts.m_maximum;
 			CTooltipLengthEditingDlg dlg(out, maxLength, this);
 			dlg.DoModal();
 			}
+		else
+			MessageBox(_T("Nothing to edit"), _T("Information"), MB_OK | MB_ICONINFORMATION);
 		}
 	}
 

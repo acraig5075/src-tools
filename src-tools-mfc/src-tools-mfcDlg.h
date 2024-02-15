@@ -46,15 +46,20 @@ protected:
 	afx_msg void OnBnClickedMenutitlecaseBtn();
 	afx_msg void OnBnClickedMenutitlecaseOpts();
 	afx_msg void OnBnClickedUnreferencedfilesBtn();
+	afx_msg void OnBnClickedUnreferencedfilesOpts();
 
 private:
 	CEdit m_outputEdit;
 	CMFCEditBrowseCtrl m_editBrowseCtrl;
+	CMFCMenuButton m_duplicatesMenuBtn;
+	CMFCMenuButton m_unusedMenuBtn;
+	CMFCMenuButton m_tooltipsMenuBtn;
+
 	CFont* m_pFont = nullptr;
 	CStringA m_optionsFilename;
 	Options m_options;
+	CMenu m_edittingMenu;
 
 	DECLARE_MESSAGE_MAP()
 public:
-	afx_msg void OnBnClickedUnreferencedfilesOpts();
 	};
