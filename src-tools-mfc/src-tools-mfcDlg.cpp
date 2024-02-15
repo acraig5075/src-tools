@@ -187,11 +187,14 @@ void CsrctoolsmfcDlg::OnBnClickedDuplicatestringsBtn()
 	output.Replace(_T("\n"), _T("\r\n"));
 	m_outputEdit.SetWindowTextW(output);
 
-	int ret = MessageBox(_T("Do you want to proceed with editing?"), _T("Confirm"), MB_YESNO | MB_ICONQUESTION);
-	if (IDYES == ret)
+	if (!out.m_folders.empty())
 		{
-		CDuplicateStringsEditingDlg dlg(out, this);
-		dlg.DoModal();
+		int ret = MessageBox(_T("Do you want to proceed with editing?"), _T("Confirm"), MB_YESNO | MB_ICONQUESTION);
+		if (IDYES == ret)
+			{
+			CDuplicateStringsEditingDlg dlg(out, this);
+			dlg.DoModal();
+			}
 		}
 }
 
@@ -223,11 +226,14 @@ void CsrctoolsmfcDlg::OnBnClickedUnusedstringsBtn()
 	output.Replace(_T("\n"), _T("\r\n"));
 	m_outputEdit.SetWindowTextW(output);
 
-	int ret = MessageBox(_T("Do you want to proceed with editing?"), _T("Confirm"), MB_YESNO | MB_ICONQUESTION);
-	if (IDYES == ret)
+	if (!out.m_folders.empty())
 		{
-		CUnusedStringsEditingDlg dlg(out, this);
-		dlg.DoModal();
+		int ret = MessageBox(_T("Do you want to proceed with editing?"), _T("Confirm"), MB_YESNO | MB_ICONQUESTION);
+		if (IDYES == ret)
+			{
+			CUnusedStringsEditingDlg dlg(out, this);
+			dlg.DoModal();
+			}
 		}
 }
 
@@ -315,12 +321,15 @@ void CsrctoolsmfcDlg::OnBnClickedTooltipsmaxBtn()
 	output.Replace(_T("\n"), _T("\r\n"));
 	m_outputEdit.SetWindowTextW(output);
 
-	int ret = MessageBox(_T("Do you want to proceed with editing?"), _T("Confirm"), MB_YESNO | MB_ICONQUESTION);
-	if (IDYES == ret)
+	if (!out.m_projectResources.empty())
 		{
-		size_t maxLength = m_options.m_tooltipLengthOpts.m_maximum;
-		CTooltipLengthEditingDlg dlg(out, maxLength, this);
-		dlg.DoModal();
+		int ret = MessageBox(_T("Do you want to proceed with editing?"), _T("Confirm"), MB_YESNO | MB_ICONQUESTION);
+		if (IDYES == ret)
+			{
+			size_t maxLength = m_options.m_tooltipLengthOpts.m_maximum;
+			CTooltipLengthEditingDlg dlg(out, maxLength, this);
+			dlg.DoModal();
+			}
 		}
 	}
 

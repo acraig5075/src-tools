@@ -8,7 +8,9 @@ namespace fs = std::filesystem;
 /// Search all .cpp files for a search term
 int search_cpp_files_missing_debug_new_macro(const fs::path &root, std::ostream &output, const MissingMacroOptions &options)
 {
-	std::vector<fs::path> directories = filesystem_utils::get_directory_list(root);
+	bool topLevel = filesystem_utils::is_solution_folder(root);
+
+	std::vector<fs::path> directories = filesystem_utils::get_directory_list(root, (topLevel ? false : true));
 
 	std::vector<Report> summary;
 
