@@ -59,6 +59,13 @@ struct MenuTitleCaseOptions
 	{
 	};
 
+struct ProjectUnreferencedOptions
+	{
+	std::vector<std::string> m_excludeFolders;
+	int m_outputFormat = 0;
+	bool m_onlySummary = false;
+	};
+
 struct Options
 	{
 	ImagesAndCommandsOptions m_imagesAndCommandsOpts;
@@ -69,6 +76,7 @@ struct Options
 	TooltipLengthOptions m_tooltipLengthOpts;
 	RegResetOptions m_regResetOpts;
 	MenuTitleCaseOptions m_menuTitleCaseOpts;
+	ProjectUnreferencedOptions m_projectUnreferencedOpts;
 	};
 
 void WriteOptions(const std::string& filename, const Options &options);

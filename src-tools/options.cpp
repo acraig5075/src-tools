@@ -12,9 +12,12 @@ void WriteOptions(const std::string& filename, const Options& options)
 			{ "tool_duplicate_strings_output_format",                options.m_duplicateStringsOpts.m_outputFormat },
 			{ "tool_duplicate_strings_only_summary",                 options.m_duplicateStringsOpts.m_onlySummary },
 			{ "tool_duplicate_strings_exclude_folders",              Json{options.m_duplicateStringsOpts.m_excludeFolders} },
+
 			{ "tool_unused_strings_only_summary",                    options.m_unusedStringsOpts.m_onlySummary },
 			{ "tool_unused_strings_exclude_folders",                 Json{options.m_unusedStringsOpts.m_excludeFolders} },
+
 			{ "tool_missing_macro_only_summary",                     options.m_missingMacroOpts.m_onlySummary },
+
 			{ "tool_rc_file_rules_output_format",                    options.m_rcFileRulesOpts.m_outputFormat },
 			{ "tool_rc_file_rules_redundant_caption_suffix",         options.m_rcFileRulesOpts.m_redundantCaptionSuffix },
 			{ "tool_rc_file_rules_captions_not_title_case",          options.m_rcFileRulesOpts.m_captionsNotTitleCase },
@@ -30,8 +33,13 @@ void WriteOptions(const std::string& filename, const Options& options)
 			{ "tool_rc_file_rules_horizontal_alignment_top",         options.m_rcFileRulesOpts.m_horizontalAlignmentTop },
 			{ "tool_rc_file_rules_horizontal_alignment_bottom",      options.m_rcFileRulesOpts.m_horizontalAlignmentBottom },
 			{ "tool_rc_file_rules_controls_overlap",                 options.m_rcFileRulesOpts.m_controlsOverlap },
+
 			{ "tool_tooltip_length_maximum",                         static_cast<int>(options.m_tooltipLengthOpts.m_maximum) },
 			{ "tool_tooltip_length_only_summary",                    options.m_tooltipLengthOpts.m_onlySummary },
+
+			{ "tool_project_unreferenced_output_format",             options.m_projectUnreferencedOpts.m_outputFormat },
+			{ "tool_project_unreferenced_only_summary",              options.m_projectUnreferencedOpts.m_onlySummary },
+			{ "tool_project_unreferenced_exclude_folders",           Json{options.m_projectUnreferencedOpts.m_excludeFolders} },
 		};
 
 	std::string text = json.dump();
@@ -56,8 +64,11 @@ void ReadOptions(const std::string& filename, Options& options)
 
 	options.m_duplicateStringsOpts.m_outputFormat            = json["tool_duplicate_strings_output_format"].int_value();
 	options.m_duplicateStringsOpts.m_onlySummary             = json["tool_duplicate_strings_only_summary"].bool_value();
+
 	options.m_unusedStringsOpts.m_onlySummary                = json["tool_unused_strings_only_summary"].bool_value();
+
 	options.m_missingMacroOpts.m_onlySummary                 = json["tool_missing_macro_only_summary"].bool_value();
+
 	options.m_rcFileRulesOpts.m_outputFormat                 = json["tool_rc_file_rules_output_format"].int_value();
 	options.m_rcFileRulesOpts.m_redundantCaptionSuffix       = json["tool_rc_file_rules_redundant_caption_suffix"].bool_value();
 	options.m_rcFileRulesOpts.m_captionsNotTitleCase         = json["tool_rc_file_rules_captions_not_title_case"].bool_value();
@@ -73,8 +84,12 @@ void ReadOptions(const std::string& filename, Options& options)
 	options.m_rcFileRulesOpts.m_horizontalAlignmentTop       = json["tool_rc_file_rules_horizontal_alignment_top"].bool_value();
 	options.m_rcFileRulesOpts.m_horizontalAlignmentBottom    = json["tool_rc_file_rules_horizontal_alignment_bottom"].bool_value();
 	options.m_rcFileRulesOpts.m_controlsOverlap              = json["tool_rc_file_rules_controls_overlap"].bool_value();
+
 	options.m_tooltipLengthOpts.m_maximum                    = json["tool_tooltip_length_maximum"].int_value();
 	options.m_tooltipLengthOpts.m_onlySummary                = json["tool_tooltip_length_only_summary"].bool_value();
+
+	options.m_projectUnreferencedOpts.m_outputFormat         = json["tool_project_unreferenced_output_format"].int_value();
+	options.m_projectUnreferencedOpts.m_onlySummary          = json["tool_project_unreferenced_only_summary"].bool_value();
 
 	Json::array folders;
 	
@@ -87,4 +102,9 @@ void ReadOptions(const std::string& filename, Options& options)
 	options.m_duplicateStringsOpts.m_excludeFolders.resize(folders.size());
 	for (size_t i = 0; i < folders.size(); ++i)
 		options.m_duplicateStringsOpts.m_excludeFolders[i] = folders[i].string_value();
-}
+
+	folders = json["tool_project_unreferenced_exclude_folders"].array_items();
+	options.m_projectUnreferencedOpts.m_excludeFolders.resize(folders.size());
+	for (size_t i = 0; i < folders.size(); ++i)
+		options.m_projectUnreferencedOpts.m_excludeFolders[i] = folders[i].string_value();
+	}

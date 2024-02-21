@@ -2,6 +2,7 @@
 #include "filesystem-utils.h"
 #include "string-utils.h"
 #include "reports.h"
+#include "options.h"
 
 namespace fs = std::filesystem;
 using namespace string_utils;
@@ -31,13 +32,16 @@ std::vector<fs::path> get_referenced_files(const fs::path &project)
 }
 
 
-int search_files_not_referenced_by_project(const fs::path &rootPath, std::ostream &output)
+int search_files_not_referenced_by_project(const fs::path &rootPath, std::ostream &output, const ProjectUnreferencedOptions &options)
 {
 	std::vector<Report> reports;
 
 	bool topLevel = filesystem_utils::is_solution_folder(rootPath);
 
 	std::vector<fs::path> directories = filesystem_utils::get_directory_list(rootPath, (topLevel ? false : true));
+
+	filesystem_utils::filter_directory_list(directories, options.m_excludeFolders);
+
 	for (const auto &dir : directories)
 		{
 		if (dir.filename() == "RxRasterServices")
@@ -97,14 +101,17 @@ int search_files_not_referenced_by_project(const fs::path &rootPath, std::ostrea
 		if (orphans.empty())
 			continue;
 
-		std::string heading = dir.filename().string();
-		std::string underline(heading.length(), '-');
-		output
+		if (!options.m_onlySummary)
+			{
+			std::string heading = dir.filename().string();
+			std::string underline(heading.length(), '-');
+			output
 				<< heading << "\n"
 				<< underline << "\n";
 
-		std::copy(orphans.begin(), orphans.end(), std::ostream_iterator<fs::path>(output, "\n"));
-		output << "\n";
+			std::copy(orphans.begin(), orphans.end(), std::ostream_iterator<fs::path>(output, "\n"));
+			output << "\n";
+			}
 		}
 
 	output_report(reports, output);

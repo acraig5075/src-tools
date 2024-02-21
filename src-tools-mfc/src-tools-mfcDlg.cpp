@@ -17,6 +17,7 @@
 #include "UnusedStringsEditingDlg.h"
 #include "DuplicateStringsEditingDlg.h"
 #include "TooltipLengthEditingDlg.h"
+#include "ProjectUnreferencedOptionsDlg.h"
 
 
 #ifdef _DEBUG
@@ -497,7 +498,7 @@ void CsrctoolsmfcDlg::OnBnClickedUnreferencedfilesBtn()
 	std::stringstream ss;
 
 	BeginWaitCursor();
-	search_files_not_referenced_by_project(rootPath, ss);
+	search_files_not_referenced_by_project(rootPath, ss, m_options.m_projectUnreferencedOpts);
 	EndWaitCursor();
 
 	CString output(ss.str().c_str());
@@ -508,5 +509,11 @@ void CsrctoolsmfcDlg::OnBnClickedUnreferencedfilesBtn()
 
 void CsrctoolsmfcDlg::OnBnClickedUnreferencedfilesOpts()
 	{
-	MessageBox(_T("Not yet implemented"), _T("Info"), MB_OK | MB_ICONINFORMATION);
+	CString strRoot;
+	m_editBrowseCtrl.GetWindowTextW(strRoot);
+	if (strRoot.IsEmpty())
+		return;
+
+	CProjectUnreferencedOptionsDlg dlg(m_options.m_projectUnreferencedOpts, strRoot, this);
+	dlg.DoModal();
 	}

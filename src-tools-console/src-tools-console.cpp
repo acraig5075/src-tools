@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
 			search_menu_files_title_case(rootPath, std::cout, options.m_menuTitleCaseOpts);
 			break;
 		case 9:
-			search_files_not_referenced_by_project(rootPath, std::cout);
+			search_files_not_referenced_by_project(rootPath, std::cout, options.m_projectUnreferencedOpts);
 			break;
 
 		default:

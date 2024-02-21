@@ -13,6 +13,7 @@
 #define IDD_FOLDERSELECTION_DLG         141
 #define IDD_UNUSEDSTRINGS_EDITDLG       143
 #define IDD_TOOLTIPLENGTH_EDITDLG       146
+#define IDD_PROJECTUNREFERENCED_OPTSDLG 147
 #define IDC_LAB                         1000
 #define IDC_IMAGESANDCOMMANDS_BTN       1001
 #define IDC_OUTPUTEDIT                  1002
