@@ -55,7 +55,8 @@ void CsrctoolsmfcDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_TOOLTIPSMAX_BTN, m_tooltipsMenuBtn);
 	DDX_Control(pDX, IDC_DUPLICATESTRINGS_BTN, m_duplicatesMenuBtn);
 	DDX_Control(pDX, IDC_UNUSEDSTRINGS_BTN, m_unusedMenuBtn);
-	}
+	DDX_Text(pDX, IDC_OPTIONSFILELAB, m_optionsFilenameLabel);
+}
 
 BEGIN_MESSAGE_MAP(CsrctoolsmfcDlg, CDialogEx)
 	ON_WM_PAINT()
@@ -78,6 +79,7 @@ BEGIN_MESSAGE_MAP(CsrctoolsmfcDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_MENUTITLECASE_OPTS, &CsrctoolsmfcDlg::OnBnClickedMenutitlecaseOpts)
 	ON_BN_CLICKED(IDC_UNREFERENCEDFILES_BTN, &CsrctoolsmfcDlg::OnBnClickedUnreferencedfilesBtn)
 	ON_BN_CLICKED(IDC_UNREFERENCEDFILES_OPTS, &CsrctoolsmfcDlg::OnBnClickedUnreferencedfilesOpts)
+	ON_STN_CLICKED(IDC_OPTIONSFILELAB, &CsrctoolsmfcDlg::OnStnClickedOptionsfilelab)
 END_MESSAGE_MAP()
 
 
@@ -102,6 +104,9 @@ BOOL CsrctoolsmfcDlg::OnInitDialog()
 	m_duplicatesMenuBtn.m_hMenu = m_edittingMenu.GetSafeHmenu();
 	m_unusedMenuBtn.m_hMenu = m_edittingMenu.GetSafeHmenu();
 	m_tooltipsMenuBtn.m_hMenu = m_edittingMenu.GetSafeHmenu();
+
+	m_optionsFilenameLabel = CString{ _T("Options file: ") } + CA2W(m_optionsFilename);
+	UpdateData(FALSE);
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -517,3 +522,49 @@ void CsrctoolsmfcDlg::OnBnClickedUnreferencedfilesOpts()
 	CProjectUnreferencedOptionsDlg dlg(m_options.m_projectUnreferencedOpts, strRoot, this);
 	dlg.DoModal();
 	}
+
+
+void CsrctoolsmfcDlg::OnStnClickedOptionsfilelab()
+{
+	CString msg = _T("Yes to Save As, No to Open");
+	switch (MessageBox(msg, _T("Save/Load Options"), MB_YESNOCANCEL | MB_ICONQUESTION))
+		{
+		case IDYES:
+			{
+			auto dlg = std::make_unique<CFileDialog>(FALSE, _T("options"), CA2W(m_optionsFilename), OFN_HIDEREADONLY | OFN_EXPLORER, _T("Option file (*.options)|*.options||"), this);
+			if (dlg->DoModal() == IDOK)
+				{
+				CString newName = dlg->m_ofn.lpstrFile;
+				CString oldName = CA2W(m_optionsFilename);
+				if (newName != oldName)
+					{
+					m_optionsFilename = CW2A(newName);
+					m_optionsFilenameLabel = CString{ _T("Options file: ") } + CA2W(m_optionsFilename);
+					UpdateData(FALSE);
+					WriteOptions(m_optionsFilename.GetString(), m_options);
+					}
+				}
+			}
+		break;
+		case IDNO:
+			{
+			auto dlg = std::make_unique<CFileDialog>(TRUE, _T("options"), CA2W(m_optionsFilename), OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | OFN_EXPLORER, _T("Option file (*.options)|*.options||"), this);
+			if (dlg->DoModal() == IDOK)
+				{
+				CString newName = dlg->m_ofn.lpstrFile;
+				CString oldName = CA2W(m_optionsFilename);
+				if (newName != oldName)
+					{
+					m_optionsFilename = CW2A(newName);
+					m_optionsFilenameLabel = CString{ _T("Options file: ") } + CA2W(m_optionsFilename);
+					UpdateData(FALSE);
+					ReadOptions(m_optionsFilename.GetString(), m_options);
+					}
+				}
+			}
+		break;
+		case IDCANCEL:
+		default:
+			break;
+		}
+}

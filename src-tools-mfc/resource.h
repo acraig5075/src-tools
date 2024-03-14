@@ -75,6 +75,7 @@
 #define IDC_UPDATEBUTTON                1039
 #define IDC_UPDATESCOUNT                1040
 #define IDC_MFCMENUBUTTON3              1043
+#define IDC_OPTIONSFILELAB              1045
 
 // Next default values for new objects
 // 
@@ -82,7 +83,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        148
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1044
+#define _APS_NEXT_CONTROL_VALUE         1046
 #define _APS_NEXT_SYMED_VALUE           104
 #endif
 #endif

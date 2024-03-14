@@ -47,6 +47,7 @@ protected:
 	afx_msg void OnBnClickedMenutitlecaseOpts();
 	afx_msg void OnBnClickedUnreferencedfilesBtn();
 	afx_msg void OnBnClickedUnreferencedfilesOpts();
+	afx_msg void OnStnClickedOptionsfilelab();
 
 private:
 	CEdit m_outputEdit;
@@ -57,9 +58,9 @@ private:
 
 	CFont* m_pFont = nullptr;
 	CStringA m_optionsFilename;
+	CString m_optionsFilenameLabel;
 	Options m_options;
 	CMenu m_edittingMenu;
 
 	DECLARE_MESSAGE_MAP()
-public:
 	};
