@@ -129,7 +129,7 @@ auto PrintList(std::vector<PathPair>::const_iterator beginItr, std::vector<PathP
 {
 	if (std::distance(beginItr, endItr) == 0)
 		{
-		out << "<None\n";
+		out << "<Equal>\n";
 		return;
 		}
 
@@ -145,7 +145,7 @@ auto PrintList(std::vector<PathPair>::const_iterator beginItr, std::vector<PathP
 		{
 		out
 				<< std::left
-				<< std::setw(width)
+				<< std::setw(width + 1)
 				<< itr->m_path2.string()
 				<< " "
 				<< itr->m_editDistance
