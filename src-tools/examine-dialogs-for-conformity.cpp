@@ -661,6 +661,14 @@ void filter_by_options(std::vector<broken_rule> &faults, const RcFileRulesOption
 
 int examine_dialogs_for_conformity(const fs::path &input, std::ostream &output, const RcFileRulesOptions &options)
 {
+	std::string title = "Dialog rules conformance";
+	std::string underline(title.length(), '=');
+	output
+		<< title
+		<< "\n"
+		<< underline
+		<< "\n\n";
+
 	inputbox_heights.clear();
 	okCancel_gaps.clear();
 	label_colons.clear();

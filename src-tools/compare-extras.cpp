@@ -210,6 +210,14 @@ std::vector<fs::path> GetProgramInstallPath(int version)
 
 int compare_extras(const fs::path &root, std::ostream &output, const CompareExtrasOptions &)
 {
+	std::string title = "Comparison of Extras";
+	std::string underline(title.length(), '=');
+	output
+		<< title 
+		<< "\n"
+		<< underline
+		<< "\n\n";
+
 	fs::path extras = root;
 	extras.append("Extras");
 	fs::path locales = root.parent_path();

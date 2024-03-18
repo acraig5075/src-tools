@@ -62,23 +62,21 @@ int main(int argc, char *argv[])
 	Options options;
 	ReadOptions(optionsFile.string(), options);
 
+	DuplicateStringsOutput out2;
+	UnusedStringsOutput out3;
+	TooltipLengthOutput out6;
+
 	switch (tool)
 		{
 		case 1:
 			search_commands_not_in_imageandcommands(rootPath, std::cout, options.m_imagesAndCommandsOpts);
 			break;
 		case 2:
-			{
-			DuplicateStringsOutput out;
-			search_duplicate_string_resources(rootPath, std::cout, options.m_duplicateStringsOpts, out);
+			search_duplicate_string_resources(rootPath, std::cout, options.m_duplicateStringsOpts, out2);
 			break;
-			}
 		case 3:
-			{
-			UnusedStringsOutput out;
-			search_unused_string_resources(rootPath, std::cout, options.m_unusedStringsOpts, out);
+			search_unused_string_resources(rootPath, std::cout, options.m_unusedStringsOpts, out3);
 			break;
-			}
 		case 4:
 			search_cpp_files_missing_debug_new_macro(rootPath, std::cout, options.m_missingMacroOpts);
 			break;
@@ -86,11 +84,8 @@ int main(int argc, char *argv[])
 			examine_dialogs_for_conformity(rootPath, std::cout, options.m_rcFileRulesOpts);
 			break;
 		case 6:
-			{
-			TooltipLengthOutput out;
-			search_tooltips_exceeding_max_length(rootPath, std::cout, options.m_tooltipLengthOpts, out);
+			search_tooltips_exceeding_max_length(rootPath, std::cout, options.m_tooltipLengthOpts, out6);
 			break;
-			}
 		case 7:
 			search_resizable_not_in_reg_reset(rootPath, std::cout, options.m_regResetOpts);
 			break;
@@ -102,6 +97,19 @@ int main(int argc, char *argv[])
 			break;
 		case 10:
 			compare_extras(rootPath, std::cout, options.m_compareExtrasOpts);
+			break;
+
+		case 999:
+			search_commands_not_in_imageandcommands (rootPath, std::cout, options.m_imagesAndCommandsOpts);
+			search_duplicate_string_resources       (rootPath, std::cout, options.m_duplicateStringsOpts, out2);
+			search_unused_string_resources          (rootPath, std::cout, options.m_unusedStringsOpts, out3);
+			search_cpp_files_missing_debug_new_macro(rootPath, std::cout, options.m_missingMacroOpts);
+			examine_dialogs_for_conformity          (rootPath, std::cout, options.m_rcFileRulesOpts);
+			search_tooltips_exceeding_max_length    (rootPath, std::cout, options.m_tooltipLengthOpts, out6);
+			search_resizable_not_in_reg_reset       (rootPath, std::cout, options.m_regResetOpts);
+			search_menu_files_title_case            (rootPath, std::cout, options.m_menuTitleCaseOpts);
+			search_files_not_referenced_by_project  (rootPath, std::cout, options.m_projectUnreferencedOpts);
+			compare_extras                          (rootPath, std::cout, options.m_compareExtrasOpts);
 			break;
 
 		default:

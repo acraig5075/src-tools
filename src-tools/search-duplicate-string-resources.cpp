@@ -174,6 +174,14 @@ void output_report(const std::vector<DuplicateResources> &reports, std::ostream 
 
 int search_duplicate_string_resources(const fs::path &input, std::ostream &output, const DuplicateStringsOptions &options, DuplicateStringsOutput &out)
 {
+	std::string title = "Duplicate string resources";
+	std::string underline(title.length(), '=');
+	output
+		<< title
+		<< "\n"
+		<< underline
+		<< "\n\n";
+
 	output_format order;
 
 	if (0 == options.m_outputFormat)

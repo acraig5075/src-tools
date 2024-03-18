@@ -91,6 +91,14 @@ std::vector<std::string> get_resource_list(const fs::path &root, const std::vect
 /// Lookup resource ID names defined in .rc files but not referenced in any .cpp files
 int search_unused_string_resources(const fs::path &root, std::ostream &output, const UnusedStringsOptions &options, UnusedStringsOutput &out)
 {
+	std::string title = "Unused string resources";
+	std::string underline(title.length(), '=');
+	output
+		<< title
+		<< "\n"
+		<< underline
+		<< "\n\n";
+
 	std::vector<Report> reports;
 
 	std::vector<fs::path> directories = filesystem_utils::get_directory_list(root);

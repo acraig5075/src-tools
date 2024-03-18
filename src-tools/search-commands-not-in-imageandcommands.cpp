@@ -137,6 +137,14 @@ std::vector<std::string> get_api_commands(const fs::path &path)
 
 int search_commands_not_in_imageandcommands(const fs::path &rootPath, std::ostream &output, const ImagesAndCommandsOptions &)
 {
+	std::string title = "Commands not in ImagesAndCommands.h";
+	std::string underline(title.length(), '=');
+	output
+		<< title
+		<< "\n"
+		<< underline
+		<< "\n\n";
+
 	fs::path imagesAndCommands = filesystem_utils::search_for_filename(rootPath, "ImagesAndCommands.h");
 	if (imagesAndCommands.empty())
 		return 1;

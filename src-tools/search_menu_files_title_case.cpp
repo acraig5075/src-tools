@@ -83,6 +83,14 @@ std::vector<MenuItem> get_menu_items(const std::filesystem::path &path)
 
 int search_menu_files_title_case(const std::filesystem::path &root, std::ostream &output, const MenuTitleCaseOptions &options)
 {
+	std::string title = "Menu items not title-case";
+	std::string underline(title.length(), '=');
+	output
+		<< title
+		<< "\n"
+		<< underline
+		<< "\n\n";
+
 	std::vector<fs::path> mnuFiles = filesystem_utils::get_file_list(root, ".mnu");
 
 	std::vector<Report> reports;

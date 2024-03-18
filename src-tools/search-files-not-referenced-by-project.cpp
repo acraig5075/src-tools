@@ -34,6 +34,14 @@ std::vector<fs::path> get_referenced_files(const fs::path &project)
 
 int search_files_not_referenced_by_project(const fs::path &rootPath, std::ostream &output, const ProjectUnreferencedOptions &options)
 {
+	std::string title = "Files not referenced by projects";
+	std::string underline(title.length(), '=');
+	output
+		<< title
+		<< "\n"
+		<< underline
+		<< "\n\n";
+
 	std::vector<Report> reports;
 
 	bool topLevel = filesystem_utils::is_solution_folder(rootPath);
