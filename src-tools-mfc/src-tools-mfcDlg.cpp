@@ -80,6 +80,7 @@ BEGIN_MESSAGE_MAP(CsrctoolsmfcDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_UNREFERENCEDFILES_BTN, &CsrctoolsmfcDlg::OnBnClickedUnreferencedfilesBtn)
 	ON_BN_CLICKED(IDC_UNREFERENCEDFILES_OPTS, &CsrctoolsmfcDlg::OnBnClickedUnreferencedfilesOpts)
 	ON_STN_CLICKED(IDC_OPTIONSFILELAB, &CsrctoolsmfcDlg::OnStnClickedOptionsfilelab)
+	ON_BN_CLICKED(IDC_COMPAREEXTRAS_BTN, &CsrctoolsmfcDlg::OnBnClickedCompareextrasBtn)
 END_MESSAGE_MAP()
 
 
@@ -568,3 +569,31 @@ void CsrctoolsmfcDlg::OnStnClickedOptionsfilelab()
 			break;
 		}
 }
+
+
+void CsrctoolsmfcDlg::OnBnClickedCompareextrasBtn()
+	{
+	CString strRoot;
+	m_editBrowseCtrl.GetWindowTextW(strRoot);
+	if (strRoot.IsEmpty())
+		return;
+
+	fs::path rootPath(strRoot.GetString());
+	if (rootPath.empty() || !fs::exists(rootPath))
+		{
+		CString msg;
+		msg.Format(_T("%ws does not exist"), strRoot.GetString());
+		MessageBox(msg, _T("Error"), MB_OK | MB_ICONSTOP);
+		return;
+		}
+
+	std::stringstream ss;
+
+	BeginWaitCursor();
+	compare_extras(rootPath, ss, m_options.m_compareExtrasOpts);
+	EndWaitCursor();
+
+	CString output(ss.str().c_str());
+	output.Replace(_T("\n"), _T("\r\n"));
+	m_outputEdit.SetWindowTextW(output);
+	}

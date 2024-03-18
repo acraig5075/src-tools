@@ -58,6 +58,8 @@
 #define IDC_NONEBUTTON                  1020
 #define IDC_UNREFERENCEDFILES_OPTS      1020
 #define IDC_GAPEDIT                     1021
+#define IDC_COMPAREEXTRAS_BTN           1021
+#define IDC_COMPAREEXTRAS_OPTS          1022
 #define IDC_MARGINEDIT                  1023
 #define IDC_MINIMUMEDIT                 1024
 #define IDC_MAXIMUMEDIT                 1025

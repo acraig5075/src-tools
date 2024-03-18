@@ -48,6 +48,7 @@ protected:
 	afx_msg void OnBnClickedUnreferencedfilesBtn();
 	afx_msg void OnBnClickedUnreferencedfilesOpts();
 	afx_msg void OnStnClickedOptionsfilelab();
+	afx_msg void OnBnClickedCompareextrasBtn();
 
 private:
 	CEdit m_outputEdit;
