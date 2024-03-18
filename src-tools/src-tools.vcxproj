@@ -185,6 +185,7 @@
     <ClInclude Include="string-utils.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="compare-extras.cpp" />
     <ClCompile Include="examine-dialogs-for-conformity.cpp" />
     <ClCompile Include="filesystem-utils.cpp" />
     <ClCompile Include="options.cpp" />

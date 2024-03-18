@@ -66,6 +66,10 @@ struct ProjectUnreferencedOptions
 	bool m_onlySummary = false;
 	};
 
+struct CompareExtrasOptions
+	{
+	};
+
 struct Options
 	{
 	ImagesAndCommandsOptions m_imagesAndCommandsOpts;
@@ -77,6 +81,7 @@ struct Options
 	RegResetOptions m_regResetOpts;
 	MenuTitleCaseOptions m_menuTitleCaseOpts;
 	ProjectUnreferencedOptions m_projectUnreferencedOpts;
+	CompareExtrasOptions m_compareExtrasOpts;
 	};
 
 void WriteOptions(const std::string& filename, const Options &options);
