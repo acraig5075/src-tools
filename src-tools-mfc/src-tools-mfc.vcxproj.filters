@@ -63,6 +63,9 @@
     <ClInclude Include="ProjectUnreferencedOptionsDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CompareExtrasEditingDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src-tools-mfc.cpp">
@@ -102,6 +105,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ProjectUnreferencedOptionsDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CompareExtrasEditingDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -18,6 +18,7 @@
 #include "DuplicateStringsEditingDlg.h"
 #include "TooltipLengthEditingDlg.h"
 #include "ProjectUnreferencedOptionsDlg.h"
+#include "CompareExtrasEditingDlg.h"
 
 
 #ifdef _DEBUG
@@ -55,6 +56,7 @@ void CsrctoolsmfcDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_TOOLTIPSMAX_BTN, m_tooltipsMenuBtn);
 	DDX_Control(pDX, IDC_DUPLICATESTRINGS_BTN, m_duplicatesMenuBtn);
 	DDX_Control(pDX, IDC_UNUSEDSTRINGS_BTN, m_unusedMenuBtn);
+	DDX_Control(pDX, IDC_COMPAREEXTRAS_BTN, m_compareExtrasMenuBtn);
 	DDX_Text(pDX, IDC_OPTIONSFILELAB, m_optionsFilenameLabel);
 }
 
@@ -105,6 +107,7 @@ BOOL CsrctoolsmfcDlg::OnInitDialog()
 	m_duplicatesMenuBtn.m_hMenu = m_edittingMenu.GetSafeHmenu();
 	m_unusedMenuBtn.m_hMenu = m_edittingMenu.GetSafeHmenu();
 	m_tooltipsMenuBtn.m_hMenu = m_edittingMenu.GetSafeHmenu();
+	m_compareExtrasMenuBtn.m_hMenu = m_edittingMenu.GetSafeHmenu();
 
 	m_optionsFilenameLabel = CString{ _T("Options file: ") } + CA2W(m_optionsFilename);
 	UpdateData(FALSE);
@@ -597,4 +600,16 @@ void CsrctoolsmfcDlg::OnBnClickedCompareextrasBtn()
 	CString output(ss.str().c_str());
 	output.Replace(_T("\n"), _T("\r\n"));
 	m_outputEdit.SetWindowTextW(output);
+
+	int chosen = m_compareExtrasMenuBtn.m_nMenuResult;
+	if (10000 == chosen)
+		{
+		if (!out.m_comparisons.empty())
+			{
+			CCompareExtrasEditingDlg dlg(out, this);
+			dlg.DoModal();
+			}
+		else
+			MessageBox(_T("Nothing to edit"), _T("Information"), MB_OK | MB_ICONINFORMATION);
+		}
 	}

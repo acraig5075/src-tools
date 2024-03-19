@@ -56,6 +56,7 @@ private:
 	CMFCMenuButton m_duplicatesMenuBtn;
 	CMFCMenuButton m_unusedMenuBtn;
 	CMFCMenuButton m_tooltipsMenuBtn;
+	CMFCMenuButton m_compareExtrasMenuBtn;
 
 	CFont* m_pFont = nullptr;
 	CStringA m_optionsFilename;

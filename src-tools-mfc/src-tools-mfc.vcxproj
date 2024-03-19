@@ -187,6 +187,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CompareExtrasEditingDlg.h" />
     <ClInclude Include="DuplicateStringsEditingDlg.h" />
     <ClInclude Include="DuplicateStringsOptionsDlg.h" />
     <ClInclude Include="FolderSelectionDlg.h" />
@@ -205,6 +206,7 @@
     <ClInclude Include="UnusedStringsOptionsDlg.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CompareExtrasEditingDlg.cpp" />
     <ClCompile Include="DuplicateStringsEditingDlg.cpp" />
     <ClCompile Include="FolderSelectionDlg.cpp" />
     <ClCompile Include="DuplicateStringsOptionsDlg.cpp" />
