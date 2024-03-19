@@ -41,6 +41,12 @@ BOOL CCompareExtrasEditingDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
+	m_imageList.Create(16, 16, ILC_COLOR32, 1, 1);
+	m_imageList.Add(theApp.LoadIcon(IDI_MENUICON2));
+	m_imageList.Add(theApp.LoadIcon(IDI_TOOLBARICON));
+	m_imageList.Add(theApp.LoadIcon(IDI_ACCELERATORICON2));
+	m_listCtrl.SetImageList(&m_imageList, LVSIL_SMALL);
+
 	CRect rect;
 	m_listCtrl.GetWindowRect(&rect);
 	int scrollWidth = GetSystemMetrics(SM_CXVSCROLL);
@@ -97,7 +103,17 @@ void CCompareExtrasEditingDlg::AddToList(int iItem, const ComparePaths &comp)
 	CString path2{ comp.m_path2.string().c_str() };
 	CString editDist{ std::to_string(comp.m_editDistance).c_str() };
 
-	LVITEM sItem = { LVIF_TEXT, iItem, 0, 0, 0, path1.GetBuffer(0) };
+	int iImage = -1;
+	std::filesystem::path ext = comp.m_path1.extension();
+	if (ext == ".mnu")
+		iImage = 0;
+	else if (ext == ".tbr")
+		iImage = 1;
+	else if (ext == ".acc")
+		iImage = 2;
+
+	LVITEM sItem = { LVIF_TEXT | LVIF_IMAGE, iItem, 0, 0, 0, path1.GetBuffer(0) };
+	sItem.iImage = iImage;
 	int nItem = m_listCtrl.InsertItem(&sItem);
 	path1.ReleaseBuffer();
 

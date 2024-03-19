@@ -15,6 +15,9 @@
 #define IDD_TOOLTIPLENGTH_EDITDLG       146
 #define IDD_PROJECTUNREFERENCED_OPTSDLG 147
 #define IDD_COMPAREEXTRAS_EDITDLG       148
+#define IDI_TOOLBARICON                 153
+#define IDI_MENUICON2                   154
+#define IDI_ACCELERATORICON2            155
 #define IDC_LAB                         1000
 #define IDC_IMAGESANDCOMMANDS_BTN       1001
 #define IDC_OUTPUTEDIT                  1002
@@ -31,6 +34,7 @@
 #define IDC_REMOVEBUTTON                1008
 #define IDC_REPLACEBUTTON               1008
 #define IDC_FILEPREVBUTTON              1008
+#define IDC_VIEWDIFFBTN                 1008
 #define IDC_TOOLTIPSMAX_BTN2            1009
 #define IDC_REGRESETDLG_BTN             1009
 #define IDC_MOVETOLEFTBUTTON            1009
@@ -82,13 +86,12 @@
 #define IDC_COMPARISONLIST              1046
 #define IDC_COMPAREBTN                  1048
 #define IDC_EXTERNALBROWSEBTN           1049
-#define IDC_MFCMENUBUTTON1              1050
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        151
+#define _APS_NEXT_RESOURCE_VALUE        156
 #define _APS_NEXT_COMMAND_VALUE         32771
 #define _APS_NEXT_CONTROL_VALUE         1051
 #define _APS_NEXT_SYMED_VALUE           104

@@ -34,6 +34,7 @@ private:
 	CompareExtrasOutput &m_report;
 	CListCtrl m_listCtrl;
 	CMFCEditBrowseCtrl m_externalBrowseCtrl;
+	CImageList m_imageList;
 
 	DECLARE_MESSAGE_MAP()
 	};

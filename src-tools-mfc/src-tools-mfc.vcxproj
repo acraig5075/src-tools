@@ -233,7 +233,10 @@
     <None Include="res\srctoolsmfc.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\Accelerator.ico" />
+    <Image Include="res\Menu.ico" />
     <Image Include="res\src-tools-mfc.ico" />
+    <Image Include="res\ToolbarEditor.ico" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\src-tools\src-tools.vcxproj">

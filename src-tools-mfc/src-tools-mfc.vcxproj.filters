@@ -125,5 +125,14 @@
     <Image Include="res\src-tools-mfc.ico">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="res\ToolbarEditor.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Menu.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Accelerator.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
