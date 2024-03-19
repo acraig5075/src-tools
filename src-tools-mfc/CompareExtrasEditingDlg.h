@@ -29,12 +29,13 @@ protected:
 
 	afx_msg void OnBnClickedComparebtn();
 	afx_msg void OnSize(UINT nType, int cx, int cy);
+	afx_msg void OnDblclkComparisonlist(NMHDR *pNMHDR, LRESULT *pResult);
 
 private:
 	CompareExtrasOutput &m_report;
 	CListCtrl m_listCtrl;
-	CMFCEditBrowseCtrl m_externalBrowseCtrl;
 	CImageList m_imageList;
+	CMFCEditBrowseCtrl m_externalBrowseCtrl;
 
 	DECLARE_MESSAGE_MAP()
-	};
+};

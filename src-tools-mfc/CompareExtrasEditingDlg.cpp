@@ -31,6 +31,7 @@ void CCompareExtrasEditingDlg::DoDataExchange(CDataExchange *pDX)
 BEGIN_MESSAGE_MAP(CCompareExtrasEditingDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_COMPAREBTN, &CCompareExtrasEditingDlg::OnBnClickedComparebtn)
 	ON_WM_SIZE()
+	ON_NOTIFY(NM_DBLCLK, IDC_COMPARISONLIST, &CCompareExtrasEditingDlg::OnDblclkComparisonlist)
 END_MESSAGE_MAP()
 
 
@@ -173,3 +174,13 @@ void CCompareExtrasEditingDlg::OnSize(UINT nType, int cx, int cy)
 	m_listCtrl.SetColumnWidth(1, columnWidth2);
 	m_listCtrl.SetColumnWidth(2, columnWidth3);
 }
+
+
+void CCompareExtrasEditingDlg::OnDblclkComparisonlist(NMHDR *pNMHDR, LRESULT *pResult)
+	{
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+
+	OnBnClickedComparebtn();
+
+	*pResult = 0;
+	}
