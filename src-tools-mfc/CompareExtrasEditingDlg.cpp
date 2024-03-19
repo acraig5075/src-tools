@@ -30,6 +30,7 @@ void CCompareExtrasEditingDlg::DoDataExchange(CDataExchange *pDX)
 
 BEGIN_MESSAGE_MAP(CCompareExtrasEditingDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_COMPAREBTN, &CCompareExtrasEditingDlg::OnBnClickedComparebtn)
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -137,4 +138,22 @@ void CCompareExtrasEditingDlg::OnBnClickedComparebtn()
 		m_listCtrl.SetSelectionMark(iItem);
 		m_listCtrl.SetFocus();
 		}
+}
+
+
+void CCompareExtrasEditingDlg::OnSize(UINT nType, int cx, int cy)
+{
+	CDialogEx::OnSize(nType, cx, cy);
+
+	CRect rect;
+	m_listCtrl.GetWindowRect(&rect);
+	int scrollWidth = GetSystemMetrics(SM_CXVSCROLL);
+	int narrowColumn = (rect.Width() - scrollWidth) / 7;
+	int columnWidth1 = narrowColumn * 3;
+	int columnWidth2 = narrowColumn * 3;
+	int columnWidth3 = narrowColumn;
+
+	m_listCtrl.SetColumnWidth(0, columnWidth1);
+	m_listCtrl.SetColumnWidth(1, columnWidth2);
+	m_listCtrl.SetColumnWidth(2, columnWidth3);
 }

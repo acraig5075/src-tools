@@ -27,12 +27,13 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	virtual BOOL OnInitDialog();
 
+	afx_msg void OnBnClickedComparebtn();
+	afx_msg void OnSize(UINT nType, int cx, int cy);
+
 private:
 	CompareExtrasOutput &m_report;
 	CListCtrl m_listCtrl;
 	CMFCEditBrowseCtrl m_externalBrowseCtrl;
 
 	DECLARE_MESSAGE_MAP()
-public:
-	afx_msg void OnBnClickedComparebtn();
 	};
