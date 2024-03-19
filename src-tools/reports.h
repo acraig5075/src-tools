@@ -57,6 +57,18 @@ struct TooltipReplacement
 	std::string m_newString;
 };
 
+struct ComparePaths
+{
+	std::filesystem::path m_path1;
+	std::filesystem::path m_path2;
+	long long m_editDistance = 0;
+};
+
+struct CompareExtrasOutput
+{
+	std::vector<ComparePaths> m_comparisons;
+};
+
 struct Report
 {
 	std::filesystem::path m_dir;

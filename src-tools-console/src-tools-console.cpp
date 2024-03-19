@@ -65,6 +65,7 @@ int main(int argc, char *argv[])
 	DuplicateStringsOutput out2;
 	UnusedStringsOutput out3;
 	TooltipLengthOutput out6;
+	CompareExtrasOutput out10;
 
 	switch (tool)
 		{
@@ -96,7 +97,7 @@ int main(int argc, char *argv[])
 			search_files_not_referenced_by_project(rootPath, std::cout, options.m_projectUnreferencedOpts);
 			break;
 		case 10:
-			compare_extras(rootPath, std::cout, options.m_compareExtrasOpts);
+			compare_extras(rootPath, std::cout, options.m_compareExtrasOpts, out10);
 			break;
 
 		case 999:
@@ -109,7 +110,7 @@ int main(int argc, char *argv[])
 			search_resizable_not_in_reg_reset       (rootPath, std::cout, options.m_regResetOpts);
 			search_menu_files_title_case            (rootPath, std::cout, options.m_menuTitleCaseOpts);
 			search_files_not_referenced_by_project  (rootPath, std::cout, options.m_projectUnreferencedOpts);
-			compare_extras                          (rootPath, std::cout, options.m_compareExtrasOpts);
+			compare_extras                          (rootPath, std::cout, options.m_compareExtrasOpts, out10);
 			break;
 
 		default:

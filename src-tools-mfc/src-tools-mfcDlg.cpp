@@ -588,9 +588,10 @@ void CsrctoolsmfcDlg::OnBnClickedCompareextrasBtn()
 		}
 
 	std::stringstream ss;
+	CompareExtrasOutput out;
 
 	BeginWaitCursor();
-	compare_extras(rootPath, ss, m_options.m_compareExtrasOpts);
+	compare_extras(rootPath, ss, m_options.m_compareExtrasOpts, out);
 	EndWaitCursor();
 
 	CString output(ss.str().c_str());

@@ -20,7 +20,7 @@ int search_tooltips_exceeding_max_length(const std::filesystem::path &root, std:
 int search_resizable_not_in_reg_reset(const std::filesystem::path &root, std::ostream &output, const RegResetOptions &options);
 int search_menu_files_title_case(const std::filesystem::path &root, std::ostream &output, const MenuTitleCaseOptions &options);
 int search_files_not_referenced_by_project(const std::filesystem::path &root, std::ostream &output, const ProjectUnreferencedOptions &options);
-int compare_extras(const std::filesystem::path &root, std::ostream &output, const CompareExtrasOptions &options);
+int compare_extras(const std::filesystem::path &root, std::ostream &output, const CompareExtrasOptions &options, CompareExtrasOutput &out);
 
 
 void delete_unused_string_resources(UnusedResources &report, std::function<void(const std::string&)> RemoveReadOnlyFunc);

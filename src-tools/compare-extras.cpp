@@ -6,6 +6,7 @@
 #include <algorithm>
 #include "string-utils.h"
 #include "options.h"
+#include "reports.h"
 
 //#include <time.h>
 //#include <sys/stat.h>
@@ -118,14 +119,7 @@ long long GetEditDistance(const fs::path &path1, const fs::path &path2)
 	return diff.getEditDistance();
 }
 
-struct PathPair
-{
-	fs::path m_path1;
-	fs::path m_path2;
-	long long m_editDistance = 0;
-};
-
-auto PrintList(std::vector<PathPair>::const_iterator beginItr, std::vector<PathPair>::const_iterator endItr, std::ostream &out)
+auto PrintList(std::vector<ComparePaths>::const_iterator beginItr, std::vector<ComparePaths>::const_iterator endItr, std::ostream &out)
 {
 	if (std::distance(beginItr, endItr) == 0)
 		{
@@ -208,7 +202,7 @@ std::vector<fs::path> GetProgramInstallPath(int version)
 	return paths;
 }
 
-int compare_extras(const fs::path &root, std::ostream &output, const CompareExtrasOptions &)
+int compare_extras(const fs::path &root, std::ostream &output, const CompareExtrasOptions &, CompareExtrasOutput &out)
 {
 	std::string title = "Comparison of Extras";
 	std::string underline(title.length(), '=');
@@ -226,8 +220,8 @@ int compare_extras(const fs::path &root, std::ostream &output, const CompareExtr
 	int version = GetProgramVersionNumber(root);
 	std::vector<fs::path> installPaths = GetProgramInstallPath(version);
 
-	std::vector<PathPair> installComp;
-	std::vector<PathPair> localeComp;
+	std::vector<ComparePaths> installComp;
+	std::vector<ComparePaths> localeComp;
 
 	std::vector<fs::path> types = { ".mnu", ".tbr", ".acc", };
 
@@ -243,7 +237,7 @@ int compare_extras(const fs::path &root, std::ostream &output, const CompareExtr
 
 			if (fs::exists(searchFile))
 				{
-				PathPair comp;
+				ComparePaths comp;
 				comp.m_path1 = extrasFile;
 				comp.m_path2 = searchFile;
 				installComp.push_back(comp);
@@ -261,7 +255,7 @@ int compare_extras(const fs::path &root, std::ostream &output, const CompareExtr
 
 			if (fs::exists(searchFile))
 				{
-				PathPair comp;
+				ComparePaths comp;
 				comp.m_path1 = extrasFile;
 				comp.m_path2 = searchFile;
 				localeComp.push_back(comp);
@@ -269,12 +263,12 @@ int compare_extras(const fs::path &root, std::ostream &output, const CompareExtr
 			}
 		}
 
-	auto SetEditDistance = [](PathPair & comp)
+	auto SetEditDistance = [](ComparePaths & comp)
 		{
 		comp.m_editDistance = GetEditDistance(comp.m_path1, comp.m_path2);
 		};
 
-	auto ByEditDistanceDesc = [](const PathPair & lhs, const PathPair & rhs)
+	auto ByEditDistanceDesc = [](const ComparePaths & lhs, const ComparePaths & rhs)
 		{
 		if (lhs.m_editDistance > rhs.m_editDistance)
 			return true;
@@ -284,12 +278,12 @@ int compare_extras(const fs::path &root, std::ostream &output, const CompareExtr
 			return false;
 		};
 
-	auto IsZeroEditDistance = [](const PathPair & comp)
+	auto IsZeroEditDistance = [](const ComparePaths & comp)
 		{
 		return comp.m_editDistance == 0;
 		};
 
-	std::vector<PathPair> cadComp;
+	std::vector<ComparePaths> cadComp;
 
 	std::vector<std::string> variations = { "CadStudent", "CadInnovate", "CadCD", "CadStudentCD" };
 
@@ -306,7 +300,7 @@ int compare_extras(const fs::path &root, std::ostream &output, const CompareExtr
 
 			if (fs::exists(cad1) && fs::exists(cad2))
 				{
-				PathPair comp;
+				ComparePaths comp;
 				comp.m_path1 = cad1;
 				comp.m_path2 = cad2;
 				cadComp.push_back(comp);
@@ -346,6 +340,11 @@ int compare_extras(const fs::path &root, std::ostream &output, const CompareExtr
 	PrintHeading("Comparisons of Cad variations", output);
 	PrintList(cadComp.begin(), cadCompEndItr, output);
 	output << "\n";
+
+	// Out parameter
+	out.m_comparisons.insert(out.m_comparisons.end(), installComp.begin(), installComp.end());
+	out.m_comparisons.insert(out.m_comparisons.end(), localeComp.begin(), localeComp.end());
+	out.m_comparisons.insert(out.m_comparisons.end(), cadComp.begin(), cadComp.end());
 
 	output << "Done\n";
 	return 0;
