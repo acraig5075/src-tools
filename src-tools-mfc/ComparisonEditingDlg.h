@@ -3,15 +3,15 @@
 #include "..\src-tools\reports.h"
 
 
-// CCompareExtrasEditingDlg dialog
+// CComparisonEditingDlg dialog
 
-class CCompareExtrasEditingDlg : public CDialogEx
+class CComparisonEditingDlg : public CDialogEx
 {
-	DECLARE_DYNAMIC(CCompareExtrasEditingDlg)
+	DECLARE_DYNAMIC(CComparisonEditingDlg)
 
 public:
-	CCompareExtrasEditingDlg(CompareExtrasOutput &report, CWnd* pParent = nullptr);   // standard constructor
-	virtual ~CCompareExtrasEditingDlg();
+	CComparisonEditingDlg(ComparisonOutput &report, CWnd* pParent = nullptr);   // standard constructor
+	virtual ~CComparisonEditingDlg();
 
 private:
 	void AddToList(int iItem, const ComparePaths &comp);
@@ -36,7 +36,7 @@ protected:
 	afx_msg void OnBnClickedShowradio();
 
 private:
-	CompareExtrasOutput &m_report;
+	ComparisonOutput &m_report;
 	CListCtrl m_listCtrl;
 	CImageList m_imageList;
 	CMFCEditBrowseCtrl m_externalBrowseCtrl;

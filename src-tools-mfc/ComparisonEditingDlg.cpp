@@ -4,27 +4,27 @@
 #include "pch.h"
 #include "src-tools-mfc.h"
 #include "afxdialogex.h"
-#include "CompareExtrasEditingDlg.h"
+#include "ComparisonEditingDlg.h"
 
-// CCompareExtrasEditingDlg dialog
+// CComparisonEditingDlg dialog
 
 namespace fs = std::filesystem;
 
-IMPLEMENT_DYNAMIC(CCompareExtrasEditingDlg, CDialogEx)
+IMPLEMENT_DYNAMIC(CComparisonEditingDlg, CDialogEx)
 
-CCompareExtrasEditingDlg::CCompareExtrasEditingDlg(CompareExtrasOutput &report, CWnd *pParent /*=nullptr*/)
+CComparisonEditingDlg::CComparisonEditingDlg(ComparisonOutput &report, CWnd *pParent /*=nullptr*/)
 	: CDialogEx(IDD_COMPAREEXTRAS_EDITDLG, pParent)
 	, m_report(report)
 {
 }
 
-CCompareExtrasEditingDlg::~CCompareExtrasEditingDlg()
+CComparisonEditingDlg::~CComparisonEditingDlg()
 {
 	for (INT_PTR i = 0; i < m_tempFileNames.GetCount(); ++i)
 		::DeleteFile(m_tempFileNames[i]);
 }
 
-void CCompareExtrasEditingDlg::DoDataExchange(CDataExchange *pDX)
+void CComparisonEditingDlg::DoDataExchange(CDataExchange *pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_COMPARISONLIST, m_listCtrl);
@@ -34,20 +34,20 @@ void CCompareExtrasEditingDlg::DoDataExchange(CDataExchange *pDX)
 	}
 
 
-BEGIN_MESSAGE_MAP(CCompareExtrasEditingDlg, CDialogEx)
-	ON_BN_CLICKED(IDC_COMPAREBTN, &CCompareExtrasEditingDlg::OnBnClickedComparebtn)
+BEGIN_MESSAGE_MAP(CComparisonEditingDlg, CDialogEx)
+	ON_BN_CLICKED(IDC_COMPAREBTN, &CComparisonEditingDlg::OnBnClickedComparebtn)
 	ON_WM_SIZE()
-	ON_NOTIFY(NM_DBLCLK, IDC_COMPARISONLIST, &CCompareExtrasEditingDlg::OnDblclkComparisonlist)
-	ON_BN_CLICKED(IDC_VIEWDIFFBTN, &CCompareExtrasEditingDlg::OnBnClickedViewdiffbtn)
-	ON_BN_CLICKED(IDC_SHOWRADIO1, &CCompareExtrasEditingDlg::OnBnClickedShowradio)
-	ON_BN_CLICKED(IDC_SHOWRADIO2, &CCompareExtrasEditingDlg::OnBnClickedShowradio)
+	ON_NOTIFY(NM_DBLCLK, IDC_COMPARISONLIST, &CComparisonEditingDlg::OnDblclkComparisonlist)
+	ON_BN_CLICKED(IDC_VIEWDIFFBTN, &CComparisonEditingDlg::OnBnClickedViewdiffbtn)
+	ON_BN_CLICKED(IDC_SHOWRADIO1, &CComparisonEditingDlg::OnBnClickedShowradio)
+	ON_BN_CLICKED(IDC_SHOWRADIO2, &CComparisonEditingDlg::OnBnClickedShowradio)
 END_MESSAGE_MAP()
 
 
-// CCompareExtrasEditingDlg message handlers
+// CComparisonEditingDlg message handlers
 
 
-BOOL CCompareExtrasEditingDlg::OnInitDialog()
+BOOL CComparisonEditingDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
@@ -81,7 +81,7 @@ BOOL CCompareExtrasEditingDlg::OnInitDialog()
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CCompareExtrasEditingDlg::PopulateListAll()
+void CComparisonEditingDlg::PopulateListAll()
 {
 	std::vector<ComparePaths> &comparisons = m_report.m_comparisons;
 
@@ -92,7 +92,7 @@ void CCompareExtrasEditingDlg::PopulateListAll()
 		}
 }
 
-void CCompareExtrasEditingDlg::PopulateListDifferent()
+void CComparisonEditingDlg::PopulateListDifferent()
 {
 	m_listCtrl.DeleteAllItems();
 
@@ -111,7 +111,7 @@ void CCompareExtrasEditingDlg::PopulateListDifferent()
 		}
 }
 
-void CCompareExtrasEditingDlg::AddToList(int iItem, const ComparePaths &comp)
+void CComparisonEditingDlg::AddToList(int iItem, const ComparePaths &comp)
 {
 	CString path1{ comp.m_path1.string().c_str() };
 	CString path2{ comp.m_path2.string().c_str() };
@@ -145,7 +145,7 @@ void CCompareExtrasEditingDlg::AddToList(int iItem, const ComparePaths &comp)
 }
 
 
-void CCompareExtrasEditingDlg::OnBnClickedViewdiffbtn()
+void CComparisonEditingDlg::OnBnClickedViewdiffbtn()
 	{
 	POSITION pos = m_listCtrl.GetFirstSelectedItemPosition();
 	if (pos == 0)
@@ -200,7 +200,7 @@ void CCompareExtrasEditingDlg::OnBnClickedViewdiffbtn()
 	}
 
 
-void CCompareExtrasEditingDlg::OnBnClickedComparebtn()
+void CComparisonEditingDlg::OnBnClickedComparebtn()
 {
 	POSITION pos = m_listCtrl.GetFirstSelectedItemPosition();
 	if (pos == 0)
@@ -237,7 +237,7 @@ void CCompareExtrasEditingDlg::OnBnClickedComparebtn()
 }
 
 
-void CCompareExtrasEditingDlg::OnSize(UINT nType, int cx, int cy)
+void CComparisonEditingDlg::OnSize(UINT nType, int cx, int cy)
 {
 	CDialogEx::OnSize(nType, cx, cy);
 
@@ -258,7 +258,7 @@ void CCompareExtrasEditingDlg::OnSize(UINT nType, int cx, int cy)
 }
 
 
-void CCompareExtrasEditingDlg::OnDblclkComparisonlist(NMHDR *pNMHDR, LRESULT *pResult)
+void CComparisonEditingDlg::OnDblclkComparisonlist(NMHDR *pNMHDR, LRESULT *pResult)
 	{
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 
@@ -267,7 +267,7 @@ void CCompareExtrasEditingDlg::OnDblclkComparisonlist(NMHDR *pNMHDR, LRESULT *pR
 	*pResult = 0;
 	}
 
-bool CCompareExtrasEditingDlg::ComparatorExists() const
+bool CComparisonEditingDlg::ComparatorExists() const
 {
 	CString exe;
 	m_externalBrowseCtrl.GetWindowText(exe);
@@ -279,7 +279,7 @@ bool CCompareExtrasEditingDlg::ComparatorExists() const
 	return fs::exists(exepath);
 }
 
-CString CCompareExtrasEditingDlg::MakeTempFileName() const
+CString CComparisonEditingDlg::MakeTempFileName() const
 {
 	_TCHAR tempPath[MAX_PATH], tempFile[MAX_PATH];
 	::GetTempPath(MAX_PATH, tempPath);
@@ -288,7 +288,7 @@ CString CCompareExtrasEditingDlg::MakeTempFileName() const
 }
 
 
-void CCompareExtrasEditingDlg::OnBnClickedShowradio()
+void CComparisonEditingDlg::OnBnClickedShowradio()
 	{
 	int radio = GetCheckedRadioButton(IDC_SHOWRADIO1, IDC_SHOWRADIO2);
 

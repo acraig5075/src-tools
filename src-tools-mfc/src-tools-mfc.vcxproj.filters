@@ -63,7 +63,7 @@
     <ClInclude Include="ProjectUnreferencedOptionsDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CompareExtrasEditingDlg.h">
+    <ClInclude Include="ComparisonEditingDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -107,7 +107,7 @@
     <ClCompile Include="ProjectUnreferencedOptionsDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CompareExtrasEditingDlg.cpp">
+    <ClCompile Include="ComparisonEditingDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

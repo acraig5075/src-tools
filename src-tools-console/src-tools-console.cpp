@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
 	DuplicateStringsOutput out2;
 	UnusedStringsOutput out3;
 	TooltipLengthOutput out6;
-	CompareExtrasOutput out10;
+	ComparisonOutput out10;
 
 	switch (tool)
 		{

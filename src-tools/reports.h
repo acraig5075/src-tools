@@ -65,7 +65,7 @@ struct ComparePaths
 	std::string m_unifiedDiff;
 };
 
-struct CompareExtrasOutput
+struct ComparisonOutput
 {
 	std::vector<ComparePaths> m_comparisons;
 };

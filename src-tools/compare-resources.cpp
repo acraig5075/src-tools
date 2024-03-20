@@ -119,7 +119,7 @@ static auto PrintList(std::vector<ComparePaths>::const_iterator beginItr, std::v
 		}
 }
 
-int compare_resources(const fs::path &root, std::ostream &output, const CompareExtrasOptions &, CompareExtrasOutput &out)
+int compare_resources(const fs::path &root, std::ostream &output, const CompareExtrasOptions &, ComparisonOutput &out)
 {
 	std::string title = "Comparison of Locale Resources";
 	std::string underline(title.length(), '=');

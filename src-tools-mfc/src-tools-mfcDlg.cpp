@@ -18,7 +18,7 @@
 #include "DuplicateStringsEditingDlg.h"
 #include "TooltipLengthEditingDlg.h"
 #include "ProjectUnreferencedOptionsDlg.h"
-#include "CompareExtrasEditingDlg.h"
+#include "ComparisonEditingDlg.h"
 
 
 #ifdef _DEBUG
@@ -594,7 +594,7 @@ void CsrctoolsmfcDlg::OnBnClickedCompareextrasBtn()
 		}
 
 	std::stringstream ss;
-	CompareExtrasOutput out;
+	ComparisonOutput out;
 
 	BeginWaitCursor();
 	compare_extras(rootPath, ss, m_options.m_compareExtrasOpts, out);
@@ -609,7 +609,7 @@ void CsrctoolsmfcDlg::OnBnClickedCompareextrasBtn()
 		{
 		if (!out.m_comparisons.empty())
 			{
-			CCompareExtrasEditingDlg dlg(out, this);
+			CComparisonEditingDlg dlg(out, this);
 			dlg.DoModal();
 			}
 		else
@@ -635,7 +635,7 @@ void CsrctoolsmfcDlg::OnBnClickedCompareresourcesBtn()
 		}
 
 	std::stringstream ss;
-	CompareExtrasOutput out;
+	ComparisonOutput out;
 
 	BeginWaitCursor();
 	compare_resources(rootPath, ss, m_options.m_compareExtrasOpts, out);
@@ -650,7 +650,7 @@ void CsrctoolsmfcDlg::OnBnClickedCompareresourcesBtn()
 		{
 		if (!out.m_comparisons.empty())
 			{
-			CCompareExtrasEditingDlg dlg(out, this);
+			CComparisonEditingDlg dlg(out, this);
 			dlg.DoModal();
 			}
 		else

@@ -202,7 +202,7 @@ std::vector<fs::path> GetProgramInstallPath(int version)
 	return paths;
 }
 
-int compare_extras(const fs::path &root, std::ostream &output, const CompareExtrasOptions &, CompareExtrasOutput &out)
+int compare_extras(const fs::path &root, std::ostream &output, const CompareExtrasOptions &, ComparisonOutput &out)
 {
 	std::string title = "Comparison of Extras";
 	std::string underline(title.length(), '=');
