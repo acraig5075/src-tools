@@ -23,7 +23,7 @@ static void PrintStats(std::string fp1, std::string fp2, std::ostream &out)
 	const int    MAX_LENGTH    = 255;
 	char         time_format[] = "%Y-%m-%d %H:%M:%S %z";
 	time_t       rawtime[2];
-	struct tm   *timeinfo[2];
+	struct tm    timeinfo[2];
 	struct stat  st[2];
 
 	if (stat(fp1.c_str(), &st[0]) == -1)
@@ -39,13 +39,13 @@ static void PrintStats(std::string fp1, std::string fp2, std::ostream &out)
 
 	char buf[2][MAX_LENGTH + 1];
 	rawtime[0] = st[0].st_mtime;
-	timeinfo[0] = localtime(&rawtime[0]);
-	strftime(buf[0], MAX_LENGTH, time_format, timeinfo[0]);
+	localtime_s(&timeinfo[0], &rawtime[0]);
+	strftime(buf[0], MAX_LENGTH, time_format, &timeinfo[0]);
 	out << "--- " << fp1 << '\t' << buf[0] << std::endl;
 
 	rawtime[1] = st[1].st_mtime;
-	timeinfo[1] = localtime(&rawtime[1]);
-	strftime(buf[1], MAX_LENGTH, time_format, timeinfo[1]);
+	localtime_s(&timeinfo[1], &rawtime[1]);
+	strftime(buf[1], MAX_LENGTH, time_format, &timeinfo[1]);
 	out << "+++ " << fp2 << '\t' << buf[1] << std::endl;
 }
 
