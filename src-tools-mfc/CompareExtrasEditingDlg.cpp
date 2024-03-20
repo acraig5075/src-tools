@@ -39,6 +39,8 @@ BEGIN_MESSAGE_MAP(CCompareExtrasEditingDlg, CDialogEx)
 	ON_WM_SIZE()
 	ON_NOTIFY(NM_DBLCLK, IDC_COMPARISONLIST, &CCompareExtrasEditingDlg::OnDblclkComparisonlist)
 	ON_BN_CLICKED(IDC_VIEWDIFFBTN, &CCompareExtrasEditingDlg::OnBnClickedViewdiffbtn)
+	ON_BN_CLICKED(IDC_SHOWRADIO1, &CCompareExtrasEditingDlg::OnBnClickedShowradio)
+	ON_BN_CLICKED(IDC_SHOWRADIO2, &CCompareExtrasEditingDlg::OnBnClickedShowradio)
 END_MESSAGE_MAP()
 
 
@@ -53,6 +55,7 @@ BOOL CCompareExtrasEditingDlg::OnInitDialog()
 	m_imageList.Add(theApp.LoadIcon(IDI_MENUICON2));
 	m_imageList.Add(theApp.LoadIcon(IDI_TOOLBARICON));
 	m_imageList.Add(theApp.LoadIcon(IDI_ACCELERATORICON2));
+	m_imageList.Add(theApp.LoadIcon(IDI_TEXTTEMPLATECON1));
 	m_listCtrl.SetImageList(&m_imageList, LVSIL_SMALL);
 
 	CRect rect;
@@ -69,7 +72,8 @@ BOOL CCompareExtrasEditingDlg::OnInitDialog()
 
 	m_listCtrl.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
-	PopulateListDifferent();
+	CheckRadioButton(IDC_SHOWRADIO1, IDC_SHOWRADIO2, IDC_SHOWRADIO1);
+	OnBnClickedShowradio();
 
 	m_externalBrowseCtrl.SetWindowTextW(_T("C:\\Program Files\\Beyond Compare 4\\BCompare.exe"));
 
@@ -90,6 +94,8 @@ void CCompareExtrasEditingDlg::PopulateListAll()
 
 void CCompareExtrasEditingDlg::PopulateListDifferent()
 {
+	m_listCtrl.DeleteAllItems();
+
 	auto IsZeroEditDistance = [](const ComparePaths &comp)
 		{
 		return comp.m_editDistance == 0;
@@ -119,6 +125,8 @@ void CCompareExtrasEditingDlg::AddToList(int iItem, const ComparePaths &comp)
 		iImage = 1;
 	else if (ext == ".acc")
 		iImage = 2;
+	else if (ext == ".rc")
+		iImage = 3;
 
 	LVITEM sItem = { LVIF_TEXT | LVIF_IMAGE, iItem, 0, 0, 0, path1.GetBuffer(0) };
 	sItem.iImage = iImage;
@@ -278,3 +286,14 @@ CString CCompareExtrasEditingDlg::MakeTempFileName() const
 	::GetTempFileNameW(tempPath, _T("tmp"), 0, tempFile);
 	return CString{ tempFile } + _T(".diff");
 }
+
+
+void CCompareExtrasEditingDlg::OnBnClickedShowradio()
+	{
+	int radio = GetCheckedRadioButton(IDC_SHOWRADIO1, IDC_SHOWRADIO2);
+
+	if (radio == IDC_SHOWRADIO2)
+		PopulateListAll();
+	else
+		PopulateListDifferent();
+	}

@@ -18,6 +18,7 @@
 #define IDI_TOOLBARICON                 153
 #define IDI_MENUICON2                   154
 #define IDI_ACCELERATORICON2            155
+#define IDI_TEXTTEMPLATECON1            156
 #define IDC_LAB                         1000
 #define IDC_IMAGESANDCOMMANDS_BTN       1001
 #define IDC_OUTPUTEDIT                  1002
@@ -88,14 +89,16 @@
 #define IDC_COMPARISONLIST              1046
 #define IDC_COMPAREBTN                  1048
 #define IDC_EXTERNALBROWSEBTN           1049
+#define IDC_SHOWRADIO1                  1051
+#define IDC_SHOWRADIO2                  1052
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        156
+#define _APS_NEXT_RESOURCE_VALUE        157
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1051
+#define _APS_NEXT_CONTROL_VALUE         1053
 #define _APS_NEXT_SYMED_VALUE           104
 #endif
 #endif

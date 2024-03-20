@@ -134,5 +134,8 @@
     <Image Include="res\Accelerator.ico">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="res\TextTemplate.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

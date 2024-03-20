@@ -33,6 +33,7 @@ protected:
 	afx_msg void OnBnClickedComparebtn();
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnDblclkComparisonlist(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnBnClickedShowradio();
 
 private:
 	CompareExtrasOutput &m_report;
