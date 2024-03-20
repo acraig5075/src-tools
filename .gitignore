@@ -375,3 +375,8 @@ Debug/
 Release/
 x64/
 /CppProperties.json
+/Debug64/src-tools.idb
+/src-tools-console/Debug64/vc142.idb
+/src-tools-mfc/Debug64/vc142.idb
+/src-tools-mfc/Release64/srctoolsmfc.res
+/src-tools-mfc/Debug64/srctoolsmfc.res
