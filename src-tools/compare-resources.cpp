@@ -211,6 +211,6 @@ int compare_resources(const fs::path &root, std::ostream &output, const CompareE
 	// Out parameter
 	out.m_comparisons = comparisons;
 
-	output << "Done\n";
+	output << "Done\n\n";
 	return 0;
 }

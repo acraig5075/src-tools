@@ -152,7 +152,7 @@ int search_unused_string_resources(const fs::path &root, std::ostream &output, c
 
 	output_report(reports, output);
 
-	output << "Done\n";
+	output << "Done\n\n";
 
 	return 0;
 }

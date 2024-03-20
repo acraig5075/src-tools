@@ -734,6 +734,6 @@ int examine_dialogs_for_conformity(const fs::path &input, std::ostream &output, 
 	OutputOccurences("Label suffix", "Has a colon",  label_colons, true, output);
 
 
-	output << "Done\n";
+	output << "Done\n\n";
 	return EXIT_SUCCESS;
 }

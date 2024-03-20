@@ -133,6 +133,6 @@ int search_menu_files_title_case(const std::filesystem::path &root, std::ostream
 
 	output_report(reports, output);
 
-	output << "Done\n";
+	output << "Done\n\n";
 	return 0;
 }

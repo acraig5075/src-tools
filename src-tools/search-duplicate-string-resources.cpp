@@ -243,7 +243,7 @@ int search_duplicate_string_resources(const fs::path &input, std::ostream &outpu
 
 	output_report(out.m_folders, output);
 
-	output << "Done\n";
+	output << "Done\n\n";
 
 	return 0;
 }

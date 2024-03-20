@@ -83,6 +83,6 @@ int search_cpp_files_missing_debug_new_macro(const fs::path &root, std::ostream 
 	if (!summary.empty())
 		output_report(summary, output);
 
-	output << "Done\n";
+	output << "Done\n\n";
 	return 0;
 }

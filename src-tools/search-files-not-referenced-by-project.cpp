@@ -124,7 +124,7 @@ int search_files_not_referenced_by_project(const fs::path &rootPath, std::ostrea
 
 	output_report(reports, output);
 
-	output << "Done\n";
+	output << "Done\n\n";
 
 	return 0;
 }

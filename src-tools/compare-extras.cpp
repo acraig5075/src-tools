@@ -177,7 +177,7 @@ std::vector<fs::path> GetProgramInstallPath(int version)
 {
 	auto InstallPath = [](const std::string & program)
 		{
-		fs::path p = R"(J:\InstallSource)";
+		fs::path p = R"(\\KBServer2\Dev\InstallSource)"; // Scheduled tasks need UNC paths instead of mapped drive letters
 		p.append(program);
 		p.append("Extras");
 		return p;
@@ -346,6 +346,6 @@ int compare_extras(const fs::path &root, std::ostream &output, const CompareExtr
 	out.m_comparisons.insert(out.m_comparisons.end(), localeComp.begin(), localeComp.end());
 	out.m_comparisons.insert(out.m_comparisons.end(), cadComp.begin(), cadComp.end());
 
-	output << "Done\n";
+	output << "Done\n\n";
 	return 0;
 }

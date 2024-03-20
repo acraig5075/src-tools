@@ -187,7 +187,7 @@ int search_commands_not_in_imageandcommands(const fs::path &rootPath, std::ostre
 
 	output << count << " commands\n";
 
-	output << "Done\n";
+	output << "Done\n\n";
 
 	return 0;
 }

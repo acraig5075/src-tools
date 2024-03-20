@@ -212,7 +212,7 @@ int search_tooltips_exceeding_max_length(const fs::path &root, std::ostream &out
 
 	output_report(summary, output);
 
-	output << "Done\n";
+	output << "Done\n\n";
 
 	return 0;
 }

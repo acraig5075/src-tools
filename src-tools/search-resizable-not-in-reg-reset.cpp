@@ -183,6 +183,6 @@ int search_resizable_not_in_reg_reset(const fs::path& root, std::ostream& output
 		output << dlg.resourceName << "\t" << dlg.filename << "\n";
 	}
 
-	output << "Done\n";
+	output << "Done\n\n";
 	return 0;
 }
