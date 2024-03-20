@@ -18,80 +18,43 @@ using dtl::Diff;
 using dtl::elemInfo;
 using dtl::uniHunk;
 
-//static void showStats(std::string fp1, std::string fp2, std::ostream &out)
-//{
-//	const int    MAX_LENGTH    = 255;
-//	char         time_format[] = "%Y-%m-%d %H:%M:%S %z";
-//	time_t       rawtime[2];
-//	struct tm   *timeinfo[2];
-//	struct stat  st[2];
-//
-//	if (stat(fp1.c_str(), &st[0]) == -1)
-//		{
-//		std::cerr << "argv1 is invalid." << std::endl;
-//		exit(-1);
-//		}
-//	if (stat(fp2.c_str(), &st[1]) == -1)
-//		{
-//		std::cerr << "argv2 is invalid" << std::endl;
-//		exit(-1);
-//		}
-//
-//	char buf[2][MAX_LENGTH + 1];
-//	rawtime[0] = st[0].st_mtime;
-//	timeinfo[0] = localtime(&rawtime[0]);
-//	strftime(buf[0], MAX_LENGTH, time_format, timeinfo[0]);
-//	out << "--- " << fp1 << '\t' << buf[0] << std::endl;
-//
-//	rawtime[1] = st[1].st_mtime;
-//	timeinfo[1] = localtime(&rawtime[1]);
-//	strftime(buf[1], MAX_LENGTH, time_format, timeinfo[1]);
-//	out << "+++ " << fp2 << '\t' << buf[1] << std::endl;
-//}
+static void PrintStats(std::string fp1, std::string fp2, std::ostream &out)
+{
+	const int    MAX_LENGTH    = 255;
+	char         time_format[] = "%Y-%m-%d %H:%M:%S %z";
+	time_t       rawtime[2];
+	struct tm   *timeinfo[2];
+	struct stat  st[2];
 
-//static void unifiedDiff(std::string fp1, std::string fp2, std::string out)
-//{
-//	typedef std::string                 elem;
-//	typedef std::vector< elem >         sequence;
-//	typedef std::pair< elem, elemInfo > sesElem;
-//
-//	std::ifstream      Aifs(fp1.c_str());
-//	std::ifstream      Bifs(fp2.c_str());
-//	elem          buf;
-//	sequence      ALines, BLines;
-//
-//	while (std::getline(Aifs, buf))
-//		{
-//		ALines.push_back(buf);
-//		}
-//	while (std::getline(Bifs, buf))
-//		{
-//		BLines.push_back(buf);
-//		}
-//
-//	Diff< elem > diff(ALines, BLines);
-//	diff.onHuge();
-//	//diff.onUnserious();
-//	diff.compose();
-//
-//	// type unihunk definition test
-//	uniHunk< sesElem > hunk;
-//
-//	if (diff.getEditDistance() > 0)
-//		{
-//		std::ofstream fout(out);
-//
-//		showStats(fp1, fp2, fout);             // show file info
-//
-//		diff.composeUnifiedHunks();
-//
-//		diff.printUnifiedFormat(fout);
-//		}
-//}
+	if (stat(fp1.c_str(), &st[0]) == -1)
+		{
+		std::cerr << "argv1 is invalid." << std::endl;
+		exit(-1);
+		}
+	if (stat(fp2.c_str(), &st[1]) == -1)
+		{
+		std::cerr << "argv2 is invalid" << std::endl;
+		exit(-1);
+		}
 
+	char buf[2][MAX_LENGTH + 1];
+	rawtime[0] = st[0].st_mtime;
+	timeinfo[0] = localtime(&rawtime[0]);
+	strftime(buf[0], MAX_LENGTH, time_format, timeinfo[0]);
+	out << "--- " << fp1 << '\t' << buf[0] << std::endl;
 
-void Extract(const fs::path &rc, const std::string &section, std::vector<std::string> &extract)
-	{
+	rawtime[1] = st[1].st_mtime;
+	timeinfo[1] = localtime(&rawtime[1]);
+	strftime(buf[1], MAX_LENGTH, time_format, timeinfo[1]);
+	out << "+++ " << fp2 << '\t' << buf[1] << std::endl;
+}
+
+void ExtractSection(const fs::path &rc, const std::string &section, std::vector<std::string> &extract)
+{
+	// An opening empty line for subsequent sections
+	if (!extract.empty())
+		extract.push_back(std::string{});
+
 	std::string start = "// " + section;
 	std::ifstream ifs(rc.string().c_str());
 	std::string line;
@@ -104,10 +67,9 @@ void Extract(const fs::path &rc, const std::string &section, std::vector<std::st
 
 	extract.push_back(line);
 
-	auto stop = [](const std::string &str)
+	auto stop = [](const std::string & str)
 		{
-		size_t pos = str.find_first_not_of('/', 0);
-		return std::string::npos == pos && str.length() > 70;
+		return str.length() > 70 && std::string::npos == str.find_first_not_of('/', 0);
 		};
 
 	while (std::getline(ifs, line))
@@ -117,19 +79,16 @@ void Extract(const fs::path &rc, const std::string &section, std::vector<std::st
 		else
 			extract.push_back(line);
 		}
-	}
 
-static long long GetEditDistance(const std::vector<std::string> &ALines, const std::vector<std::string> &BLines)
-{
-	typedef std::string                 elem;
-	typedef std::vector< elem >         sequence;
-
-	Diff< elem > diff(ALines, BLines);
-	diff.onHuge();
-	diff.onUnserious();
-	diff.compose();
-
-	return diff.getEditDistance();
+	// Trailing empting lines or comment lines are problematic for the diff
+	while (!extract.empty())
+		{
+		std::string back = extract.back();
+		if (back.empty() || string_utils::starts_with(back, "#"))
+			extract.pop_back();
+		else
+			break;
+		}
 }
 
 static auto PrintList(std::vector<ComparePaths>::const_iterator beginItr, std::vector<ComparePaths>::const_iterator endItr, std::ostream &out)
@@ -165,10 +124,10 @@ int compare_resources(const fs::path &root, std::ostream &output, const CompareE
 	std::string title = "Comparison of Locale Resources";
 	std::string underline(title.length(), '=');
 	output
-		<< title 
-		<< "\n"
-		<< underline
-		<< "\n\n";
+			<< title
+			<< "\n"
+			<< underline
+			<< "\n\n";
 
 	fs::path localePath = root.parent_path();
 	localePath.append("CD_Resource");
@@ -185,7 +144,7 @@ int compare_resources(const fs::path &root, std::ostream &output, const CompareE
 		filename.concat("ResUK");
 		filename.replace_extension(".rc");
 
-		auto FindByFilename = [filename](const fs::path &locale)
+		auto FindByFilename = [filename](const fs::path & locale)
 			{
 			return filename == locale.filename();
 			};
@@ -203,12 +162,12 @@ int compare_resources(const fs::path &root, std::ostream &output, const CompareE
 	auto Compare = [](ComparePaths & comp)
 		{
 		std::vector<std::string> lhs;
-		Extract(comp.m_path1, "Dialog", lhs);
-		Extract(comp.m_path1, "String Table", lhs);
+		ExtractSection(comp.m_path1, "Dialog", lhs);
+		ExtractSection(comp.m_path1, "String Table", lhs);
 
 		std::vector<std::string> rhs;
-		Extract(comp.m_path2, "Dialog", rhs);
-		Extract(comp.m_path2, "String Table", rhs);
+		ExtractSection(comp.m_path2, "Dialog", rhs);
+		ExtractSection(comp.m_path2, "String Table", rhs);
 
 		Diff<std::string> diff(lhs, rhs);
 		diff.onHuge();
@@ -218,7 +177,7 @@ int compare_resources(const fs::path &root, std::ostream &output, const CompareE
 			{
 			std::stringstream ss;
 
-			//showStats(comp.m_path1.string(), comp.m_path2.string(), ss);
+			PrintStats(comp.m_path1.string(), comp.m_path2.string(), ss);
 			diff.composeUnifiedHunks();
 			diff.printUnifiedFormat(ss);
 

@@ -8,6 +8,8 @@
 
 // CCompareExtrasEditingDlg dialog
 
+namespace fs = std::filesystem;
+
 IMPLEMENT_DYNAMIC(CCompareExtrasEditingDlg, CDialogEx)
 
 CCompareExtrasEditingDlg::CCompareExtrasEditingDlg(CompareExtrasOutput &report, CWnd *pParent /*=nullptr*/)
@@ -18,6 +20,8 @@ CCompareExtrasEditingDlg::CCompareExtrasEditingDlg(CompareExtrasOutput &report, 
 
 CCompareExtrasEditingDlg::~CCompareExtrasEditingDlg()
 {
+	for (INT_PTR i = 0; i < m_tempFileNames.GetCount(); ++i)
+		::DeleteFile(m_tempFileNames[i]);
 }
 
 void CCompareExtrasEditingDlg::DoDataExchange(CDataExchange *pDX)
@@ -25,13 +29,16 @@ void CCompareExtrasEditingDlg::DoDataExchange(CDataExchange *pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_COMPARISONLIST, m_listCtrl);
 	DDX_Control(pDX, IDC_EXTERNALBROWSEBTN, m_externalBrowseCtrl);
-}
+	DDX_Control(pDX, IDC_VIEWDIFFBTN, m_viewDiffBtn);
+	DDX_Control(pDX, IDC_COMPAREBTN, m_compareBtn);
+	}
 
 
 BEGIN_MESSAGE_MAP(CCompareExtrasEditingDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_COMPAREBTN, &CCompareExtrasEditingDlg::OnBnClickedComparebtn)
 	ON_WM_SIZE()
 	ON_NOTIFY(NM_DBLCLK, IDC_COMPARISONLIST, &CCompareExtrasEditingDlg::OnDblclkComparisonlist)
+	ON_BN_CLICKED(IDC_VIEWDIFFBTN, &CCompareExtrasEditingDlg::OnBnClickedViewdiffbtn)
 END_MESSAGE_MAP()
 
 
@@ -105,7 +112,7 @@ void CCompareExtrasEditingDlg::AddToList(int iItem, const ComparePaths &comp)
 	CString editDist{ std::to_string(comp.m_editDistance).c_str() };
 
 	int iImage = -1;
-	std::filesystem::path ext = comp.m_path1.extension();
+	fs::path ext = comp.m_path1.extension();
 	if (ext == ".mnu")
 		iImage = 0;
 	else if (ext == ".tbr")
@@ -130,11 +137,69 @@ void CCompareExtrasEditingDlg::AddToList(int iItem, const ComparePaths &comp)
 }
 
 
+void CCompareExtrasEditingDlg::OnBnClickedViewdiffbtn()
+	{
+	POSITION pos = m_listCtrl.GetFirstSelectedItemPosition();
+	if (pos == 0)
+		{
+		MessageBox(_T("Nothing selected"), _T("Warning"), MB_OK | MB_ICONWARNING);
+		return;
+		}
+
+	int iItem = m_listCtrl.GetNextSelectedItem(pos);
+	size_t index = static_cast<size_t>(iItem);
+	if (index > m_report.m_comparisons.size())
+		{
+		MessageBox(_T("No matching comparison found"), _T("Error"), MB_OK | MB_ICONERROR);
+		return;
+		}
+
+	if (m_report.m_comparisons[index].m_unifiedDiff.empty())
+		{
+		MessageBox(_T("No diff exists for the comparison"), _T("Error"), MB_OK | MB_ICONERROR);
+		return;
+		}
+
+	if (!ComparatorExists())
+		{
+		MessageBox(_T("External comparator not found"), _T("Error"), MB_OK | MB_ICONERROR);
+		return;
+		}
+
+	// Make a temporary diff file, will be deleted in destructor
+	CString diffFile = MakeTempFileName();
+	m_tempFileNames.Add(diffFile);
+	CStdioFile ofs(diffFile, CFile::modeCreate | CFile::modeWrite | CFile::typeText);
+	for (const auto &line : m_report.m_comparisons[index].m_unifiedDiff)
+		ofs.WriteString(CString{ line });
+	ofs.Close();
+
+	CString exe;
+	m_externalBrowseCtrl.GetWindowTextW(exe);
+
+	CString params;
+	params.Format(_T("\"%ws\""), diffFile.GetString());
+
+	ShellExecute(nullptr, _T("open"), exe.GetString(), params.GetString(), nullptr, SW_SHOW);
+
+	iItem++;
+	if (iItem < m_listCtrl.GetItemCount())
+		{
+		m_listCtrl.SetItemState(iItem, LVIS_SELECTED, LVIS_SELECTED);
+		m_listCtrl.SetSelectionMark(iItem);
+		m_listCtrl.SetFocus();
+		}
+	}
+
+
 void CCompareExtrasEditingDlg::OnBnClickedComparebtn()
 {
 	POSITION pos = m_listCtrl.GetFirstSelectedItemPosition();
 	if (pos == 0)
+		{
+		MessageBox(_T("Nothing selected"), _T("Warning"), MB_OK | MB_ICONWARNING);
 		return;
+		}
 
 	int iItem = m_listCtrl.GetNextSelectedItem(pos);
 	CString lhs = m_listCtrl.GetItemText(iItem, 0);
@@ -142,6 +207,12 @@ void CCompareExtrasEditingDlg::OnBnClickedComparebtn()
 
 	CString exe;
 	m_externalBrowseCtrl.GetWindowTextW(exe);
+
+	if (!ComparatorExists())
+		{
+		MessageBox(_T("External comparator not found"), _T("Error"), MB_OK | MB_ICONERROR);
+		return;
+		}
 
 	CString params;
 	params.Format(_T("\"%ws\" \"%ws\""), lhs.GetString(), rhs.GetString());
@@ -161,6 +232,9 @@ void CCompareExtrasEditingDlg::OnBnClickedComparebtn()
 void CCompareExtrasEditingDlg::OnSize(UINT nType, int cx, int cy)
 {
 	CDialogEx::OnSize(nType, cx, cy);
+
+	if (m_listCtrl.GetSafeHwnd() == 0)
+		return;
 
 	CRect rect;
 	m_listCtrl.GetWindowRect(&rect);
@@ -184,3 +258,23 @@ void CCompareExtrasEditingDlg::OnDblclkComparisonlist(NMHDR *pNMHDR, LRESULT *pR
 
 	*pResult = 0;
 	}
+
+bool CCompareExtrasEditingDlg::ComparatorExists() const
+{
+	CString exe;
+	m_externalBrowseCtrl.GetWindowText(exe);
+
+	std::string exestr{ CW2A(exe.GetString()) };
+
+	fs::path exepath{ exestr };
+
+	return fs::exists(exepath);
+}
+
+CString CCompareExtrasEditingDlg::MakeTempFileName() const
+{
+	_TCHAR tempPath[MAX_PATH], tempFile[MAX_PATH];
+	::GetTempPath(MAX_PATH, tempPath);
+	::GetTempFileNameW(tempPath, _T("tmp"), 0, tempFile);
+	return CString{ tempFile } + _T(".diff");
+}

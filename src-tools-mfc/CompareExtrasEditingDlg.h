@@ -17,6 +17,8 @@ private:
 	void AddToList(int iItem, const ComparePaths &comp);
 	void PopulateListAll();
 	void PopulateListDifferent();
+	bool ComparatorExists() const;
+	CString MakeTempFileName() const;
 
 // Dialog Data
 #ifdef AFX_DESIGN_TIME
@@ -27,6 +29,7 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	virtual BOOL OnInitDialog();
 
+	afx_msg void OnBnClickedViewdiffbtn();
 	afx_msg void OnBnClickedComparebtn();
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnDblclkComparisonlist(NMHDR *pNMHDR, LRESULT *pResult);
@@ -36,6 +39,9 @@ private:
 	CListCtrl m_listCtrl;
 	CImageList m_imageList;
 	CMFCEditBrowseCtrl m_externalBrowseCtrl;
+	CButton m_viewDiffBtn;
+	CButton m_compareBtn;
+	CStringArray m_tempFileNames;
 
 	DECLARE_MESSAGE_MAP()
-};
+	};
