@@ -66,7 +66,9 @@
 #define IDC_COMPAREEXTRAS_BTN           1021
 #define IDC_COMPAREEXTRAS_OPTS          1022
 #define IDC_MARGINEDIT                  1023
+#define IDC_COMPARERESOURCES_BTN        1023
 #define IDC_MINIMUMEDIT                 1024
+#define IDC_COMPARERESOURCES_OPTS       1024
 #define IDC_MAXIMUMEDIT                 1025
 #define IDC_MODULELIST                  1026
 #define IDC_RESOURCELIST                1027

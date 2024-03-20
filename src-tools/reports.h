@@ -62,6 +62,7 @@ struct ComparePaths
 	std::filesystem::path m_path1;
 	std::filesystem::path m_path2;
 	long long m_editDistance = 0;
+	std::string m_unifiedDiff;
 };
 
 struct CompareExtrasOutput

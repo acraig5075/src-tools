@@ -186,6 +186,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="compare-extras.cpp" />
+    <ClCompile Include="compare-resources.cpp" />
     <ClCompile Include="examine-dialogs-for-conformity.cpp" />
     <ClCompile Include="filesystem-utils.cpp" />
     <ClCompile Include="options.cpp" />

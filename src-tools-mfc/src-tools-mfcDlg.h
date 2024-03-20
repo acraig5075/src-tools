@@ -49,6 +49,7 @@ protected:
 	afx_msg void OnBnClickedUnreferencedfilesOpts();
 	afx_msg void OnStnClickedOptionsfilelab();
 	afx_msg void OnBnClickedCompareextrasBtn();
+	afx_msg void OnBnClickedCompareresourcesBtn();
 
 private:
 	CEdit m_outputEdit;
@@ -57,6 +58,7 @@ private:
 	CMFCMenuButton m_unusedMenuBtn;
 	CMFCMenuButton m_tooltipsMenuBtn;
 	CMFCMenuButton m_compareExtrasMenuBtn;
+	CMFCMenuButton m_compareResourcesMenuBtn;
 
 	CFont* m_pFont = nullptr;
 	CStringA m_optionsFilename;

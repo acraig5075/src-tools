@@ -22,6 +22,7 @@ void usage()
 	std::cout << "           8 : search_menu_files_title_case\n";
 	std::cout << "           9 : search_files_not_referenced_by_project\n";
 	std::cout << "          10 : compare_extras\n";
+	std::cout << "          11 : compare_resources\n";
 	std::cout << "path         : Root folder path of source tree for multiple .rc files to be parsed.\n";
 	std::cout << "file         : File path for a single .rc file to be parsed.\n";
 	std::cout << "optionsfile  : .options file [Default looks in .exe folder]\n";
@@ -99,6 +100,9 @@ int main(int argc, char *argv[])
 		case 10:
 			compare_extras(rootPath, std::cout, options.m_compareExtrasOpts, out10);
 			break;
+		case 11:
+			compare_resources(rootPath, std::cout, options.m_compareExtrasOpts, out10);
+			break;
 
 		case 999:
 			search_commands_not_in_imageandcommands (rootPath, std::cout, options.m_imagesAndCommandsOpts);
@@ -111,6 +115,7 @@ int main(int argc, char *argv[])
 			search_menu_files_title_case            (rootPath, std::cout, options.m_menuTitleCaseOpts);
 			search_files_not_referenced_by_project  (rootPath, std::cout, options.m_projectUnreferencedOpts);
 			compare_extras                          (rootPath, std::cout, options.m_compareExtrasOpts, out10);
+			compare_resources                       (rootPath, std::cout, options.m_compareExtrasOpts, out10);
 			break;
 
 		default:

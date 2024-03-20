@@ -58,7 +58,8 @@ void CsrctoolsmfcDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_UNUSEDSTRINGS_BTN, m_unusedMenuBtn);
 	DDX_Control(pDX, IDC_COMPAREEXTRAS_BTN, m_compareExtrasMenuBtn);
 	DDX_Text(pDX, IDC_OPTIONSFILELAB, m_optionsFilenameLabel);
-}
+	DDX_Control(pDX, IDC_COMPARERESOURCES_BTN, m_compareResourcesMenuBtn);
+	}
 
 BEGIN_MESSAGE_MAP(CsrctoolsmfcDlg, CDialogEx)
 	ON_WM_PAINT()
@@ -83,6 +84,7 @@ BEGIN_MESSAGE_MAP(CsrctoolsmfcDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_UNREFERENCEDFILES_OPTS, &CsrctoolsmfcDlg::OnBnClickedUnreferencedfilesOpts)
 	ON_STN_CLICKED(IDC_OPTIONSFILELAB, &CsrctoolsmfcDlg::OnStnClickedOptionsfilelab)
 	ON_BN_CLICKED(IDC_COMPAREEXTRAS_BTN, &CsrctoolsmfcDlg::OnBnClickedCompareextrasBtn)
+	ON_BN_CLICKED(IDC_COMPARERESOURCES_BTN, &CsrctoolsmfcDlg::OnBnClickedCompareresourcesBtn)
 END_MESSAGE_MAP()
 
 
@@ -108,6 +110,7 @@ BOOL CsrctoolsmfcDlg::OnInitDialog()
 	m_unusedMenuBtn.m_hMenu = m_edittingMenu.GetSafeHmenu();
 	m_tooltipsMenuBtn.m_hMenu = m_edittingMenu.GetSafeHmenu();
 	m_compareExtrasMenuBtn.m_hMenu = m_edittingMenu.GetSafeHmenu();
+	m_compareResourcesMenuBtn.m_hMenu = m_edittingMenu.GetSafeHmenu();
 
 	m_optionsFilenameLabel = CString{ _T("Options file: ") } + CA2W(m_optionsFilename);
 	UpdateData(FALSE);
@@ -602,6 +605,47 @@ void CsrctoolsmfcDlg::OnBnClickedCompareextrasBtn()
 	m_outputEdit.SetWindowTextW(output);
 
 	int chosen = m_compareExtrasMenuBtn.m_nMenuResult;
+	if (10000 == chosen)
+		{
+		if (!out.m_comparisons.empty())
+			{
+			CCompareExtrasEditingDlg dlg(out, this);
+			dlg.DoModal();
+			}
+		else
+			MessageBox(_T("Nothing to edit"), _T("Information"), MB_OK | MB_ICONINFORMATION);
+		}
+	}
+
+
+void CsrctoolsmfcDlg::OnBnClickedCompareresourcesBtn()
+	{
+	CString strRoot;
+	m_editBrowseCtrl.GetWindowTextW(strRoot);
+	if (strRoot.IsEmpty())
+		return;
+
+	fs::path rootPath(strRoot.GetString());
+	if (rootPath.empty() || !fs::exists(rootPath))
+		{
+		CString msg;
+		msg.Format(_T("%ws does not exist"), strRoot.GetString());
+		MessageBox(msg, _T("Error"), MB_OK | MB_ICONSTOP);
+		return;
+		}
+
+	std::stringstream ss;
+	CompareExtrasOutput out;
+
+	BeginWaitCursor();
+	compare_resources(rootPath, ss, m_options.m_compareExtrasOpts, out);
+	EndWaitCursor();
+
+	CString output(ss.str().c_str());
+	output.Replace(_T("\n"), _T("\r\n"));
+	m_outputEdit.SetWindowTextW(output);
+
+	int chosen = m_compareResourcesMenuBtn.m_nMenuResult;
 	if (10000 == chosen)
 		{
 		if (!out.m_comparisons.empty())
