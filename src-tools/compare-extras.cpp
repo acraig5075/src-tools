@@ -7,6 +7,7 @@
 #include "string-utils.h"
 #include "options.h"
 #include "reports.h"
+#include "filesystem-utils.h"
 
 //#include <time.h>
 //#include <sys/stat.h>
@@ -212,10 +213,15 @@ int compare_extras(const fs::path &root, std::ostream &output, const CompareExtr
 		<< underline
 		<< "\n\n";
 
-	fs::path extras = root;
+	fs::path extras = filesystem_utils::search_up_for_parent(root, "Extras");
 	extras.append("Extras");
-	fs::path locales = root.parent_path();
+	if (!fs::exists(extras))
+		return 0;
+
+	fs::path locales = filesystem_utils::search_up_for_parent(root, "CD_Resource");
 	locales.append("CD_Resource").append("Extras");
+	if (!fs::exists(locales))
+		return 0;
 
 	int version = GetProgramVersionNumber(root);
 	std::vector<fs::path> installPaths = GetProgramInstallPath(version);

@@ -129,8 +129,10 @@ int compare_resources(const fs::path &root, std::ostream &output, const CompareE
 			<< underline
 			<< "\n\n";
 
-	fs::path localePath = root.parent_path();
+	fs::path localePath = filesystem_utils::search_up_for_parent(root, "CD_Resource");
 	localePath.append("CD_Resource");
+	if (!fs::exists(localePath))
+		return 0;
 
 	std::vector<ComparePaths> comparisons;
 

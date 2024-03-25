@@ -152,4 +152,26 @@ namespace filesystem_utils
 		return sln && !vcxproj;
 		}
 
+	// Search higher in the folder structure for a path containing the given name
+	fs::path search_up_for_parent(const fs::path &root, const std::string &name)
+		{
+		fs::path parent = root;
+		fs::path search;
+
+		while (true)
+			{
+			search = parent;
+			if (search.empty())
+				break;
+
+			search.append(name);
+			if (fs::exists(search))
+				break;
+
+			parent = parent.parent_path();
+			}
+
+		return parent;
+		}
+
 	}
