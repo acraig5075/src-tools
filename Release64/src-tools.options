@@ -1,0 +1,34 @@
+{
+"tool_duplicate_strings_exclude_folders": [
+
+],
+"tool_duplicate_strings_only_summary": false,
+"tool_duplicate_strings_output_format": 0,
+"tool_missing_macro_only_summary": false,
+"tool_project_unreferenced_exclude_folders": [
+
+],
+"tool_project_unreferenced_only_summary": false,
+"tool_project_unreferenced_output_format": 0,
+"tool_rc_file_rules_captions_not_title_case": true,
+"tool_rc_file_rules_controls_overlap": true,
+"tool_rc_file_rules_exceeds_dialog_margin": true,
+"tool_rc_file_rules_groupbox_captions_not_title_case": true,
+"tool_rc_file_rules_horizontal_alignment_bottom": true,
+"tool_rc_file_rules_horizontal_alignment_top": true,
+"tool_rc_file_rules_inputboxes_wrong_height": true,
+"tool_rc_file_rules_label_ends_with_colon": true,
+"tool_rc_file_rules_ok_cancel_not_left_to_right": true,
+"tool_rc_file_rules_ok_cancel_wrong_gap": true,
+"tool_rc_file_rules_output_format": 0,
+"tool_rc_file_rules_redundant_caption_suffix": true,
+"tool_rc_file_rules_right_aligned_checkbox": true,
+"tool_rc_file_rules_vertical_alignment_left": true,
+"tool_rc_file_rules_vertical_alignment_right": true,
+"tool_tooltip_length_maximum": 80,
+"tool_tooltip_length_only_summary": false,
+"tool_unused_strings_exclude_folders": [
+
+],
+"tool_unused_strings_only_summary": false
+}
