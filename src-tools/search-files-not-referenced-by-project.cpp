@@ -23,6 +23,9 @@ std::vector<fs::path> get_referenced_files(const fs::path &project)
 			if (name.empty() || starts_with(name, "..\\"))
 				continue;
 
+			if (starts_with(name, ".\\"))
+				name = erase_substr(name, ".\\");
+
 			filenames.push_back(name);
 			}
 		}

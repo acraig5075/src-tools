@@ -105,7 +105,7 @@ namespace filesystem_utils
 		bool ok1 = false;
 		bool ok2 = false;
 
-		for (const auto &itr : fs::directory_iterator(folder))
+		for (const auto &itr : fs::recursive_directory_iterator(folder))
 			{
 			if (itr.is_regular_file())
 				{

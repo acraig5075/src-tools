@@ -101,7 +101,7 @@ int search_unused_string_resources(const fs::path &root, std::ostream &output, c
 
 	std::vector<Report> reports;
 
-	std::vector<fs::path> directories = filesystem_utils::get_directory_list(root);
+	std::vector<fs::path> directories = filesystem_utils::get_directory_list(root, false);
 
 	const std::vector<std::string> &exclusions = options.m_excludeFolders;
 	filesystem_utils::filter_directory_list(directories, exclusions);
